@@ -5,6 +5,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements'
 
 import { MonoText } from '../components/StyledText';
+import TouchableScale from 'react-native-touchable-scale'; 
+import LinearGradient from 'react-native-linear-gradient'; 
 
 export default function HomeScreen() {
   return (
@@ -126,11 +128,23 @@ function PeopleList(){
     {
       list.map((l, i) => (
         <ListItem
+          Component={TouchableScale}
+          friction={90} //
+          tension={100} // These props are passed to the parent component (here TouchableScale)
+          activeScale={0.95} //
+          // linearGradientProps={{
+          //   colors: ['#FF9800', '#F44336'],
+          //   start: [1, 0],
+          //   end: [0.2, 0],
+          // }}
           key={i}
           leftAvatar={{ source: { uri: l.avatar_url } }}
           title={l.name}
+          // titleStyle={{ color: 'white', fontWeight: 'bold' }}
+          // subtitleStyle={{ color: 'white' }}
           subtitle={l.subtitle}
           bottomDivider
+          chevron={{ color: '#000000' }}
         />
       ))
     }

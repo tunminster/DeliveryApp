@@ -9,6 +9,10 @@ import LinksScreen from '../screens/LinksScreen';
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
+
+
+
+
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
@@ -34,6 +38,9 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
     </BottomTab.Navigator>
+
+
+    
   );
 }
 
@@ -42,7 +49,7 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Home':
-      return 'How to get started';
+       return 'Restaurant test';
     case 'Links':
       return 'Links to learn more';
   }
