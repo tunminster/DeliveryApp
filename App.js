@@ -5,15 +5,14 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer,DrawerActions  } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
-import BottomTabNavigator from './navigation/BottomTabNavigator';
 import DrawerNavigator from './navigation/DrawerNavigator';
 import useLinking from './navigation/useLinking';
 import HomeScreen from './screens/HomeScreen';
-import LinksScreen from './screens/LinksScreen';
+import HelloScreen from './screens/HomeScreen';
 
 import { Icon } from 'react-native-elements';
-
+import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
+import { AuthContext } from './constants/Context';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +22,26 @@ export default function App(props) {
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
+
+  const [isLoading, setIsLoading] = React.useState(true);  
+  const [userToken, setUserToken] = React.useState(null);
+  const authContext = React.useMemo(() => {
+    return{
+      signIn: () => {
+        setIsLoading(false);
+        setUserToken("asdf");
+      },
+      signUp: () => {
+        setIsLoading(false);
+        setUserToken("asdf");
+      },
+      signOut: () => {
+        setIsLoading(false);
+        setUserToken(null);
+      }
+    }
+  }, []);
+
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
@@ -48,42 +67,55 @@ export default function App(props) {
     }
 
     loadResourcesAndDataAsync();
+    setTimeout(() => {
+      setIsLoading(false);
+    },1000)
+
   }, []);
+
+  if(isLoading) {
+    return <Splash />;
+  }
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return null;
   } else {
     return (
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator 
-          
-          screenOptions={({navigation}) =>(
-            {
-              title: 'Restaurant Name',
-              headerStyle: {
-              backgroundColor: '#f4511e',
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-              headerRight: () => (
-                 
-                <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-                onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
-                />
-              )
-            }
-          )}>
-            {/* <Stack.Screen name="Root" component={BottomTabNavigator} /> */}
-            <Stack.Screen name="Root" component={ DrawerNavigator} />
-           
+      
+      <AuthContext.Provider value={authContext}>
+          <View style={styles.container}>
+          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+            {/* <Stack.Navigator 
+            
+            screenOptions={({navigation}) =>(
+              {
+                title: 'Restaurant Name',
+                headerStyle: {
+                backgroundColor: '#f4511e',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+                headerRight: () => (
+                  
+                  <Icon style={styles.menuIcon} name='menu' size={42} color='white'
+                  onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
+                  />
+                )
+              }
+            )}>
+              
+              <Stack.Screen name="Root" component={  DrawerNavigator} />
+            
 
-          </Stack.Navigator>
-        </NavigationContainer>
-      </View>
+            </Stack.Navigator> */}
+            <RootStackScreen userToken={userToken} />
+          </NavigationContainer>
+        </View>
+      </AuthContext.Provider>
+      
     );
   }
 }
@@ -97,5 +129,61 @@ const styles = StyleSheet.create({
     paddingRight:5
   },
 });
+
+const AuthStack = createStackNavigator();
+const AuthStackScreen = () => (
+  <AuthStack.Navigator headerMode="none">
+    <AuthStack.Screen name="SignIn" component= {SignIn} options={{title: "Sign In"}} />
+    <AuthStack.Screen name="CreateAccount" component={CreateAccount} 
+      options={{title: "Create Account"}} />
+  </AuthStack.Navigator>
+);
+
+const RootStack = createStackNavigator();
+const RootStackScreen = ({ userToken}) => (
+  <RootStack.Navigator>
+     {
+       userToken ?(
+        <RootStack.Screen name="App" component={DrawerNavigator} 
+          options={({navigation}) => (
+            {
+              title: 'Restaurant Name',
+              headerStyle: {
+              backgroundColor: '#f4511e',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              headerRight: () => (
+                  <Icon style={styles.menuIcon} name='menu' size={42} color='white'
+                    onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
+                    />
+              )
+            }
+          )}
+         />
+       ) : (
+        <RootStack.Screen name="Auth" component= {AuthStackScreen} 
+        options={({navigation}) => (
+          {
+            title: 'Restaurant Name',
+            headerStyle: {
+            backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            
+          }
+        )}
+        />
+       )
+     }
+     
+     
+  </RootStack.Navigator>
+);
 
 

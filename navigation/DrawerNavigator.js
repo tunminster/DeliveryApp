@@ -4,6 +4,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import BottomTabNavigator from './BottomTabNavigator';
+import {Profile} from '../screens/LoginScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -19,13 +23,15 @@ export default function DrawerNavigator({ navigation, route }) {
     <Drawer.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
       <Drawer.Screen
         name="Home"
-        component={HomeScreen}
+        component={BottomTabNavigator}
         
       />
       <Drawer.Screen
         name="Links"
         component={LinksScreen}
       />
+      <Drawer.Screen name="Profile" component={Profile} />
+
     </Drawer.Navigator>
   );
 }
@@ -40,3 +46,6 @@ function getHeaderTitle(route) {
       return 'Links to learn more';
   }
 }
+
+
+

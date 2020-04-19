@@ -10,6 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { DrawerActions  } from '@react-navigation/native';
 
 import { Icon } from 'react-native-elements';
+import BottomTabNavigator from '../navigation/BottomTabNavigator';
 
 export default function HomeScreen({navigation}) {
  
@@ -17,7 +18,6 @@ export default function HomeScreen({navigation}) {
   return (
     
     <View style={styles.container}>
-    
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         {/* <View style={styles.welcomeContainer}>
           <Image
