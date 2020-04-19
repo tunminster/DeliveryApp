@@ -15,7 +15,10 @@ import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
 import { AuthContext } from './constants/Context';
 
 const Stack = createStackNavigator();
-
+state={
+  email:"",
+  password:""
+}
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
@@ -42,7 +45,7 @@ export default function App(props) {
     }
   }, []);
 
-
+  
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -111,7 +114,7 @@ export default function App(props) {
             
 
             </Stack.Navigator> */}
-            <RootStackScreen userToken={userToken} />
+            <RootStackScreen userToken={userToken} state={state} />
           </NavigationContainer>
         </View>
       </AuthContext.Provider>
