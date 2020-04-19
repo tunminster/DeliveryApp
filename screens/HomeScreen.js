@@ -1,16 +1,23 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import {  FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {  FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ListItem } from 'react-native-elements'
 
 import { MonoText } from '../components/StyledText';
 import TouchableScale from 'react-native-touchable-scale'; 
 import LinearGradient from 'react-native-linear-gradient'; 
+import { DrawerActions  } from '@react-navigation/native';
 
-export default function HomeScreen() {
+import { Icon } from 'react-native-elements';
+
+export default function HomeScreen({navigation}) {
+ 
+  
   return (
+    
     <View style={styles.container}>
+    
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         {/* <View style={styles.welcomeContainer}>
           <Image
@@ -24,8 +31,6 @@ export default function HomeScreen() {
         </View> */}
         <PeopleList />
         <View style={styles.getStartedContainer}>
-
-        
 
           {/* <DevelopmentModeNotice /> */}
 
@@ -55,12 +60,14 @@ export default function HomeScreen() {
         </View>
       </View>
       
+      
     </View>
   );
 }
 
 HomeScreen.navigationOptions = {
-  header: null,
+  //header: null,
+  headerTitle: 'teste'
 };
 
 function DevelopmentModeNotice() {
@@ -286,3 +293,5 @@ const styles = StyleSheet.create({
     color: '#2e78b7',
   },
 });
+
+

@@ -3,7 +3,7 @@ import { Platform, StatusBar, StyleSheet, View, Button } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,DrawerActions  } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import BottomTabNavigator from './navigation/BottomTabNavigator';
@@ -57,43 +57,29 @@ export default function App(props) {
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
+          <Stack.Navigator 
+          
+          screenOptions={({navigation}) =>(
+            {
+              title: 'Restaurant Name',
+              headerStyle: {
+              backgroundColor: '#f4511e',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              headerRight: () => (
+                 
+                <Icon style={styles.menuIcon} name='menu' size={42} color='white'
+                onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
+                />
+              )
+            }
+          )}>
             {/* <Stack.Screen name="Root" component={BottomTabNavigator} /> */}
-            <Stack.Screen name="Home" component={HomeScreen, BottomTabNavigator, DrawerNavigator} 
-              //  options={{
-              //   title: 'Restaurant Name',
-              //   headerStyle: {
-              //     backgroundColor: '#f4511e',
-              //   },
-              //   headerTintColor: '#fff',
-              //   headerTitleStyle: {
-              //     fontWeight: 'bold',
-              //   },
-              //   headerRight: () => (
-                 
-              //     <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-              //     onPress={()=> navigation.openDrawer()}
-              //     />
-              //   ),
-              // }}
-
-              options={({ navigation, route }) => ({
-                title: 'Restaurant Name',
-                headerStyle: {
-                  backgroundColor: '#f4511e',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                },
-                headerRight: () => (
-                 
-                  <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-                  onPress={()=> navigation.opneDrawer()}
-                  />
-                ),
-              })}
-            />
+            <Stack.Screen name="Root" component={ DrawerNavigator} />
+           
 
           </Stack.Navigator>
         </NavigationContainer>
