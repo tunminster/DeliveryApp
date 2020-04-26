@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Button } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Button, Alert } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,8 @@ import HomeScreen from './screens/HomeScreen';
 import HelloScreen from './screens/HomeScreen';
 
 import { Icon } from 'react-native-elements';
-import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
+import { SignIn, CreateAccount, Splash, LoginRequest } from './screens/LoginScreen';
+import { AuthRequestLogin } from './components/AuthLoginComponent';
 import { AuthContext } from './constants/Context';
 
 const Stack = createStackNavigator();
@@ -28,11 +29,42 @@ export default function App(props) {
 
   const [isLoading, setIsLoading] = React.useState(true);  
   const [userToken, setUserToken] = React.useState(null);
+  const [jsonResult, setJsonResult] = React.useState(null);
   const authContext = React.useMemo(() => {
     return{
-      signIn: () => {
+      signIn: (email, password) => {
+        
+        //Alert.alert("enterd Sign in.");
+        //Alert.alert(" hello Value " + email + " and " + password);
+
         setIsLoading(false);
-        setUserToken("asdf");
+
+        
+       
+      //setUserToken(result.id);
+
+
+      AuthRequestLogin(email, password)
+        .then( (data) =>{
+          
+          const result = JSON.parse(data);
+          
+          
+          //Alert.alert("Token to set: ", result.auth_token);
+          setUserToken(result.auth_token);
+          Alert.alert("token set: " + userToken);
+        }).catch((error) => {
+          console.error(error);
+          setUserToken(null);
+        });
+        
+        
+       
+        
+        
+
+        //setUserToken("asdf");
+        
       },
       signUp: () => {
         setIsLoading(false);
@@ -121,7 +153,76 @@ export default function App(props) {
       
     );
   }
+
+
+
+
 }
+
+ async function GetMovies(){
+
+  // let response =  fetch("https://reactnative.dev/movies.json", {
+  //   method: 'GET',
+  //   headers:{
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //   }
+  // });
+  // let result =  response.json();
+  let response = await fetch('https://reactnative.dev/movies.json');
+    let json = await response.json();
+    return json.movies;
+
+  //return (result);
+
+}
+
+ async function RequestLogin(email, password){
+  //const [result, setResult] = React.useState(null);
+  let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/login", {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username: email,
+      password: password,
+    })
+  });
+
+  let result = await response.json();
+
+  return (result);
+
+ 
+  // fetch("https://delivery-api.harveynetwork.com/api/auth/login", {
+  //   method: 'POST',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     username: email,
+  //     password: password,
+  //   })
+  // })
+  // .then((response) => response.json())
+  // .then((responseJson) => {
+  //   Alert.alert("succeded from function");
+  //   Alert.alert("result" + responseJson);
+
+  //   //setResult(responseJson);
+    
+  //   return "yes";
+    
+  // })
+  // .catch((error) => {
+  //   Alert.alert("error ocurred");
+  //   console.error(error);
+  //   return "error";
+  // });
+};
 
 const styles = StyleSheet.create({
   container: {

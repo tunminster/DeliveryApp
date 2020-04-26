@@ -1,8 +1,9 @@
 
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert } from "react-native";
 
 import { AuthContext } from '../constants/Context';
+import { UserInterfaceIdiom } from 'expo-constants';
 
 export const SignIn = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext);
@@ -32,7 +33,7 @@ export const SignIn = ({navigation}) => {
                   <Text style={loginstyles.forgot}>Forgot Password?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={loginstyles.loginBtn} 
-                  onPress={() => signIn()}
+                  onPress={() => signIn(email.email, password.password)}
                   >
                   <Text style={loginstyles.loginText}>LOGIN</Text>
                 </TouchableOpacity>
@@ -46,6 +47,36 @@ export const SignIn = ({navigation}) => {
             
     );
 
+};
+
+
+
+export const LoginRequest = (email, password) => {
+  
+  //Alert.alert("calling the api" + email + " and " + password);
+  fetch("https://delivery-api.harveynetwork.com/api/auth/login", {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username: email,
+      password: password,
+    })
+  })
+  .then((response) => response.json())
+  .then((responseJson) => {
+    Alert.alert("succeded");
+    Alert.alert("result" + responseJson);
+    
+    return responseJson;
+    
+  })
+  .catch((error) => {
+    Alert.alert("error ocurred");
+    console.error(error);
+  });
 };
 
 export const CreateAccount = () => {
