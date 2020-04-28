@@ -9,10 +9,11 @@ export const SignIn = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext);
     const [email, setEmail] = React.useState("");
     const [password,setPassword] = React.useState("");
+    const [confirmPassword, setConfirmPassword] = React.useState("");
     return(
         
             <View style={loginstyles.container}>
-                <Text style={loginstyles.logo}>My Restaurant</Text>
+                <Text style={loginstyles.header}>Login</Text>
                 <View style={loginstyles.inputView}>
                    <TextInput 
                       style={loginstyles.inputText}
@@ -49,46 +50,87 @@ export const SignIn = ({navigation}) => {
 
 };
 
-
-
-export const LoginRequest = (email, password) => {
-  
-  //Alert.alert("calling the api" + email + " and " + password);
-  fetch("https://delivery-api.harveynetwork.com/api/auth/login", {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      username: email,
-      password: password,
-    })
-  })
-  .then((response) => response.json())
-  .then((responseJson) => {
-    Alert.alert("succeded");
-    Alert.alert("result" + responseJson);
-    
-    return responseJson;
-    
-  })
-  .catch((error) => {
-    Alert.alert("error ocurred");
-    console.error(error);
-  });
-};
-
-export const CreateAccount = () => {
+export const CreateAccount = ({navigation}) => {
     const { signUp} = React.useContext(AuthContext);
+    const [email, setEmail] = React.useState("");
+    const [password,setPassword] = React.useState("");
+    const [confirmPassword,setConfirmPassword] = React.useState("");
+    const [emailError,setEmailError] = React.useState("");
+    const [passwordError,setPasswordError] = React.useState("");
+
+    const register = () => {
+      
+      if(email.email == null){
+        setEmailError("Enter a valid email.");
+      }
+
+      if(password.password == null){
+        setPasswordError("Enter a valid password");
+      }
+      else if(confirmPassword.confirmPassword != password.password){
+        setPasswordError("confirm password is not match.");
+      }
+
+      if(email.email != null && password.password != null){
+        Alert.alert("Enter the signup.");
+        signUp(email.email, password.password);
+      }
+    }
+
 
     return (
-        <ScreenContainer>
-            <Text> Create Account Screen</Text>
-            <Button title="Sign Up" onPress={ () => signUp()} />
-        </ScreenContainer>
+      <View style={loginstyles.container}>
+          <Text style={loginstyles.header}>Create Account</Text>
+          <Text style={loginstyles.loginError}>{emailError}</Text>
+          <Text style={loginstyles.loginError}>{passwordError}</Text>
+          <View style={loginstyles.inputView}>
+            <TextInput 
+                style={loginstyles.inputText}
+                placeholder="Email..."
+                placeholderTextColor="#003f5c"
+                onChangeText={text => setEmail({email:text})}
+                />
+            
+          </View>
+          <View style={loginstyles.inputView} >
+            <TextInput  
+              secureTextEntry
+              style={loginstyles.inputText}
+              placeholder="Password..." 
+              placeholderTextColor="#003f5c"
+              error={passwordError}
+              onChangeText={text => setPassword({password:text})}/>
+          </View>
+          <View style={loginstyles.inputView} >
+            <TextInput  
+              secureTextEntry
+              style={loginstyles.inputText}
+              placeholder="Confirm Password..." 
+              placeholderTextColor="#003f5c"
+              onChangeText={text => setConfirmPassword({confirmpassword:text})}/>
+          </View>
+          
+          <TouchableOpacity style={loginstyles.loginBtn} 
+            onPress={() => register()}
+            >
+            <Text style={loginstyles.loginText}>Sign Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => navigation.push("SignIn")}
+            >
+            <Text style={loginstyles.loginText}>SignIn</Text>
+          </TouchableOpacity>
+         
+
+      </View>
+        
     );
+
+    
 };
+
+
+
 
 export const Splash = () => (
     <ScreenContainer>
@@ -136,6 +178,11 @@ export const Splash = () => (
       alignItems: 'center',
       justifyContent: 'center',
     },
+    header:{
+      fontSize:35,
+      color:"#fb5b5a",
+      marginBottom:40
+    },
     logo:{
       fontWeight:"bold",
       fontSize:50,
@@ -171,5 +218,9 @@ export const Splash = () => (
     },
     loginText:{
       color:"white"
+    },
+    loginError:{
+      color: "red",
+      marginBottom:10
     }
   });
