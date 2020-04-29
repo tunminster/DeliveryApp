@@ -67,13 +67,13 @@ export const CreateAccount = ({navigation}) => {
       if(password.password == null){
         setPasswordError("Enter a valid password");
       }
-      else if(confirmPassword.confirmPassword != password.password){
+      else if(confirmPassword.confirmpassword != password.password){
         setPasswordError("confirm password is not match.");
       }
 
-      if(email.email != null && password.password != null){
-        Alert.alert("Enter the signup.");
-        signUp(email.email, password.password);
+      else if(email.email != null && password.password != null){
+       
+        signUp(email.email, password.password, confirmPassword.confirmpassword);
       }
     }
 

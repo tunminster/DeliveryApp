@@ -7,12 +7,10 @@ import { NavigationContainer,DrawerActions  } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import DrawerNavigator from './navigation/DrawerNavigator';
 import useLinking from './navigation/useLinking';
-import HomeScreen from './screens/HomeScreen';
-import HelloScreen from './screens/HomeScreen';
-
 import { Icon } from 'react-native-elements';
-import { SignIn, CreateAccount, Splash, LoginRequest } from './screens/LoginScreen';
+import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
 import { AuthRequestLogin } from './components/AuthLoginComponent';
+import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
 
 const Stack = createStackNavigator();
@@ -37,20 +35,37 @@ export default function App(props) {
 
       AuthRequestLogin(email, password)
         .then( (data) =>{
-          
+          Alert.alert("received call");
           const result = JSON.parse(data);
-          
-
           setUserToken(result.auth_token);
-          
         }).catch((error) => {
           console.error(error);
           setUserToken(null);
         });
    
       },
-      signUp: () => {
+      signUp: (email, password,confirmpassword) => {
         setIsLoading(false);
+
+        CreateAccountComponent(email, password, confirmpassword)
+          .then( (data) => {
+            const result = JSON.stringify(data);
+            Alert.alert(result.toString());
+            if (result.toUpperCase() == '"Account created"'.toUpperCase()){
+              Alert.alert("going into the SignIn");
+              // ToDo: it is not working. 
+              signIn(email,password);
+
+            }
+            else{
+              Alert.alert("what?");
+            }
+            
+          });
+
+        
+        
+
         //setUserToken("asdf");
       },
       signOut: () => {
