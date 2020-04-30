@@ -33,15 +33,7 @@ export default function App(props) {
        
       setIsLoading(false);
 
-      AuthRequestLogin(email, password)
-        .then( (data) =>{
-          Alert.alert("received call");
-          const result = JSON.parse(data);
-          setUserToken(result.auth_token);
-        }).catch((error) => {
-          console.error(error);
-          setUserToken(null);
-        });
+      loginRequest(email, password);
    
       },
       signUp: (email, password,confirmpassword) => {
@@ -52,21 +44,16 @@ export default function App(props) {
             const result = JSON.stringify(data);
             Alert.alert(result.toString());
             if (result.toUpperCase() == '"Account created"'.toUpperCase()){
-              Alert.alert("going into the SignIn");
-              // ToDo: it is not working. 
-              signIn(email,password);
+             
+              loginRequest(email, password);
 
             }
             else{
-              Alert.alert("what?");
+              Alert.alert("Please try to create account again.");
             }
             
           });
 
-        
-        
-
-        //setUserToken("asdf");
       },
       signOut: () => {
         setIsLoading(false);
@@ -106,6 +93,18 @@ export default function App(props) {
 
   }, []);
 
+  function loginRequest(email, password){
+    AuthRequestLogin(email, password)
+        .then( (data) =>{
+          Alert.alert("received call");
+          const result = JSON.parse(data);
+          setUserToken(result.auth_token);
+        }).catch((error) => {
+          console.error(error);
+          setUserToken(null);
+        });
+  };
+
   if(isLoading) {
     return <Splash />;
   }
@@ -119,31 +118,7 @@ export default function App(props) {
           <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-            {/* <Stack.Navigator 
             
-            screenOptions={({navigation}) =>(
-              {
-                title: 'Restaurant Name',
-                headerStyle: {
-                backgroundColor: '#f4511e',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                },
-                headerRight: () => (
-                  
-                  <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-                  onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
-                  />
-                )
-              }
-            )}>
-              
-              <Stack.Screen name="Root" component={  DrawerNavigator} />
-            
-
-            </Stack.Navigator> */}
             <RootStackScreen userToken={userToken} state={state} />
           </NavigationContainer>
         </View>
@@ -151,6 +126,8 @@ export default function App(props) {
       
     );
   }
+
+  
 
 }
 
