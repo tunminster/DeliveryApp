@@ -12,6 +12,7 @@ import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
 import { AuthRequestLogin } from './components/AuthLoginComponent';
 import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
+import {storeData, retrieveData} from './components/AuthKeyStorageComponent';
 
 const Stack = createStackNavigator();
 state={
@@ -27,6 +28,8 @@ export default function App(props) {
 
   const [isLoading, setIsLoading] = React.useState(true);  
   const [userToken, setUserToken] = React.useState(null);
+ 
+
   const authContext = React.useMemo(() => {
     return{
       signIn: (email, password) => {
@@ -34,6 +37,8 @@ export default function App(props) {
       setIsLoading(false);
 
       loginRequest(email, password);
+
+      
    
       },
       signUp: (email, password,confirmpassword) => {
@@ -42,7 +47,7 @@ export default function App(props) {
         CreateAccountComponent(email, password, confirmpassword)
           .then( (data) => {
             const result = JSON.stringify(data);
-            Alert.alert(result.toString());
+            //Alert.alert(result.toString());
             if (result.toUpperCase() == '"Account created"'.toUpperCase()){
              
               loginRequest(email, password);
@@ -94,11 +99,20 @@ export default function App(props) {
   }, []);
 
   function loginRequest(email, password){
+    var STORAGE_KEY = 'id_token';
     AuthRequestLogin(email, password)
         .then( (data) =>{
-          Alert.alert("received call");
+          //Alert.alert("received call");
           const result = JSON.parse(data);
           setUserToken(result.auth_token);
+
+          
+          storeData(STORAGE_KEY, userToken)
+            .then((data) =>{
+              const result = JSON.stringify(data);
+              
+            });
+
         }).catch((error) => {
           console.error(error);
           setUserToken(null);
@@ -158,7 +172,7 @@ const RootStackScreen = ({ userToken}) => (
      {
        userToken ?(
         <RootStack.Screen name="App" component={DrawerNavigator} 
-          options={({navigation}) => (
+          options={({navigation, userToken}) => (
             {
               title: 'Restaurant Name',
               headerStyle: {

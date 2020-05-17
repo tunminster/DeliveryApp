@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabNavigator from './BottomTabNavigator';
 import {Profile} from '../screens/LoginScreen';
+import { MenuScreen} from '../screens/MenuScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -31,6 +32,7 @@ export default function DrawerNavigator({ navigation, route }) {
         component={LinksScreen}
       />
       <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="Menu" component={MenuScreen} />
 
     </Drawer.Navigator>
   );
