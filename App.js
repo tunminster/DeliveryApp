@@ -107,7 +107,8 @@ export default function App(props) {
           setUserToken(result.auth_token);
 
           
-          storeData(STORAGE_KEY, userToken)
+          
+          storeData(STORAGE_KEY, result.auth_token)
             .then((data) =>{
               const result = JSON.stringify(data);
               

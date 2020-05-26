@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, AsyncStorage } from "react-native";
 import { AuthContext } from '../constants/Context';
 import {storeData, retrieveData} from '../components/AuthKeyStorageComponent';
+import { GetCategoryByParentId } from '../components/GetCategoryListComponent'
 
 export const MenuScreen = ({ navigation }) => {
     const { signOut } = React.useContext(AuthContext);
@@ -12,11 +13,15 @@ export const MenuScreen = ({ navigation }) => {
     //   const result = JSON.stringify(data);
     //   alert (result);
     // });
-
+    alert("api call started.");
     retrieveData(STORAGE_KEY)
     .then((data) => {
-      const result = data;
-      alert (result);
+     
+      GetCategoryByParentId(0, data)
+      .then((result) => {
+        alert("The result is " + result);
+      });
+      
 
     });
     
