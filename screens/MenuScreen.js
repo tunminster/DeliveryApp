@@ -3,9 +3,19 @@ import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, Asy
 import { AuthContext } from '../constants/Context';
 import {storeData, retrieveData} from '../components/AuthKeyStorageComponent';
 import { GetCategoryByParentId } from '../components/GetCategoryListComponent'
+import { FlatList } from 'react-native-gesture-handler';
+import sharedStyles from '../utils/sharedStyles';
+import Loading from '../components/loading';
+
 
 export const MenuScreen = ({ navigation }) => {
     const { signOut } = React.useContext(AuthContext);
+    const  [getCategories, setCategories] = React.useState([]);
+    const [getLoading, setLoading] = React. useState(true);
+    state = {
+      categories: [],
+      loading: true
+    };
     var STORAGE_KEY = 'id_token';
 
     // storeData(STORAGE_KEY, "Hello Saved")
@@ -13,28 +23,88 @@ export const MenuScreen = ({ navigation }) => {
     //   const result = JSON.stringify(data);
     //   alert (result);
     // });
-    alert("api call started.");
-    retrieveData(STORAGE_KEY)
-    .then((data) => {
-     
-      GetCategoryByParentId(0, data)
-      .then((result) => {
-        alert("The result is " + result);
-      });
-      
-
-    });
     
+    React.useEffect(() =>{
+      retrieveData(STORAGE_KEY)
+        .then((data) => {
+        
+          GetCategoryByParentId(0, data)
+          .then((result) => {
+            setCategories(result);
+            setLoading(false);
+          });
+          
 
+        });
+
+    }, []);
+    
+    
+    //alert(" out put is: " + getCategories.length);
     // ToDo top categories menu
     return (
       <ScreenContainer>
-        <Text>Menu Screen </Text>
-        <Button title="Drawer" onPress={() => navigation.toggleDrawer()} />
-        <Button title="Sign Out" onPress={() => signOut()} />
+      {
+        getLoading ?
+        <Loading />
+        :
+        <React.Fragment>
+          <Text style={styles.headertext}>Menu</Text>
+          <FlatList data={getCategories}
+            keyExtractor={(item, index) => index.toString()} 
+            renderItem={({item}) => 
+            <TouchableOpacity style={styles.li} onPress={() => navigation.navigate('Products', {categoryId: item.id})}>
+              <Text style={sharedStyles.txt}>{item.categoryName}</Text>
+          </TouchableOpacity>
+          }
+          />
+        </React.Fragment>
+      }
+
       </ScreenContainer>
+
+    
     );
   };  
+
+// class MenuScreen extends React.Component{
+//   state = {
+//     categories: []
+//   };
+
+//   componentDidMount(){
+//     var STORAGE_KEY = 'id_token';
+
+       
+//         retrieveData(STORAGE_KEY)
+//         .then((data) => {
+         
+//           GetCategoryByParentId(0, data)
+//           .then((result) => {
+//             this.setState({categories: result});
+//             })
+//           });
+//   }
+
+//   render(){
+//     <ScreenContainer>
+//       <Text>MenuScreen</Text>
+//       <FlatList
+//           data={this.state.categories}
+//           keyExtractor={(item, index) => index.toString()}
+//           renderItem={({item}) =>
+//               <TouchableOpacity  onPress={() => this.props.navigation.navigate('CategoryDetail', {categoryId: item.Id})}>
+//                   <Text >{item.CategoryName}</Text>
+//               </TouchableOpacity>
+//           }
+//       />
+
+//     </ScreenContainer>
+//   }
+
+// }
+
+// export default MenuScreen;
 
 
   
@@ -50,13 +120,28 @@ export const MenuScreen = ({ navigation }) => {
     container: {
       flex: 1,
       justifyContent: "center",
-      alignItems: "center"
+      //alignItems: "center"
     },
     button: {
       paddingHorizontal: 20,
       paddingVertical: 10,
       marginVertical: 10,
       borderRadius: 5
+    },
+    li: {
+      flex: 1,
+      height: 55,
+      backgroundColor: '#fff',
+      borderBottomWidth: 1,
+      borderColor: 'rgba(0,0,0,0.3)',
+      justifyContent: 'center',
+      paddingLeft: 10
+    },
+    headertext:{
+      fontWeight: "bold",
+      fontSize:30,
+      textAlign: "center",
+      marginBottom:10
     }
   });
 

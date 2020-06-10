@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, View } from 'react-native';
+import { Button, View, StyleSheet} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
@@ -9,10 +9,24 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabNavigator from './BottomTabNavigator';
 import {Profile} from '../screens/LoginScreen';
 import { MenuScreen} from '../screens/MenuScreen';
+import ProductScreen from '../screens/Products';
+import Store from '../config/store';
+import { Icon } from 'react-native-elements';
 
 
 const Drawer = createDrawerNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
+
+// const ProductStack = createStackNavigator();
+//   const ProductStackScreen = () => (
+//     <ProductStack.Navigator headerMode="none">
+//       <ProductStack.Screen name="Menu" component= {MenuScreen} />
+//       <ProductStack.Screen name="Products" component={ProductScreen} 
+//         options={({navigation, userToken}) => (
+//           {headerMode: 'screen'}
+//         )}/>
+//     </ProductStack.Navigator>
+//   );
 
 export default function DrawerNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -20,20 +34,26 @@ export default function DrawerNavigator({ navigation, route }) {
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
+  
+
   return (
-    <Drawer.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+    <Drawer.Navigator initialRouteName={INITIAL_ROUTE_NAME} 
+    
+    >
       <Drawer.Screen
         name="Home"
         component={BottomTabNavigator}
-        
+       
       />
       <Drawer.Screen
         name="Links"
         component={LinksScreen}
       />
       <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen name="Menu" component={MenuScreen} />
-
+      <Drawer.Screen name="Menu" component={MenuScreen} 
+        
+      />
+      {/* <Drawer.Screen name="Products" component={ProductScreen} /> */}
     </Drawer.Navigator>
   );
 }
@@ -49,5 +69,14 @@ function getHeaderTitle(route) {
   }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  menuIcon:{
+    paddingRight:5
+  },
+});
 
 

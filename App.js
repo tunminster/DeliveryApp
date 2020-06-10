@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Button, Alert } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Button, Alert, TouchableOpacity, Image, Text} from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,6 +13,12 @@ import { AuthRequestLogin } from './components/AuthLoginComponent';
 import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
 import {storeData, retrieveData} from './components/AuthKeyStorageComponent';
+import {HeaderRight} from './components/header/index';
+import Store from './config/store';
+import vars from './utils/vars';
+import ProductScreen from './screens/Products';
+import Cart from './screens/Cart';
+import Loading from './components/loading';
 
 const Stack = createStackNavigator();
 state={
@@ -28,18 +34,16 @@ export default function App(props) {
 
   const [isLoading, setIsLoading] = React.useState(true);  
   const [userToken, setUserToken] = React.useState(null);
+
  
 
   const authContext = React.useMemo(() => {
     return{
       signIn: (email, password) => {
-       
-      setIsLoading(false);
-
+  
       loginRequest(email, password);
-
+      setIsLoading(false);
       
-   
       },
       signUp: (email, password,confirmpassword) => {
         setIsLoading(false);
@@ -114,6 +118,8 @@ export default function App(props) {
               
             });
 
+            setIsLoading(false);  
+
         }).catch((error) => {
           console.error(error);
           setUserToken(null);
@@ -167,13 +173,12 @@ const AuthStackScreen = () => (
   </AuthStack.Navigator>
 );
 
-const RootStack = createStackNavigator();
-const RootStackScreen = ({ userToken}) => (
-  <RootStack.Navigator>
-     {
-       userToken ?(
-        <RootStack.Screen name="App" component={DrawerNavigator} 
-          options={({navigation, userToken}) => (
+const PageStack = createStackNavigator();
+const PageScreen = () => (
+  <PageStack.Navigator headerMode="screen"
+    >
+      <PageStack.Screen name="Page" component={DrawerNavigator}  
+      options={({navigation, userToken}) => (
             {
               title: 'Restaurant Name',
               headerStyle: {
@@ -183,13 +188,90 @@ const RootStackScreen = ({ userToken}) => (
               headerTitleStyle: {
                 fontWeight: 'bold',
               },
-              headerRight: () => (
+              headerLeft: () => (
                   <Icon style={styles.menuIcon} name='menu' size={42} color='white'
                     onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
                     />
+              ),
+              headerRight: () => (
+                <TouchableOpacity style={{paddingRight: 15, position: 'relative'}} onPress={() => navigation.navigate('Cart')} >
+                  <Image source={require('./assets/images/cart-icon-white.png')} style={{width: 29, height: 32, resizeMode: 'contain'}} />
+                  <View style={{width: 20, height: 20, borderRadius: 10, position: 'absolute', backgroundColor: '#fff', bottom: -7, right: 7, justifyContent: 'center'}}>
+                      <Text style={{color: '#000', textAlign: 'center', fontSize: 10}}>{Store.cartCount}</Text>
+                  </View>
+              </TouchableOpacity>
               )
+              
+
+              
             }
+          )} />
+      <PageStack.Screen name="Products" component={ProductScreen} options={({navigation, userToken}) => (
+            {
+              headerMode: 'screen',
+              title: 'Product Details',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff'
+            }
+          )} />   
+
+       <PageStack.Screen name="Cart" 
+          component={Cart} 
+          options={({navigation}) =>(
+            {
+              headerMode: 'screen',
+              title: 'Checkout',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff'
+            }
+
           )}
+        />   
+
+  </PageStack.Navigator>
+);
+
+const RootStack = createStackNavigator();
+const RootStackScreen = ({ userToken}) => (
+  <RootStack.Navigator>
+     {
+       userToken ?(
+        <RootStack.Screen name="App" component={PageScreen} 
+         options={({navigation}) => (
+           {headerShown: false}
+         )}
+        
+          // options={({navigation, userToken}) => (
+          //   {
+          //     title: 'Restaurant Name',
+          //     headerStyle: {
+          //     backgroundColor: '#f4511e',
+          //     },
+          //     headerTintColor: '#fff',
+          //     headerTitleStyle: {
+          //       fontWeight: 'bold',
+          //     },
+          //     headerLeft: () => (
+          //         <Icon style={styles.menuIcon} name='menu' size={42} color='white'
+          //           onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
+          //           />
+          //     ),
+          //     headerRight: () => (
+          //       <TouchableOpacity style={{paddingRight: 15, position: 'relative'}} onPress={() => this.props.navigation.navigate('Cart')} >
+          //         <Image source={require('./assets/images/cart-icon-white.png')} style={{width: 29, height: 32, resizeMode: 'contain'}} />
+          //         <View style={{width: 20, height: 20, borderRadius: 10, position: 'absolute', backgroundColor: '#fff', bottom: -7, right: 7, justifyContent: 'center'}}>
+          //             <Text style={{color: '#000', textAlign: 'center', fontSize: 10}}>{Store.cartCount}</Text>
+          //         </View>
+          //     </TouchableOpacity>
+          //     )
+
+              
+          //   }
+          // )}
          />
        ) : (
         <RootStack.Screen name="Auth" component= {AuthStackScreen} 

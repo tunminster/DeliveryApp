@@ -21,31 +21,4 @@ export async function AuthRequestLogin(email, password){
   
     return (result);
   
-   
-    // fetch("https://delivery-api.harveynetwork.com/api/auth/login", {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     username: email,
-    //     password: password,
-    //   })
-    // })
-    // .then((response) => response.json())
-    // .then((responseJson) => {
-    //   Alert.alert("succeded from function");
-    //   Alert.alert("result" + responseJson);
-  
-    //   //setResult(responseJson);
-      
-    //   return "yes";
-      
-    // })
-    // .catch((error) => {
-    //   Alert.alert("error ocurred");
-    //   console.error(error);
-    //   return "error";
-    // });
   };
