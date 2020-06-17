@@ -1,6 +1,5 @@
-
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
@@ -10,6 +9,16 @@ export const SignIn = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password,setPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
+    const [isLoading, setLoading] = React.useState({loading: false});
+    
+
+    doSignIn = async () => {
+      
+      setLoading({loading: true});
+      signIn(email.email, password.password);
+      //setLoading({loading: false});
+    };
+
     return(
         
             <View style={loginstyles.container}>
@@ -34,10 +43,13 @@ export const SignIn = ({navigation}) => {
                   <Text style={loginstyles.forgot}>Forgot Password?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={loginstyles.loginBtn} 
-                  onPress={() => signIn(email.email, password.password)}
+                  onPress={() => doSignIn() }
                   >
                   <Text style={loginstyles.loginText}>LOGIN</Text>
                 </TouchableOpacity>
+                <View style={{ position: 'absolute', top:"50%",right: 0, left: 0 }}>
+                  <ActivityIndicator animating={isLoading.loading} />
+                </View>
                 <TouchableOpacity 
                   onPress={() => navigation.push("CreateAccount")}
                   >

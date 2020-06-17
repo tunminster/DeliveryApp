@@ -1,9 +1,21 @@
-import vars from "../../utils/vars";
+import vars from '../../utils/vars';
 
 export default {
     container: {
         backgroundColor: vars.bgColor,
         flex: 1
+    },
+    head: {
+        backgroundColor: vars.baseColor,
+        height: 190,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    name: {
+        color: '#fff',
+        fontSize: 23,
+        marginTop: 15,
+        fontFamily: vars.bold
     },
     btnContainer: {
         height: 130,

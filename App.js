@@ -12,13 +12,16 @@ import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
 import { AuthRequestLogin } from './components/AuthLoginComponent';
 import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
-import {storeData, retrieveData} from './components/AuthKeyStorageComponent';
-import {HeaderRight} from './components/header/index';
+import {storeData, retrieveData, storeUser} from './components/AuthKeyStorageComponent';
 import Store from './config/store';
 import vars from './utils/vars';
 import ProductScreen from './screens/Products';
+import PaymentType from './screens/PaymentType';
 import Cart from './screens/Cart';
 import Loading from './components/loading';
+import AddressDetail from './screens/AddressDetail';
+import Payment from './screens/Payment';
+import PaymentSuccess from './screens/PaymentSuccess';
 
 const Stack = createStackNavigator();
 state={
@@ -41,17 +44,15 @@ export default function App(props) {
     return{
       signIn: (email, password) => {
   
-      loginRequest(email, password);
-      setIsLoading(false);
-      
+        loginRequest(email, password);
+       
       },
       signUp: (email, password,confirmpassword) => {
-        setIsLoading(false);
+        
 
         CreateAccountComponent(email, password, confirmpassword)
           .then( (data) => {
             const result = JSON.stringify(data);
-            //Alert.alert(result.toString());
             if (result.toUpperCase() == '"Account created"'.toUpperCase()){
              
               loginRequest(email, password);
@@ -65,7 +66,7 @@ export default function App(props) {
 
       },
       signOut: () => {
-        setIsLoading(false);
+        
         setUserToken(null);
       }
     }
@@ -111,11 +112,16 @@ export default function App(props) {
           setUserToken(result.auth_token);
 
           
-          
+          //store token
           storeData(STORAGE_KEY, result.auth_token)
             .then((data) =>{
               const result = JSON.stringify(data);
               
+            });
+          
+          //store user  
+          storeUser(result.auth_token).then((data) => {
+              console.log("user stored " + data);
             });
 
             setIsLoading(false);  
@@ -147,11 +153,7 @@ export default function App(props) {
       
     );
   }
-
-  
-
 }
-
 
 
 const styles = StyleSheet.create({
@@ -231,6 +233,66 @@ const PageScreen = () => (
 
           )}
         />   
+
+        <PageStack.Screen name="PaymentType" 
+          component={PaymentType} 
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'PaymentType',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff',
+              headerBackTitle: 'Back'
+            }
+          )}
+        />
+
+        <PageStack.Screen name="Payment" 
+          component={Payment}
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'Payment',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff',
+              headerBackTitle: 'Back'
+            }
+          )}  
+        />
+
+        <PageStack.Screen name="PaymentSuccess" 
+                  component={PaymentSuccess}
+                  options={({navigation}) => (
+                    {
+                      headerMode: 'screen',
+                      title: 'Payment Success',
+                      headerStyle: {
+                        backgroundColor: '#f4511e'
+                      },
+                      headerTintColor: '#fff',
+                      headerBackTitle: 'Back'
+                    }
+                  )}  
+                />
+
+        <PageStack.Screen name="AddressDetail" 
+          component={AddressDetail}
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'Address Detail',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff'
+            }
+          )}
+        />
+
 
   </PageStack.Navigator>
 );

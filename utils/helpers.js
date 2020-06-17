@@ -4,6 +4,55 @@ import Store from '../config/store';
 import Api from '../config/api';
 import vars from './vars';
 import sharedStyles from './sharedStyles';
+import AuthStore from '../config/store/auth';
+import {retrieveData} from '../components/AuthKeyStorageComponent';
+
+
+export function logout() {
+    AuthStore.setIsLogin(false);
+    if (Store.currentRoute === 'Home')
+        NavigationService.closeDrawer();
+    else
+        NavigationService.navigate('Home');
+    setTimeout(() => AuthStore.setUser({}), 1000);
+    AsyncStorage.removeItem('token');
+}
+
+export function post(url, data, success, error) {
+    console.log({userId: AuthStore.user.id, ...data});
+    var STORAGE_KEY = 'id_token';
+    retrieveData(STORAGE_KEY)
+    .then((responseData) => {
+        const config = {
+            headers: { Authorization: 'Bearer ' + responseData}
+        };
+        
+        Api.post(url, {userId: AuthStore.user.id, ...data}, config)
+        .then(res => success(res))
+        .catch(err => {
+            error && error(err);
+            console.log(err);
+        });
+
+        // Api.post(url, {userId: AuthStore.user.id, ...data}, config)
+        // .then(res => success(res))
+        // .catch(err => {
+        //     error && error(err);
+        //     console.log(err);
+        // });
+    });
+    
+}
+
+export function get(url, success, error) {
+    const u = url + '/' + AuthStore.user.id;
+    Api.get(u)
+        .then(res => success(res))
+        .catch(err => {
+            error && error(err);
+            console.log(err);
+        });
+}
 
 export function searchFilter(data, filterTxt) {
     if (filterTxt !== '')

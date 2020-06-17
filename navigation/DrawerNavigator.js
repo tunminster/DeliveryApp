@@ -12,6 +12,7 @@ import { MenuScreen} from '../screens/MenuScreen';
 import ProductScreen from '../screens/Products';
 import Store from '../config/store';
 import { Icon } from 'react-native-elements';
+import ProfileNavigatorScreens from './profileNavigator';
 
 
 const Drawer = createDrawerNavigator();
@@ -45,14 +46,18 @@ export default function DrawerNavigator({ navigation, route }) {
         component={BottomTabNavigator}
        
       />
-      <Drawer.Screen
+
+      <Drawer.Screen name="Menu" component={MenuScreen} />
+
+      {/* <Drawer.Screen
         name="Links"
         component={LinksScreen}
-      />
-      <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen name="Menu" component={MenuScreen} 
+      /> */}
+
+      <Drawer.Screen name="Profile" component={ProfileNavigatorScreens} />
+      
         
-      />
+      
       {/* <Drawer.Screen name="Products" component={ProductScreen} /> */}
     </Drawer.Navigator>
   );
@@ -64,8 +69,9 @@ function getHeaderTitle(route) {
   switch (routeName) {
     case 'Home':
         return 'Restaurant Name';
-    case 'Links':
-      return 'Links to learn more';
+    case 'Profile':
+        return 'My Profile';
+    
   }
 }
 
