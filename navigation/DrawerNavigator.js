@@ -13,6 +13,7 @@ import ProductScreen from '../screens/Products';
 import Store from '../config/store';
 import { Icon } from 'react-native-elements';
 import ProfileNavigatorScreens from './profileNavigator';
+import Account from '../screens/Account';
 
 
 const Drawer = createDrawerNavigator();
@@ -54,7 +55,7 @@ export default function DrawerNavigator({ navigation, route }) {
         component={LinksScreen}
       /> */}
 
-      <Drawer.Screen name="Profile" component={ProfileNavigatorScreens} />
+      <Drawer.Screen name="Profile" component={Account} />
       
         
       

@@ -22,6 +22,10 @@ import Loading from './components/loading';
 import AddressDetail from './screens/AddressDetail';
 import Payment from './screens/Payment';
 import PaymentSuccess from './screens/PaymentSuccess';
+import ProfileNavigatorScreens from './navigation/profileNavigator';
+import Orders from './screens/Orders';
+import OrderDetail from './screens/OrderDetail';
+import Support from './screens/Support';
 
 const Stack = createStackNavigator();
 state={
@@ -279,6 +283,9 @@ const PageScreen = () => (
                   )}  
                 />
 
+
+        <PageStack.Screen name="MyProfile" component={ProfileNavigatorScreens} />
+
         <PageStack.Screen name="AddressDetail" 
           component={AddressDetail}
           options={({navigation}) => (
@@ -288,7 +295,50 @@ const PageScreen = () => (
               headerStyle: {
                 backgroundColor: '#f4511e'
               },
-              headerTintColor: '#fff'
+              headerTintColor: '#fff',
+              headerBackTitle: ''
+            }
+          )}
+        />
+
+        <PageStack.Screen name="Orders" component={Orders} 
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'Orders',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff',
+              headerBackTitle: ''
+            }
+          )}
+        />
+
+        <PageStack.Screen name="OrderDetail" component={OrderDetail} 
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'OrderDetail',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff',
+              headerBackTitle: ''
+            }
+          )}
+        />
+
+      <PageStack.Screen name="Support" component={Support} 
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'Report Problem',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff',
+              headerBackTitle: ''
             }
           )}
         />
