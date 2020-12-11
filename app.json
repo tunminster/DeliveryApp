@@ -23,6 +23,8 @@
       "**/*"
     ],
     "ios": {
+      "buildNumber": "2",
+      "bundleIdentifier": "com.deliveryapp.app",
       "supportsTablet": true
     },
     "description": ""
