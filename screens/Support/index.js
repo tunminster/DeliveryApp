@@ -4,7 +4,7 @@ import styles from './styles';
 import sharedStyles from '../../utils/sharedStyles';
 import {BackIcon, Button, Input} from "../../components";
 import {post} from "../../utils/helpers";
-import { Dropdown } from 'react-native-material-dropdown';
+import { Dropdown } from 'react-native-material-dropdown-v2';
 import moment from 'moment';
 import PhoneInput from 'react-native-phone-input';
 import { Icon } from 'react-native-elements';
