@@ -91,6 +91,10 @@ export default function App(props) {
         await Font.loadAsync({
           ...Ionicons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'SFProText': require('./assets/fonts/FontsFree-Net-SFProText-Semibold.ttf'),
+          'Roboto-Regular':require('./assets/fonts/Roboto-Regular.ttf'),
+          'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
+          'Roboto-Bold': require('./assets/fonts/Roboto-Bold.ttf'),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
@@ -388,18 +392,18 @@ const RootStackScreen = ({ userToken}) => (
          />
        ) : (
         <RootStack.Screen name="Auth" component= {AuthStackScreen} 
-        options={({navigation}) => (
-          {
-            title: 'Restaurant Name',
-            headerStyle: {
-            backgroundColor: '#f4511e',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
+        options={({navigation}) => ({headerShown: false}
+          // {
+          //   title: 'Restaurant Name',
+          //   headerStyle: {
+          //   backgroundColor: '#f4511e',
+          //   },
+          //   headerTintColor: '#fff',
+          //   headerTitleStyle: {
+          //     fontWeight: 'bold',
+          //   },
             
-          }
+          // }
         )}
         />
        )
