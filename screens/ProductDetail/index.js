@@ -6,6 +6,7 @@ import { BackIcon, Button, Loading } from '../../components';
 import Store from '../../config/store';
 import Api from '../../config/api';
 import {fixImgPath, getDiscountPrice, renderStar} from '../../utils/helpers';
+var uuid = require('react-native-uuid');
 
 class ProductDetail extends Component {
     static navigationOptions = ({navigation}) => ({
@@ -21,7 +22,12 @@ class ProductDetail extends Component {
 
     componentDidMount() {
         const id = this.props.navigation.getParam('id');
-        Api.get('/product/getById' + id).then(res => {
+            let guid = uuid.v1();
+            console.log('uuid.....Productdetails', guid)
+            const config = {
+                headers: {'Requested-Id': guid}
+            };  
+        Api.get('/product/getById' + id, config).then(res => {
             this.setState({data: res, loading: false});
         });
     }

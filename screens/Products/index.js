@@ -12,7 +12,7 @@ import Api from '../../config/api';
 import { searchFilter } from "../../utils/helpers";
 import styles from './styles';
 import Loading from '../../components/loading';
-
+var uuid = require('react-native-uuid');
 
 
 class ProductScreen extends React.Component{
@@ -48,8 +48,10 @@ class ProductScreen extends React.Component{
 
         retrieveData(STORAGE_KEY)
         .then((data) => {
+            let guid = uuid.v1();
+            console.log('uuid.....Store', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + data}
+                headers: { Authorization: 'Bearer ' + data , 'Requested-Id': guid}
             };
     
             if(categoryId){
