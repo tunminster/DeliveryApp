@@ -24,9 +24,23 @@
     ],
     "ios": {
       "buildNumber": "2",
-      "bundleIdentifier": "com.deliveryapp.app",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deliveryapp",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9"
+        }
+      }
     },
-    "description": ""
+    "description": "",
+    "android": {
+      "package": "com.deliveryapp",
+      "config":{
+        "googleSignIn":{
+          "apiKey":"AIzaSyAOB9l9u0Hw-d5TuXqT-79uhQVAFfy6dcQ",
+          "certificateHash":"E228B3152CD05A65CB9E0CEADFD2CAB93DEF8546"
+        }
+      }
+    }
   }
 }

@@ -25,6 +25,7 @@
     "expo-asset": "~8.2.1",
     "expo-constants": "~9.3.3",
     "expo-font": "~8.4.0",
+    "expo-google-app-auth": "^8.1.4",
     "expo-splash-screen": "~0.8.1",
     "expo-web-browser": "~8.6.0",
     "mobx": "^6.0.4",
@@ -48,7 +49,8 @@
     "react-native-screens": "~2.15.0",
     "react-native-swiper": "^1.6.0",
     "react-native-touchable-scale": "^2.1.2",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "~0.13.12",
+    "expo-facebook": "~9.1.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
