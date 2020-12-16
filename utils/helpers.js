@@ -6,7 +6,7 @@ import vars from './vars';
 import sharedStyles from './sharedStyles';
 import AuthStore from '../config/store/auth';
 import {retrieveData} from '../components/AuthKeyStorageComponent';
-
+var uuid = require('react-native-uuid');
 
 export function logout() {
     AuthStore.setIsLogin(false);
@@ -23,8 +23,10 @@ export function post(url, data, success, error) {
     var STORAGE_KEY = 'id_token';
     retrieveData(STORAGE_KEY)
     .then((responseData) => {
+        let guid = uuid.v1();
+        console.log('uuid.....Store', guid)
         const config = {
-            headers: { Authorization: 'Bearer ' + responseData}
+            headers: { Authorization: 'Bearer ' + responseData , 'Requested-Id': guid}
         };
         
         Api.post(url, {userId: AuthStore.user.id, ...data}, config)
