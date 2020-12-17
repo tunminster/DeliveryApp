@@ -16,10 +16,12 @@ export const SignIn = ({navigation}) => {
     const [confirmPassword, setConfirmPassword] = React.useState("");
     const [isLoading, setLoading] = React.useState({loading: false});
 
+     //--------------facebook---------------//
     const [isLoggedin, setLoggedinStatus] = React.useState(false);
     const [userData, setUserData] = React.useState(null);
     const [isImageLoading, setImageLoadStatus] = React.useState(false);
 
+    //---------------google----------------//
     const [signedIn, setsignedInStatus] = React.useState(false);
     const [name, setName] = React.useState(null);
     const [photoUrl, setphotoUrl] = React.useState(false);
@@ -60,12 +62,6 @@ export const SignIn = ({navigation}) => {
         alert(`Facebook Login Error: ${message}`);
       }
     }
-  
-    const facebooklogout = () => {
-      setLoggedinStatus(false);
-      setUserData(null);
-      setImageLoadStatus(false);
-    }
     
     const signInWithGoogle = async () => {
       // const isAndroid =()=> Platform.OS === 'android';
@@ -73,8 +69,7 @@ export const SignIn = ({navigation}) => {
         const result = await Google.logInAsync({
           androidClientId:'516028708004-rfd4lgek8mgn66424bknq0s26o2ob2c3.apps.googleusercontent.com',
           iosClientId:'516028708004-qdammoec8bse5ur3n0jp2p6oufsvtpvc.apps.googleusercontent.com',
-          // androidStandaloneAppClientId:'516028708004-j4hqkd0igl2kcrd2mda1qo9vm1lovked.apps.googleusercontent.com',
-          androidStandaloneAppClientId:'120765867490-vjgst00vnefgluk9nsr567fh5g7voap0.apps.googleusercontent.com',
+          androidStandaloneAppClientId:'516028708004-k7dor6ped12je0am7mue275c8n4h9gh0.apps.googleusercontent.com',
           iosStandaloneAppClientId:'516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com',
           scopes: ["profile", "email"],
         });
@@ -94,19 +89,7 @@ export const SignIn = ({navigation}) => {
         // alert(e)
       }
     }
-  
-    const googlelogout = () => {
-      setsignedInStatus(false);
-      setName(null);
-      setphotoUrl(false);
-    }
     
-    // doSignIn = async () => {
-      
-    //   setLoading({loading: true});
-    //   signIn(email.email, password.password);
-    //   //setLoading({loading: false});
-    // };
 
     const register = () => {
       var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
@@ -176,62 +159,17 @@ export const SignIn = ({navigation}) => {
 
           <View style={loginstyles.imagecontainer}>
 
-          {signedIn ?
-                name ?
-                <View style={loginstyles.view}>
-                    {/* <Image
-                      style={{ width: 200, height: 200, borderRadius: 50 }}
-                      source={{ uri: photoUrl }}
-                      onLoadEnd={() => setphotoUrl(true)} /> */}
-                    {/* <ActivityIndicator size="large" color="#0000ff" animating={!photoUrl} style={{ position: "absolute" }} /> */}
-                    {/* <Text style={{ fontSize:normalize(12)}}>Hi:{name}</Text>  */}
-                    <TouchableOpacity style={loginstyles.logoutBtn} onPress={() => googlelogout()}>
-                      <Text style={{ color: "#000" }}>Logout</Text>
-                    </TouchableOpacity>
-                  </View> : null
-
-                : 
-                <View style={loginstyles.view}>
-                <TouchableOpacity onPress={() => signInWithGoogle()}>
-                <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage}/>
-                </TouchableOpacity>
-                </View>
-                }
-
-            {/* <View style={loginstyles.view}>
+            <View style={loginstyles.view}>
             <TouchableOpacity onPress={() => signInWithGoogle()}>
             <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
-            </View> */}
+            </View>
 
-            { isLoggedin ?
-                userData ?
-                <View style={loginstyles.view}>
-                    {/* <Image
-                      style={{ width: 200, height: 200, borderRadius: 50 }}
-                      source={{ uri: userData.picture.data.url }}
-                      onLoadEnd={() => setImageLoadStatus(true)} />
-                    <ActivityIndicator size="large" color="#0000ff" animating={!isImageLoading} style={{ position: "absolute" }} /> */}
-
-                    {/* <Text style={{ fontSize:normalize(12)}}>Hi {userData.name}!</Text> */}
-                    <TouchableOpacity style={loginstyles.logoutBtn} onPress={() => facebooklogout()}>
-                      <Text style={{ color: "#000" }}>Logout</Text>
-                    </TouchableOpacity>
-                  </View> :
-                  null
-                :
-                <View style={loginstyles.view}>
-                <TouchableOpacity onPress={() => facebookLogIn()}>
-                <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
-                </TouchableOpacity>
-                </View>
-                }
-
-            {/* <View style={loginstyles.view}>
+            <View style={loginstyles.view}>
             <TouchableOpacity onPress={() => facebookLogIn()}>
             <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
-            </View> */}
+            </View>
 
             <View style={loginstyles.view}>
             <TouchableOpacity >
@@ -256,10 +194,12 @@ export const CreateAccount = ({navigation}) => {
     const [emailError,setEmailError] = React.useState("");
     const [passwordError,setPasswordError] = React.useState("");
 
+    //--------------facebook---------------//
     const [isLoggedin, setLoggedinStatus] = React.useState(false);
     const [userData, setUserData] = React.useState(null);
     const [isImageLoading, setImageLoadStatus] = React.useState(false);
 
+    //---------------google----------------//
     const [signedIn, setsignedInStatus] = React.useState(false);
     const [name, setName] = React.useState(null);
     const [photoUrl, setphotoUrl] = React.useState(false);
@@ -300,15 +240,8 @@ export const CreateAccount = ({navigation}) => {
         alert(`Facebook Login Error: ${message}`);
       }
     }
-  
-    const facebooklogout = () => {
-      setLoggedinStatus(false);
-      setUserData(null);
-      setImageLoadStatus(false);
-    }
     
     const signInWithGoogle = async () => {
-      // const isAndroid =()=> Platform.OS === 'android';
       try {
         const result = await Google.logInAsync({
           androidClientId:'516028708004-rfd4lgek8mgn66424bknq0s26o2ob2c3.apps.googleusercontent.com',
@@ -333,12 +266,6 @@ export const CreateAccount = ({navigation}) => {
         // return { error: true };
         // alert(e)
       }
-    }
-  
-    const googlelogout = () => {
-      setsignedInStatus(false);
-      setName(null);
-      setphotoUrl(false);
     }
 
     const register = () => {
@@ -427,62 +354,18 @@ export const CreateAccount = ({navigation}) => {
 
           <View style={loginstyles.imagecontainer}>
 
-          {signedIn ?
-                name ?
-                <View style={loginstyles.view}>
-                    {/* <Image
-                      style={{ width: 200, height: 200, borderRadius: 50 }}
-                      source={{ uri: photoUrl }}
-                      onLoadEnd={() => setphotoUrl(true)} /> */}
-                    {/* <ActivityIndicator size="large" color="#0000ff" animating={!photoUrl} style={{ position: "absolute" }} /> */}
-                    {/* <Text style={{ fontSize:normalize(12)}}>Hi:{name}</Text>  */}
-                    <TouchableOpacity style={loginstyles.logoutBtn} onPress={() => googlelogout()}>
-                      <Text style={{ color: "#000" }}>Logout</Text>
-                    </TouchableOpacity>
-                  </View> : null
-
-                : 
-                <View style={loginstyles.view}>
-                <TouchableOpacity onPress={() => signInWithGoogle()}>
-                <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage}/>
-                </TouchableOpacity>
-                </View>
-                }
-
-            {/* <View style={loginstyles.view}>
+            <View style={loginstyles.view}>
             <TouchableOpacity onPress={() => signInWithGoogle()}>
             <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
-            </View> */}
+            </View>
 
-            { isLoggedin ?
-                userData ?
-                <View style={loginstyles.view}>
-                    {/* <Image
-                      style={{ width: 200, height: 200, borderRadius: 50 }}
-                      source={{ uri: userData.picture.data.url }}
-                      onLoadEnd={() => setImageLoadStatus(true)} />
-                    <ActivityIndicator size="large" color="#0000ff" animating={!isImageLoading} style={{ position: "absolute" }} /> */}
-
-                    {/* <Text style={{ fontSize:normalize(12)}}>Hi {userData.name}!</Text> */}
-                    <TouchableOpacity style={loginstyles.logoutBtn} onPress={() => facebooklogout()}>
-                      <Text style={{ color: "#000" }}>Logout</Text>
-                    </TouchableOpacity>
-                  </View> :
-                  null
-                :
-                <View style={loginstyles.view}>
-                <TouchableOpacity onPress={() => facebookLogIn()}>
-                <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
-                </TouchableOpacity>
-                </View>
-                }
-
-            {/* <View style={loginstyles.view}>
+            <View style={loginstyles.view}>
             <TouchableOpacity onPress={() => facebookLogIn()}>
             <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
-            </View> */}
+            </View>
+
             <View style={loginstyles.view}>
             <TouchableOpacity >
             <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>
