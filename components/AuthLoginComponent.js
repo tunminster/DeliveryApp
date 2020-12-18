@@ -22,3 +22,37 @@ export async function AuthRequestLogin(email, password){
     return (result);
   
   };
+
+  export async function AuthRequestFBLogin(token){
+    let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/facebook", {
+        method: 'POST',
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          facebookToken: token,
+          provider: 'facebook',
+        })
+    });
+
+      let result= await response.json();
+      return (result);
+  };
+
+  export async function AuthRequestGoogleLogin(token){
+    let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/google", {
+        method: 'POST',
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idToken: token,
+          provider: 'google',
+        })
+    });
+
+      let result= await response.json();
+      return (result);
+  };  

@@ -11,6 +11,7 @@ import * as Google from 'expo-google-app-auth';
 
 export const SignIn = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext);
+    const {googleSignIn} = React.useContext(AuthContext)
     const [email, setEmail] = React.useState("");
     const [password,setPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -47,14 +48,19 @@ export const SignIn = ({navigation}) => {
         // console.log(token)
 
         if (type === 'success') {
-          // Get the user's name using Facebook's Graph API
-          fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`)
-            .then(response => response.json())
-            .then(data => {
-              setLoggedinStatus(true);
-              setUserData(data);
-            })
-            .catch(e => console.log(e))
+          // // Get the user's name using Facebook's Graph API
+          // fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`)
+          //   .then(response => response.json())
+          //   .then(data => {
+          //     alert(JSON.stringify(data))
+          //     // console.log(type);
+          //     // console.log(token);
+          //     const result=JSON.parse(data);
+              
+          //     setLoggedinStatus(true);
+          //     setUserData(data);
+          //   })
+          //   .catch(e => alert(JSON.stringify(e)))
         } else {
           // type === 'cancel'
         }
@@ -74,10 +80,11 @@ export const SignIn = ({navigation}) => {
           scopes: ["profile", "email"],
         });
         if (result.type === "success") {
+          googleSignIn(result.idToken)
           setsignedInStatus(true);
           setName(result.user.name);
           // setphotoUrl(result.user.photoUrl);
-          // console.log(result)
+          console.log(result)
         } else {
           console.log("cancelled");
           // return { cancelled: true };
