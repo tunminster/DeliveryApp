@@ -14,7 +14,7 @@ export async function AuthRequestLogin(email, password){
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Shard': 'Da',
-        'Requested-Id': guid, 
+        'Request-Id': guid, 
       },
       body: JSON.stringify({
         username: email,

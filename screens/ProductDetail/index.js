@@ -25,7 +25,7 @@ class ProductDetail extends Component {
             let guid = uuid.v1();
             console.log('uuid.....Productdetails', guid)
             const config = {
-                headers: {'Requested-Id': guid}
+                headers: {'Request-Id': guid}
             };  
         Api.get('/product/getById' + id, config).then(res => {
             this.setState({data: res, loading: false});

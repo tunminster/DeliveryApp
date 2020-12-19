@@ -24,7 +24,7 @@ class Orders extends Component {
             let guid = uuid.v1();
             console.log('uuid.....order', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + data,  'Requested-Id': guid},
+                headers: { Authorization: 'Bearer ' + data,  'Request-Id': guid},
             };
     
             Api.get('/order/getByUserId/' + AuthStore.user.id, config).then(res => {

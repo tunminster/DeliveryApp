@@ -26,7 +26,7 @@ export function post(url, data, success, error) {
         let guid = uuid.v1();
         console.log('uuid.....Store', guid)
         const config = {
-            headers: { Authorization: 'Bearer ' + responseData , 'Requested-Id': guid}
+            headers: { Authorization: 'Bearer ' + responseData , 'Request-Id': guid}
         };
         
         Api.post(url, {userId: AuthStore.user.id, ...data}, config)
