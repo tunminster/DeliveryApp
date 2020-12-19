@@ -74,6 +74,9 @@ export default function App(props) {
       googleSignIn: (token) => {
         googleSignInRequest(token);
       },
+      facebookSignIn: (token) => {
+        facebookSignInRequest(token);
+      },
     }
   }, []);
 
@@ -143,6 +146,32 @@ export default function App(props) {
   function googleSignInRequest(token){
     var STORAGE_KEY = 'id_token';
     AuthRequestGoogleLogin(token)
+        .then( (data) =>{
+          const result = JSON.parse(data);
+          setUserToken(result.auth_token);
+
+          //store token
+          storeData(STORAGE_KEY, result.auth_token)
+            .then((data) =>{
+              const result = JSON.stringify(data);
+              
+            });
+          
+          //store user  
+          storeUser(result.auth_token).then((data) => {
+              console.log("user stored " + data);
+            });
+
+            setIsLoading(false);  
+
+        }).catch((error) => {
+          setUserToken(null);
+        });
+  };
+
+  function facebookSignInRequest(token){
+    var STORAGE_KEY = 'id_token';
+    AuthRequestFBLogin(token)
         .then( (data) =>{
           const result = JSON.parse(data);
           setUserToken(result.auth_token);

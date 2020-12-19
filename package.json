@@ -21,9 +21,11 @@
     "@react-navigation/stack": "^5.12.8",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "axios": "^0.21.0",
+    "buffer": "^6.0.3",
     "expo": "^40.0.0",
     "expo-asset": "~8.2.1",
     "expo-constants": "~9.3.3",
+    "expo-facebook": "~9.1.0",
     "expo-font": "~8.4.0",
     "expo-google-app-auth": "^8.1.4",
     "expo-splash-screen": "~0.8.1",
@@ -49,8 +51,8 @@
     "react-native-screens": "~2.15.0",
     "react-native-swiper": "^1.6.0",
     "react-native-touchable-scale": "^2.1.2",
-    "react-native-web": "~0.13.12",
-    "expo-facebook": "~9.1.0"
+    "react-native-uuid": "^1.4.9",
+    "react-native-web": "~0.13.12"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
