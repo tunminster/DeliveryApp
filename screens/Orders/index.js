@@ -15,7 +15,7 @@ class Orders extends Component {
         loading: true
     };
 
-    componentDidMount(){
+    componentDidMount(){  
         var STORAGE_KEY = vars.idToken;
 
         retrieveData(STORAGE_KEY)

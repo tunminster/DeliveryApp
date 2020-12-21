@@ -15,7 +15,6 @@ import Loading from '../../components/loading';
 var uuid = require('react-native-uuid');
 
 
-
 class ProductScreen extends React.Component{
 
     // static navigationOptions = ({navigation}) => ({
