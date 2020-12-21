@@ -49,9 +49,9 @@ class ProductScreen extends React.Component{
         retrieveData(STORAGE_KEY)
         .then((data) => {
             let guid = uuid.v1();
-            console.log('uuid.....Store', guid)
+            console.log('uuid.....order', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + data , 'Requested-Id': guid}
+                headers: { Authorization: 'Bearer ' + data,'Request-Id': guid}
             };
     
             if(categoryId){

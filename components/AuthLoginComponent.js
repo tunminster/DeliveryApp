@@ -14,16 +14,56 @@ export async function AuthRequestLogin(email, password){
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Shard': 'Da',
-        'Requested-Id': guid, 
+        'Request-Id': guid, 
       },
       body: JSON.stringify({
-        username: email,
+        userName: email,
         password: password,
       })
     });
-  
+
     let result = await response.json();
-  
+
     return (result);
   
   };
+
+  export async function AuthRequestFBLogin(token){
+    let guid = uuid.v1();
+    let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/facebook", {
+        method: 'POST',
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Shard': 'Da',
+        'Request-Id': guid, 
+        },
+        body: JSON.stringify({
+          facebookToken: token,
+          provider: 'facebook',
+        })
+    });
+
+      let result= await response.json();
+      return (result);
+  };
+
+  export async function AuthRequestGoogleLogin(token){
+    let guid = uuid.v1();
+    let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/google", {
+        method: 'POST',
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Shard': 'Da',
+        'Request-Id': guid, 
+        },
+        body: JSON.stringify({
+          idToken: token,
+          provider: 'google',
+        })
+    });
+
+      let result= await response.json();
+      return (result);
+  };  

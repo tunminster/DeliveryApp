@@ -6,23 +6,85 @@ import { UserInterfaceIdiom } from 'expo-constants';
 import {wp ,hp, normalize} from '../helper/responsiveScreen';
 import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
-
+import * as Facebook from 'expo-facebook';
+import * as Google from 'expo-google-app-auth';
 
 export const SignIn = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext);
+    const {googleSignIn} = React.useContext(AuthContext);
+    const {facebookSignIn} = React.useContext(AuthContext);
     const [email, setEmail] = React.useState("");
     const [password,setPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
     const [isLoading, setLoading] = React.useState({loading: false});
-    
-    // doSignIn = async () => {
-      
-    //   setLoading({loading: true});
-    //   signIn(email.email, password.password);
-    //   //setLoading({loading: false});
-    // };
 
-    const register = () => {
+     //--------------facebook---------------//
+    const [isLoggedin, setLoggedinStatus] = React.useState(false);
+    const [userData, setUserData] = React.useState(null);
+    const [isImageLoading, setImageLoadStatus] = React.useState(false);
+
+    //---------------google----------------//
+    const [signedIn, setsignedInStatus] = React.useState(false);
+    const [name, setName] = React.useState(null);
+    const [photoUrl, setphotoUrl] = React.useState(false);
+    
+
+    const facebookLogIn = async () => {
+
+      try {
+        await Facebook.initializeAsync({
+          appId: '410282153495193',
+            
+        });
+        const {
+          type,
+          token,
+          expires,
+          permissions,
+          declinedPermissions,
+        } = await Facebook.logInWithReadPermissionsAsync({
+          permissions: ['email','public_profile'],
+        });
+        // console.log(type)
+        // console.log(token)
+
+        if (type === 'success') {
+          facebookSignIn(token);
+        } else {
+          // type === 'cancel'
+        }
+      } catch ({ message }) {
+        alert(`Facebook Login Error: ${message}`);
+      }
+    }
+    
+    const signInWithGoogle = async () => {
+      // const isAndroid =()=> Platform.OS === 'android';
+      try {
+        const result = await Google.logInAsync({
+          androidClientId:'516028708004-rfd4lgek8mgn66424bknq0s26o2ob2c3.apps.googleusercontent.com',
+          iosClientId:'516028708004-qdammoec8bse5ur3n0jp2p6oufsvtpvc.apps.googleusercontent.com',
+          androidStandaloneAppClientId:'516028708004-k7dor6ped12je0am7mue275c8n4h9gh0.apps.googleusercontent.com',
+          iosStandaloneAppClientId:'516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com',
+          scopes: ["profile", "email"],
+        });
+        if (result.type === "success") {
+          googleSignIn(result.idToken)
+          console.log(result)
+        } else {
+          console.log("cancelled");
+          // return { cancelled: true };
+          // alert('error....')
+        }
+      } catch (e) {
+        console.log("error", e);
+        // return { error: true };
+        // alert(e)
+      }
+    }
+    
+
+    const dologin = () => {
       var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
      
       if(email.email == null || email.email==''){
@@ -75,7 +137,7 @@ export const SignIn = ({navigation}) => {
           <Text style={loginstyles.forgot}>Forgot Password?</Text>
 
           <CustomButton
-          onPress={()=> register()}
+          onPress={()=> dologin()}
           title={'Sign In'}
           />
           
@@ -87,17 +149,21 @@ export const SignIn = ({navigation}) => {
           
           <Text style={{marginVertical:hp(2),color:'#777777',fontFamily:'Roboto-Regular',fontSize:normalize(14)}}>Or</Text>
           </View>
+
           <View style={loginstyles.imagecontainer}>
+
             <View style={loginstyles.view}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() => signInWithGoogle()}>
             <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
+
             <View style={loginstyles.view}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() => facebookLogIn()}>
             <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
+
             <View style={loginstyles.view}>
             <TouchableOpacity >
             <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>
@@ -115,11 +181,71 @@ export const SignIn = ({navigation}) => {
 
 export const CreateAccount = ({navigation}) => {
     const { signUp} = React.useContext(AuthContext);
+    const {googleSignIn} = React.useContext(AuthContext);
+    const {facebookSignIn} = React.useContext(AuthContext);
     const [email, setEmail] = React.useState("");
     const [password,setPassword] = React.useState("");
     const [confirmPassword,setConfirmPassword] = React.useState("");
     const [emailError,setEmailError] = React.useState("");
     const [passwordError,setPasswordError] = React.useState("");
+
+    //--------------facebook---------------//
+    const [isLoggedin, setLoggedinStatus] = React.useState(false);
+    const [userData, setUserData] = React.useState(null);
+    const [isImageLoading, setImageLoadStatus] = React.useState(false);
+
+    //---------------google----------------//
+    const [signedIn, setsignedInStatus] = React.useState(false);
+    const [name, setName] = React.useState(null);
+    const [photoUrl, setphotoUrl] = React.useState(false);
+    
+
+    const facebookLogIn = async () => {
+
+      try {
+        await Facebook.initializeAsync({
+          appId: '410282153495193',
+            
+        });
+        const {
+          type,
+          token,
+          expires,
+          permissions,
+          declinedPermissions,
+        } = await Facebook.logInWithReadPermissionsAsync({
+          permissions: ['email','public_profile'],
+        });
+
+        if (type === 'success') {
+          facebookSignIn(token);
+        } else {
+          // type === 'cancel'
+        }
+      } catch ({ message }) {
+        alert(`Facebook Login Error: ${message}`);
+      }
+    }
+    
+    const signInWithGoogle = async () => {
+      try {
+        const result = await Google.logInAsync({
+          androidClientId:'516028708004-rfd4lgek8mgn66424bknq0s26o2ob2c3.apps.googleusercontent.com',
+          iosClientId:'516028708004-qdammoec8bse5ur3n0jp2p6oufsvtpvc.apps.googleusercontent.com',
+          // androidStandaloneAppClientId:'516028708004-j4hqkd0igl2kcrd2mda1qo9vm1lovked.apps.googleusercontent.com',
+          androidStandaloneAppClientId:'120765867490-vjgst00vnefgluk9nsr567fh5g7voap0.apps.googleusercontent.com',
+          iosStandaloneAppClientId:'516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com',
+          scopes: ["profile", "email"],
+        });
+        if (result.type === "success") {
+          googleSignIn(result.idToken)
+        } else {
+          console.log("cancelled");
+        }
+      } catch (e) {
+        console.log("error", e);
+      }
+    }
 
     const register = () => {
       var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
@@ -204,17 +330,21 @@ export const CreateAccount = ({navigation}) => {
           
           <Text style={{marginVertical:hp(2),color:'#777777',fontFamily:'Roboto-Regular',fontSize:normalize(14)}}>Or</Text>
           </View>
+
           <View style={loginstyles.imagecontainer}>
+
             <View style={loginstyles.view}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() => signInWithGoogle()}>
             <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
+
             <View style={loginstyles.view}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() => facebookLogIn()}>
             <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
+
             <View style={loginstyles.view}>
             <TouchableOpacity >
             <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>

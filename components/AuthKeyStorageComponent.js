@@ -4,6 +4,7 @@ import AuthStore from '../config/store/auth';
 import Api from '../config/api';
 var uuid = require('react-native-uuid');
 
+
 export async function storeData(key, message)
 {
   try {
@@ -39,9 +40,8 @@ export async function storeUser(token)
 {
     try{
       let guid = uuid.v1();
-      console.log('uuid.....Store', guid)
       const config = {
-          headers: { Authorization: 'Bearer ' + token , 'Requested-Id': guid}
+          headers: { Authorization: 'Bearer ' + token , 'Request-Id': guid}
       };  
       Api.get('/customer/getcustomer', config).then(res => {
           console.log("api result is " + res);

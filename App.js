@@ -10,7 +10,7 @@ import DrawerNavigator from './navigation/DrawerNavigator';
 import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
 import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
-import { AuthRequestLogin } from './components/AuthLoginComponent';
+import { AuthRequestLogin, AuthRequestGoogleLogin, AuthRequestFBLogin } from './components/AuthLoginComponent';
 import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
 import {storeData, retrieveData, storeUser} from './components/AuthKeyStorageComponent';
@@ -48,9 +48,7 @@ export default function App(props) {
   const authContext = React.useMemo(() => {
     return{
       signIn: (email, password) => {
-  
         loginRequest(email, password);
-       
       },
       signUp: (email, password,confirmpassword) => {
         
@@ -71,9 +69,14 @@ export default function App(props) {
 
       },
       signOut: () => {
-        
         setUserToken(null);
-      }
+      },
+      googleSignIn: (token) => {
+        googleSignInRequest(token);
+      },
+      facebookSignIn: (token) => {
+        facebookSignInRequest(token);
+      },
     }
   }, []);
 
@@ -136,7 +139,58 @@ export default function App(props) {
             setIsLoading(false);  
 
         }).catch((error) => {
-          console.error(error);
+          setUserToken(null);
+        });
+  };
+
+  function googleSignInRequest(token){
+    var STORAGE_KEY = 'id_token';
+    AuthRequestGoogleLogin(token)
+        .then( (data) =>{
+          const result = JSON.parse(data);
+          setUserToken(result.auth_token);
+
+          //store token
+          storeData(STORAGE_KEY, result.auth_token)
+            .then((data) =>{
+              const result = JSON.stringify(data);
+              
+            });
+          
+          //store user  
+          storeUser(result.auth_token).then((data) => {
+              console.log("user stored " + data);
+            });
+
+            setIsLoading(false);  
+
+        }).catch((error) => {
+          setUserToken(null);
+        });
+  };
+
+  function facebookSignInRequest(token){
+    var STORAGE_KEY = 'id_token';
+    AuthRequestFBLogin(token)
+        .then( (data) =>{
+          const result = JSON.parse(data);
+          setUserToken(result.auth_token);
+
+          //store token
+          storeData(STORAGE_KEY, result.auth_token)
+            .then((data) =>{
+              const result = JSON.stringify(data);
+              
+            });
+          
+          //store user  
+          storeUser(result.auth_token).then((data) => {
+              console.log("user stored " + data);
+            });
+
+            setIsLoading(false);  
+
+        }).catch((error) => {
           setUserToken(null);
         });
   };
