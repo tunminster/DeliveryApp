@@ -51,7 +51,7 @@ class ProductScreen extends React.Component{
             let guid = uuid.v1();
             console.log('uuid.....order', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + data,'Requested-Id': guid}
+                headers: { Authorization: 'Bearer ' + data,'Request-Id': guid}
             };
     
             if(categoryId){

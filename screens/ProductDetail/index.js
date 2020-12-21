@@ -25,7 +25,7 @@ class ProductDetail extends Component {
         console.log('uuid.....order', guid)
         const id = this.props.navigation.getParam('id');
         const config = {
-            headers: {'Requested-Id': guid}
+            headers: {'Request-Id': guid}
         };
         Api.get('/product/getById' + id, config).then(res => {
             this.setState({data: res, loading: false});
