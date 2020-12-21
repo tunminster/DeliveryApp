@@ -6,7 +6,8 @@ import { UserInterfaceIdiom } from 'expo-constants';
 import {wp ,hp, normalize} from '../helper/responsiveScreen';
 import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
-
+import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
+import PaymentButton from '../components/PaymentButton';
 
 export const SignIn = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext);
@@ -21,7 +22,7 @@ export const SignIn = ({navigation}) => {
     //   signIn(email.email, password.password);
     //   //setLoading({loading: false});
     // };
-
+    
     const register = () => {
       var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
      
@@ -99,7 +100,7 @@ export const SignIn = ({navigation}) => {
             </TouchableOpacity>
             </View>
             <View style={loginstyles.view}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('ApplePay')}>
             <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
@@ -231,7 +232,179 @@ export const CreateAccount = ({navigation}) => {
     
 };
 
+const testID = (id) => {
+  return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
+}
+export const ApplePay = ({ navigation }) => {
+  const [isloading, setLoadingStatus] = React.useState(false);
+  const [allowed, setAllowed] = React.useState(false);
+  const [complete, setComplete] = React.useState(true);
+  const [status, setStatus] = React.useState(null);
+  const [token, setToken] = React.useState(null);
+  const [amexAvailable, setAmexAvailable] = React.useState(false);
+  const [discoverAvailable, setDiscoverAvailable] = React.useState(false);
+  const [masterCardAvailable, setMasterCardAvailable] = React.useState(false);
+  const [visaAvailable, setVisaAvailable] = React.useState(false);
 
+  
+    React.useEffect(() => {
+      async function fetchData(){
+        const response=await Stripe.setOptionsAsync({
+          publishableKey: '',
+          androidPayMode: 'test',
+          merchantId: 'merchant.host.exp.exponent',
+        }, []);
+
+        const allowed = await Stripe.deviceSupportsApplePayAsync();
+      const amexAvailable = await Stripe.canMakeApplePayPaymentsAsync({
+        networks: ['american_express'],
+      });
+      const discoverAvailable = await Stripe.canMakeApplePayPaymentsAsync({
+        networks: ['discover'],
+      });
+      const masterCardAvailable = await Stripe.canMakeApplePayPaymentsAsync({
+        networks: ['master_card']
+      });
+      const visaAvailable = await Stripe.canMakeApplePayPaymentsAsync({
+        networks: ['visa'],
+      });
+
+      }
+      
+      fetchData();
+      setAllowed();
+      setAmexAvailable();
+      setMasterCardAvailable();
+      setVisaAvailable();
+    });
+
+ function handleCompleteChange(complete) {
+    setComplete({complete});
+  }
+
+  async function handleApplePayPress() {
+    try {
+      // this.setState({
+      //   loading: true,
+      //   status: null,
+      //   token: null,
+      // });
+      setLoadingStatus(true);
+      setStatus(null);
+      setToken(null);
+      const token = await Stripe.paymentRequestWithApplePayAsync(
+        [
+          {
+            label: 'Whisky',
+            amount: '0.10',
+          },
+          {
+            label: 'Vine',
+            amount: '0.30',
+          },
+          {
+            label: 'Tipsi',
+            amount: '0.60',
+          },
+        ],
+        {
+          //requiredBillingAddressFields: ['all'],
+          //requiredShippingAddressFields: ['all'],
+          shippingMethods: [
+            {
+              id: 'fedex',
+              label: 'FedEX',
+              detail: 'Test @ 10',
+              amount: '1.00',
+            },
+          ],
+        }
+      );
+
+      // this.setState({ loading: false, token });
+      setLoadingStatus(false);
+      setToken();
+
+      if (complete) {
+        await Stripe.completeApplePayRequestAsync();
+        setStatus('Apple Pay payment completed');
+        // this.setState({ status: 'Apple Pay payment completed' });
+      } else {
+        await Stripe.cancelApplePayRequestAsync();
+        setStatus('Apple Pay payment cancled');
+        // this.setState({ status: 'Apple Pay payment cenceled' });
+      }
+    } catch (error) {
+      // this.setState({ loading: false, status: `Error: ${error.message}` });
+      setLoadingStatus(false);
+      setStatus(`Error: ${error.message}`);
+    }
+  };
+
+  function handleSetupApplePayPress() {
+    Stripe.openApplePaySetupAsync();
+  }
+
+
+  const cards = {
+    americanExpressAvailabilityStatus: { name: 'American Express', isAvailable: amexAvailable },
+    discoverAvailabilityStatus: { name: 'Discover', isAvailable: discoverAvailable },
+    masterCardAvailabilityStatus: { name: 'Master Card', isAvailable: masterCardAvailable },
+    visaAvailabilityStatus: { name: 'Visa', isAvailable: visaAvailable },
+  };
+
+  return (
+    <View style={ApplePayStyles.container}>
+      <Text style={ApplePayStyles.header}>Apple Pay Example</Text>
+      <Text style={ApplePayStyles.instruction}>Click button to show Apple Pay dialog.</Text>
+      <PaymentButton
+        text="Pay with APay"
+        disabledText="Not supported"
+        loading={isloading}
+        disabled={!allowed}
+        onPress={() => handleApplePayPress()}
+        {...testID('applePayButton')}
+      />
+      <Text style={ApplePayStyles.instruction}>Complete the operation on token</Text>
+      <Switch
+        style={ApplePayStyles.switch}
+        value={complete}
+        onValueChange={() => handleCompleteChange()}
+        {...testID('applePaySwitch')}
+      />
+      <View>
+        {token && (
+          <Text style={ApplePayStyles.instruction} {...testID('applePayToken')}>
+            Token: {token.tokenId}
+          </Text>
+        )}
+        {status && (
+          <Text style={ApplePayStyles.instruction} {...testID('applePayStatus')}>
+            {status}
+          </Text>
+        )}
+      </View>
+      <View style={ApplePayStyles.hintContainer}>
+        <PaymentButton
+          text="Setup APay"
+          disabledText="Not supported"
+          disabled={!allowed}
+          onPress={() => handleSetupApplePayPress()}
+          {...testID('setupApplePayButton')}
+        />
+        <Text style={ApplePayStyles.hint}>Setup Pay works only on real device</Text>
+        <Text style={ApplePayStyles.status} {...testID('deviceSupportsApplePayStatus')}>
+          Device {allowed ? 'supports' : "doesn't support"} Pay
+          </Text>
+        {Object.entries(cards).map(([id, { name, isAvailable }]) => (
+          <Text style={ApplePayStyles.status} key={id} {...testID(id)}>
+            {name} is {isAvailable ? 'available' : 'not available'}
+          </Text>
+        ))}
+      </View>
+    </View>
+  );
+}
 
 
 export const Splash = () => (
