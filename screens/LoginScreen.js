@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image,ScrollView } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image,ScrollView ,Switch} from "react-native";
 
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
@@ -100,7 +100,7 @@ export const SignIn = ({navigation}) => {
             </TouchableOpacity>
             </View>
             <View style={loginstyles.view}>
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate('ApplePay')}>
+            <TouchableOpacity onPress={()=>navigation.navigate('ApplePay')}>
             <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
@@ -248,7 +248,9 @@ export const ApplePay = ({ navigation }) => {
 
   
     React.useEffect(() => {
-      async function fetchData(){
+      // async function fetchData(){
+       const fetchDataAsync= async ()=>{
+        
         const response=await Stripe.setOptionsAsync({
           publishableKey: '',
           androidPayMode: 'test',
@@ -268,27 +270,23 @@ export const ApplePay = ({ navigation }) => {
       const visaAvailable = await Stripe.canMakeApplePayPaymentsAsync({
         networks: ['visa'],
       });
-
       }
       
-      fetchData();
+      fetchDataAsync();
       setAllowed();
       setAmexAvailable();
       setMasterCardAvailable();
       setVisaAvailable();
     });
 
- function handleCompleteChange(complete) {
+ const handleCompleteChange=(complete)=> {
+    // alert('dsnjkwj');
     setComplete({complete});
   }
 
-  async function handleApplePayPress() {
+ async function handleApplePayPress(){
+  //  alert('wsqswqe');
     try {
-      // this.setState({
-      //   loading: true,
-      //   status: null,
-      //   token: null,
-      // });
       setLoadingStatus(true);
       setStatus(null);
       setToken(null);
@@ -323,7 +321,7 @@ export const ApplePay = ({ navigation }) => {
 
       // this.setState({ loading: false, token });
       setLoadingStatus(false);
-      setToken();
+      setToken(token);
 
       if (complete) {
         await Stripe.completeApplePayRequestAsync();
@@ -341,7 +339,8 @@ export const ApplePay = ({ navigation }) => {
     }
   };
 
-  function handleSetupApplePayPress() {
+  const handleSetupApplePayPress=()=> {
+    // alert('dllxlmlqs');
     Stripe.openApplePaySetupAsync();
   }
 
@@ -355,13 +354,17 @@ export const ApplePay = ({ navigation }) => {
 
   return (
     <View style={ApplePayStyles.container}>
-      <Text style={ApplePayStyles.header}>Apple Pay Example</Text>
+      <Text style={ApplePayStyles.header}>Apple Pay</Text>
       <Text style={ApplePayStyles.instruction}>Click button to show Apple Pay dialog.</Text>
+      {/* <TouchableOpacity
+      onPress={() => handleApplePayPress()}>
+        <Text>fswfswf</Text>
+      </TouchableOpacity> */}
       <PaymentButton
         text="Pay with APay"
         disabledText="Not supported"
         loading={isloading}
-        disabled={!allowed}
+        // disabled={!allowed}
         onPress={() => handleApplePayPress()}
         {...testID('applePayButton')}
       />
@@ -388,13 +391,13 @@ export const ApplePay = ({ navigation }) => {
         <PaymentButton
           text="Setup APay"
           disabledText="Not supported"
-          disabled={!allowed}
+          // disabled={!allowed}
           onPress={() => handleSetupApplePayPress()}
           {...testID('setupApplePayButton')}
         />
-        <Text style={ApplePayStyles.hint}>Setup Pay works only on real device</Text>
+        <Text style={ApplePayStyles.hint}>Setup ApplePay works only on real device</Text>
         <Text style={ApplePayStyles.status} {...testID('deviceSupportsApplePayStatus')}>
-          Device {allowed ? 'supports' : "doesn't support"} Pay
+          Device {allowed ? 'supports' : "doesn't support"} ApplePay
           </Text>
         {Object.entries(cards).map(([id, { name, isAvailable }]) => (
           <Text style={ApplePayStyles.status} key={id} {...testID(id)}>
@@ -527,5 +530,41 @@ export const Splash = () => (
       shadowOpacity: 0.6,
       shadowRadius: 3,  
       elevation: 5
+    },
+  });
+
+  const ApplePayStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    header: {
+      fontSize: 20,
+      textAlign: 'center',
+      margin: 10,
+    },
+    instruction: {
+      textAlign: 'center',
+      color: '#333333',
+      marginBottom: 5,
+    },
+    switch: {
+      marginBottom: 10,
+    },
+    hintContainer: {
+      marginTop: 10,
+    },
+    hint: {
+      fontSize: 12,
+      textAlign: 'center',
+    },
+    statusContainer: {
+      margin: 20,
+      alignSelf: 'stretch',
+    },
+    status: {
+      fontWeight: '300',
+      color: 'gray',
     },
   });
