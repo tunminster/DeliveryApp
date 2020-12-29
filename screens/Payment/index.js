@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Alert, AsyncStorage, Text} from 'react-native';
+import {View, ScrollView, Alert, Text} from 'react-native';
 import {CreditCardInput} from 'react-native-credit-card-input';
 import Button from '../../components/button';
 import BackIcon from '../../components/backIcon';

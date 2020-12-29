@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage, TouchableOpacity, Image, View} from 'react-native';
+import { TouchableOpacity, Image, View, AsyncStorage} from 'react-native';
 import Store from '../config/store';
 import Api from '../config/api';
 import vars from './vars';
@@ -20,6 +20,7 @@ export function logout() {
 
 export function post(url, data, success, error) {
     console.log({userId: AuthStore.user.id, ...data});
+    
     var STORAGE_KEY = 'id_token';
     retrieveData(STORAGE_KEY)
     .then((responseData) => {
@@ -28,7 +29,6 @@ export function post(url, data, success, error) {
         const config = {
             headers: { Authorization: 'Bearer ' + responseData ,'Request-Id': guid}
         };
-        
         Api.post(url, {userId: AuthStore.user.id, ...data}, config)
         .then(res => success(res))
         .catch(err => {
@@ -36,12 +36,6 @@ export function post(url, data, success, error) {
             console.log(err);
         });
 
-        // Api.post(url, {userId: AuthStore.user.id, ...data}, config)
-        // .then(res => success(res))
-        // .catch(err => {
-        //     error && error(err);
-        //     console.log(err);
-        // });
     });
     
 }

@@ -21,6 +21,7 @@ import PaymentType from './screens/PaymentType';
 import Cart from './screens/Cart';
 import Loading from './components/loading';
 import AddressDetail from './screens/AddressDetail';
+import AddressCreation from './screens/AddressCreation';
 import Payment from './screens/Payment';
 import PaymentSuccess from './screens/PaymentSuccess';
 import ProfileNavigatorScreens from './navigation/profileNavigator';
@@ -351,6 +352,21 @@ const PageScreen = () => (
             {
               headerMode: 'screen',
               title: 'Address Detail',
+              headerStyle: {
+                backgroundColor: '#f4511e'
+              },
+              headerTintColor: '#fff',
+              headerBackTitle: ''
+            }
+          )}
+        />
+
+        <PageStack.Screen name="CreateAddress" 
+          component={AddressCreation}
+          options={({navigation}) => (
+            {
+              headerMode: 'screen',
+              title: 'Address Creation',
               headerStyle: {
                 backgroundColor: '#f4511e'
               },

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, AsyncStorage } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert } from "react-native";
 import { AuthContext } from '../constants/Context';
 import {storeData, retrieveData} from '../components/AuthKeyStorageComponent';
 import { GetCategoryByParentId } from '../components/GetCategoryListComponent'
