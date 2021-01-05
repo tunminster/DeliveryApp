@@ -99,11 +99,11 @@ export const SignIn = ({navigation}) => {
             <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
             </View>
-            <View style={loginstyles.view}>
+            {/* <View style={loginstyles.view}>
             <TouchableOpacity onPress={()=>navigation.navigate('ApplePay')}>
             <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>
             </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg}/>

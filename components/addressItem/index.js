@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {AppRegistry, Text, Image, TouchableOpacity, View} from 'react-native';
 import styles from './styles';
-import Navigation from '../../utils/navigationService';
+// import Navigation from '../../utils/navigationService';
 
 class AddressItem extends Component {
     

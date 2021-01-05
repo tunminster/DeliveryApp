@@ -27,6 +27,9 @@
       "bundleIdentifier": "com.deliveryapp.app",
       "supportsTablet": true
     },
-    "description": ""
+    "description": "",
+    "android": {
+      "package": "com.deliveryapp.app"
+    }
   }
 }

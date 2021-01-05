@@ -1,13 +1,13 @@
 import Api from '../api';
 import AuthStore from '../store/auth';
 import {AsyncStorage} from 'react-native';
-import NavigationService from '../../utils/navigationService';
+// import NavigationService from '../../utils/navigationService';
 
 function loginSuccess(data){
     console.log(data);
     AuthStore.setUser(data);
     AsyncStorage.setItem('token', data.token.toString());
-    NavigationService.navigate('Home');
+    // NavigationService.navigate('Home');
     AuthStore.setIsLogin(true);
 }
 

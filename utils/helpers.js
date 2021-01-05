@@ -19,7 +19,7 @@ export function logout() {
 }
 
 export function post(url, data, success, error) {
-    console.log({userId: AuthStore.user.id, ...data});
+    console.log(data);
     var STORAGE_KEY = 'id_token';
     retrieveData(STORAGE_KEY)
     .then((responseData) => {
@@ -28,8 +28,8 @@ export function post(url, data, success, error) {
         const config = {
             headers: { Authorization: 'Bearer ' + responseData , 'Requested-Id': guid}
         };
-        
-        Api.post(url, {userId: AuthStore.user.id, ...data}, config)
+        console.log('url', url, ",,,,", config)
+        Api.post(url, data, config)
         .then(res => success(res))
         .catch(err => {
             error && error(err);

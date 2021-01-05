@@ -17,7 +17,7 @@ export async function AuthRequestLogin(email, password){
         'Requested-Id': guid, 
       },
       body: JSON.stringify({
-        username: email,
+        userName: email,
         password: password,
       })
     });
