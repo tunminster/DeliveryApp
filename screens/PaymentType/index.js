@@ -210,7 +210,7 @@ class PaymentType extends Component {
                     stripeFingerPrint: responseJson.card.fingerprint
                 }
 
-                post('/api/v1/Stripe/Payment/CapturePayment', data, res => {
+                post('/v1/Stripe/Payment/CapturePayment', data, res => {
                     console.log('CapturePayment res', res);
                     this.props.navigation.navigate('PaymentSuccess');
                 }, err => {

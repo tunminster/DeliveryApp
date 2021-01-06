@@ -99,7 +99,7 @@ class Payment extends Component {
 
                 console.log('data...', data)
 
-                post('/api/v1/Stripe/Payment/CapturePayment', data, res => {
+                post('/v1/Stripe/Payment/CapturePayment', data, res => {
                     console.log('CapturePayment res', res);
                     this.setState({ loading: false })
                     this.props.navigation.navigate('PaymentSuccess');
