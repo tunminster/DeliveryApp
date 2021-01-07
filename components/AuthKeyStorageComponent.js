@@ -41,7 +41,7 @@ export async function storeUser(token)
       let guid = uuid.v1();
       console.log('uuid.....Store', guid)
       const config = {
-          headers: { Authorization: 'Bearer ' + token , 'Requested-Id': guid}
+          headers: { Authorization: 'Bearer ' + token , 'Request-Id': guid}
       };  
       Api.get('/customer/getcustomer', config).then(res => {
           console.log("api result is " + res);

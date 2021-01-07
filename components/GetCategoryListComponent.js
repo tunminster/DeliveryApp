@@ -10,7 +10,7 @@ export async function GetCategoryByParentId(parentId, authKey)
       headers: {
         'Authorization': 'Bearer ' + authKey,
         'X-Shard': 'Da',
-        'Requested-Id': guid,
+        'Request-Id': guid,
       }
     });
     let result = await response.json();

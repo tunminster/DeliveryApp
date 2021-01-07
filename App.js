@@ -9,7 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DrawerNavigator from './navigation/DrawerNavigator';
 import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
-import { SignIn, CreateAccount, Splash ,ApplePay} from './screens/LoginScreen';
+import { SignIn, CreateAccount, Splash} from './screens/LoginScreen';
 import { AuthRequestLogin } from './components/AuthLoginComponent';
 import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
@@ -181,7 +181,6 @@ const AuthStackScreen = () => (
     <AuthStack.Screen name="SignIn" component= {SignIn} options={{title: "Sign In"}} />
     <AuthStack.Screen name="CreateAccount" component={CreateAccount} 
       options={{title: "Create Account"}} />
-    <AuthStack.Screen name="ApplePay" component={ApplePay} options={{title:"Apple Pay"}}/>
   </AuthStack.Navigator>
 );
 
