@@ -8,37 +8,9 @@ import Button from '../../components/button';
 import Store from '../../config/store';
 import { getTotalPrice, post } from '../../utils/helpers';
 import { observer } from 'mobx-react';
-import { PaymentRequest } from 'react-native-payments';
 import { PaymentMethodComponent } from '../../components/PaymentMethodComponent'
 import Loading from '../../components/loading';
-
-const METHOD_DATA_IOS = [
-    {
-        supportedMethods: ['apple-pay'],
-        data: {
-            merchantIdentifier: 'merchant.com.deliveryapp.app1',
-            supportedNetworks: ['visa', 'mastercard', 'amex'],
-            countryCode: 'US',
-            currencyCode: 'USD',
-        }
-    },
-];
-
-const METHOD_DATA_ANDROID = [{
-    supportedMethods: ['android-pay'],
-    data: {
-        supportedNetworks: ['visa', 'mastercard', 'amex'],
-        currencyCode: 'USD',
-        environment: 'TEST',
-        paymentMethodTokenizationParameters: {
-            tokenizationType: 'GATEWAY_TOKEN',
-            parameters: {
-                gateway: 'stripe',
-                publicKey: 'pk_test_51GtEA4ETaaP0kb6bNP6OATyBmPerdnIXrAJyjDP9gfgtSOzoka3hnSWmUNYGDKRsnfMshdneaxcl45za3ow47yx300BNFC7CXr',
-            },
-        }
-    }
-}];
+import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
 
 @observer
 class PaymentType extends Component {
@@ -48,6 +20,18 @@ class PaymentType extends Component {
         stripePaymentIntentId: '',
         loading: false,
     };
+
+    async componentDidMount() {
+        try {
+            await Stripe.setOptionsAsync({
+                publishableKey: 'pk_test_51GtEA4ETaaP0kb6bNP6OATyBmPerdnIXrAJyjDP9gfgtSOzoka3hnSWmUNYGDKRsnfMshdneaxcl45za3ow47yx300BNFC7CXr',
+                androidPayMode: 'test',
+                merchantId: 'merchant.com.deliveryapp.app1',
+            });
+        } catch (error) {
+            console.log('error...', error)
+        }
+    }
 
     prepareCart(stripePaymentIntentId) {
         const newData = {
@@ -61,24 +45,6 @@ class PaymentType extends Component {
         });
         return newData;
     }
-
-    // payment(type) {
-    //     if (this.state.selectedAddress) {
-    //         const cartData = this.prepareCart();
-    //         switch (type) {
-    //             case 'balance':
-    //                 this.paymentWithBalance(cartData);
-    //                 break;
-    //             case 'card':
-    //                 this.props.navigation.navigate('Payment', { viaCart: cartData });
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     } else {
-    //         Alert.alert('Warning', 'Choose address', [{ text: 'OK' }]);
-    //     }
-    // }
 
     paymentWithBalance(cart) {
         Alert.alert(
@@ -120,21 +86,6 @@ class PaymentType extends Component {
                 post('/Order/Payment/CreatePaymentIntent', data, res => {
                     console.log('CreatePaymentIntent res', res);
 
-                    const detail = {
-                        id: res.stripePaymentIntentId,
-                        displayItems: [],
-                        total: {
-                            label: 'Delivery',
-                            amount: { currency: 'USD', value: getTotalPrice() }
-                        }
-                    }
-
-                    Store.cart.map(product => {
-                        detail.displayItems.push({
-                            label: product.productName,
-                            amount: { currency: "USD", value: (product.unitPrice * product.count) }
-                        })
-                    });
                     this.setState({
                         stripePaymentIntentId: res.stripePaymentIntentId, loading: false
                     })
@@ -148,7 +99,7 @@ class PaymentType extends Component {
                             this.props.navigation.navigate('Payment', { viaCart: cartData });
                             break;
                         case 'pay':
-                            this.makePayment(detail)
+                            this.makePayment()
                             break;
                         default:
                             break;
@@ -156,6 +107,7 @@ class PaymentType extends Component {
 
                 }, err => {
                     this.setState({ loading: false })
+                    console.error(err);
                 });
 
             } else {
@@ -167,27 +119,52 @@ class PaymentType extends Component {
         }
     }
 
-    makePayment(detail) {
+    iosItems() {
+        const data = []
+        Store.cart.map(product => {
+            data.push({
+                label: product.productName,
+                amount: JSON.stringify(product.unitPrice * product.count)
+            })
+        });
+        data.push({
+            label: 'Delivery',
+            amount: JSON.stringify(getTotalPrice())
+        })
+        return data;
+    }
+
+    androidItems() {
+        const data = {
+            total_price: JSON.stringify(getTotalPrice()),
+            currency_code: 'USD',
+            line_items: []
+        }
+
+        Store.cart.map(product => {
+            data.line_items.push({
+                currency_code: 'USD',
+                description: product.productName,
+                total_price: JSON.stringify(product.unitPrice * product.count),
+                unit_price: JSON.stringify(product.unitPrice),
+                quantity: JSON.stringify(product.count)
+            })
+        });
+        return data;
+    }
+
+    async makePayment() {
         try {
-            const paymentRequest = new PaymentRequest(Platform.OS == 'android' ? METHOD_DATA_ANDROID : METHOD_DATA_IOS, detail);
-
-            paymentRequest.canMakePayments().then((canMakePayment) => {
+            await Stripe.canMakeNativePayPaymentsAsync().then(async (canMakePayment) => {
                 if (canMakePayment) {
-                    console.log('Can Make Payment')
-
-                    paymentRequest.show()
+                    await Stripe.paymentRequestWithNativePayAsync(Platform.OS == 'android' ? this.androidItems() : {},
+                        Platform.OS == 'android' ? '' : this.iosItems())
                         .then(paymentResponse => {
-                            // Your payment processing code goes here
-                            const { paymentToken, } = paymentResponse.details;
-
                             console.log('paymentResponse', JSON.stringify(paymentResponse))
-                            console.log('paymentToken', paymentToken)
-
-                            this.paymentMethod(paymentToken, paymentResponse)
-                        });
-                }
-                else {
-                    console.log('Can not Make Payment')
+                            this.paymentMethod(paymentResponse.tokenId)
+                        })
+                } else {
+                    Alert.alert('Warning', 'Can not Make Payment', [{ text: 'OK' }]);
                 }
             })
 
@@ -196,13 +173,12 @@ class PaymentType extends Component {
         }
     }
 
-    paymentMethod(paymentToken, paymentResponse) {
-
+    paymentMethod(paymentToken) {
         const data = "type=card" + "&card[token]=" + paymentToken
 
         PaymentMethodComponent(data)
-            .then((responseJson) => {
-                console.log('payment method responseJson', responseJson)
+            .then(async (responseJson) => {
+                console.log('payment method response', responseJson)
 
                 const data = {
                     stripePaymentIntentId: this.state.stripePaymentIntentId,
@@ -211,19 +187,19 @@ class PaymentType extends Component {
                 }
 
                 post('/v1/Stripe/Payment/CapturePayment', data, res => {
-                    console.log('CapturePayment res', res);
-                    this.props.navigation.navigate('PaymentSuccess');
+                    console.log('CapturePayment response', res);
+                    (async () => {
+                        await Stripe.completeNativePayRequestAsync();
+                        this.props.navigation.navigate('PaymentSuccess');
+                    })();
                 }, err => {
                     console.log('err..', err)
                 });
 
-                paymentResponse.complete('success');
             }).catch((error) => {
                 console.error(error);
             });
-
     }
-
 
     render() {
         const { selectedAddress, loading } = this.state;

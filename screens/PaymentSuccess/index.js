@@ -10,7 +10,7 @@ class PaymentSuccess extends Component {
         AsyncStorage.multiRemove(['@cart', '@cartCount']);
         setTimeout(() => {
             this.props.navigation.navigate('Home');
-        }, 1500);
+        }, 5000);
     }
 
     render() {
