@@ -26,7 +26,7 @@ class PaymentType extends Component {
             await Stripe.setOptionsAsync({
                 publishableKey: 'pk_test_51GtEA4ETaaP0kb6bNP6OATyBmPerdnIXrAJyjDP9gfgtSOzoka3hnSWmUNYGDKRsnfMshdneaxcl45za3ow47yx300BNFC7CXr',
                 androidPayMode: 'test',
-                merchantId: 'merchant.com.deliveryapp.app1',
+                merchantId: 'merchant.com.deliveryapp.app',
             });
         } catch (error) {
             console.log('error...', error)
@@ -124,19 +124,19 @@ class PaymentType extends Component {
         Store.cart.map(product => {
             data.push({
                 label: product.productName,
-                amount: JSON.stringify(product.unitPrice * product.count)
+                amount: (product.unitPrice/100 * product.count).toFixed(2)
             })
         });
         data.push({
             label: 'Delivery',
-            amount: JSON.stringify(getTotalPrice())
+            amount: (getTotalPrice()/100).toFixed(2)
         })
         return data;
     }
 
     androidItems() {
         const data = {
-            total_price: JSON.stringify(getTotalPrice()),
+            total_price: (getTotalPrice()/100).toFixed(2),
             currency_code: 'USD',
             line_items: []
         }
@@ -145,8 +145,8 @@ class PaymentType extends Component {
             data.line_items.push({
                 currency_code: 'USD',
                 description: product.productName,
-                total_price: JSON.stringify(product.unitPrice * product.count),
-                unit_price: JSON.stringify(product.unitPrice),
+                total_price: JSON.stringify((product.unitPrice/100 * product.count).toFixed(2)),
+                unit_price: JSON.stringify((product.unitPrice/100).toFixed(2)),
                 quantity: JSON.stringify(product.count)
             })
         });
@@ -157,6 +157,7 @@ class PaymentType extends Component {
         try {
             await Stripe.canMakeNativePayPaymentsAsync().then(async (canMakePayment) => {
                 if (canMakePayment) {
+                    console.log('iosItems', this.iosItems())
                     await Stripe.paymentRequestWithNativePayAsync(Platform.OS == 'android' ? this.androidItems() : {},
                         Platform.OS == 'android' ? '' : this.iosItems())
                         .then(paymentResponse => {
