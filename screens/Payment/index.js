@@ -58,9 +58,6 @@ class Payment extends Component {
         var totalprice = this.state.viaCart.totalPrice.toFixed(2);
         var strCard = String(this.state.cardData.values.number).replace(/\s/g, '');
 
-
-        console.log("totalprice is " + totalprice);
-
         // this.state.orderDto = {
         //     cardHolderName: "Test Holder name",
         //     cardNumber: strCard,
@@ -96,8 +93,6 @@ class Payment extends Component {
                     stripePaymentMethodId: responseJson.id,
                     stripeFingerPrint: responseJson.card.fingerprint
                 }
-
-                console.log('data...', data)
 
                 post('/v1/Stripe/Payment/CapturePayment', data, res => {
                     console.log('CapturePayment res', res);

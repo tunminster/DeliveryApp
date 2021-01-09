@@ -11,6 +11,7 @@ import { observer } from 'mobx-react';
 import { PaymentMethodComponent } from '../../components/PaymentMethodComponent'
 import Loading from '../../components/loading';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
+import vars from '../../utils/vars';
 
 @observer
 class PaymentType extends Component {
@@ -24,12 +25,12 @@ class PaymentType extends Component {
     async componentDidMount() {
         try {
             await Stripe.setOptionsAsync({
-                publishableKey: 'pk_test_51GtEA4ETaaP0kb6bNP6OATyBmPerdnIXrAJyjDP9gfgtSOzoka3hnSWmUNYGDKRsnfMshdneaxcl45za3ow47yx300BNFC7CXr',
-                androidPayMode: 'test',
-                merchantId: 'merchant.com.deliveryapp.app',
+                publishableKey: vars.publishableKey,
+                androidPayMode: vars.androidPayMode,
+                merchantId: vars.merchantId,
             });
         } catch (error) {
-            console.log('error...', error)
+            console.log('error', error)
         }
     }
 
@@ -124,29 +125,29 @@ class PaymentType extends Component {
         Store.cart.map(product => {
             data.push({
                 label: product.productName,
-                amount: (product.unitPrice/100 * product.count).toFixed(2)
+                amount: (product.unitPrice / 100 * product.count).toFixed(2)
             })
         });
         data.push({
-            label: 'Delivery',
-            amount: (getTotalPrice()/100).toFixed(2)
+            label: vars.labelName,
+            amount: (getTotalPrice() / 100).toFixed(2)
         })
         return data;
     }
 
     androidItems() {
         const data = {
-            total_price: (getTotalPrice()/100).toFixed(2),
-            currency_code: 'USD',
+            total_price: (getTotalPrice() / 100).toFixed(2),
+            currency_code: vars.paymentCurrencyCode,
             line_items: []
         }
 
         Store.cart.map(product => {
             data.line_items.push({
-                currency_code: 'USD',
+                currency_code: vars.paymentCurrencyCode,
                 description: product.productName,
-                total_price: JSON.stringify((product.unitPrice/100 * product.count).toFixed(2)),
-                unit_price: JSON.stringify((product.unitPrice/100).toFixed(2)),
+                total_price: JSON.stringify((product.unitPrice / 100 * product.count).toFixed(2)),
+                unit_price: JSON.stringify((product.unitPrice / 100).toFixed(2)),
                 quantity: JSON.stringify(product.count)
             })
         });
@@ -158,8 +159,8 @@ class PaymentType extends Component {
             await Stripe.canMakeNativePayPaymentsAsync().then(async (canMakePayment) => {
                 if (canMakePayment) {
                     console.log('iosItems', this.iosItems())
-                    await Stripe.paymentRequestWithNativePayAsync(Platform.OS == 'android' ? this.androidItems() : {},
-                        Platform.OS == 'android' ? '' : this.iosItems())
+                    await Stripe.paymentRequestWithNativePayAsync(vars.isIos ? {} : this.androidItems(),
+                        vars.isIos ? this.iosItems() : '')
                         .then(paymentResponse => {
                             console.log('paymentResponse', JSON.stringify(paymentResponse))
                             this.paymentMethod(paymentResponse.tokenId)
@@ -194,7 +195,7 @@ class PaymentType extends Component {
                         this.props.navigation.navigate('PaymentSuccess');
                     })();
                 }, err => {
-                    console.log('err..', err)
+                    console.log('err', err)
                 });
 
             }).catch((error) => {
@@ -233,7 +234,7 @@ class PaymentType extends Component {
                     />
 
                     <Button
-                        title={Platform.OS == 'android' ? 'Google Pay' : 'Apple Pay'}
+                        title={vars.isIos ? 'Apple Pay' : 'Google Pay'}
                         onPress={() => this.createPaymentIntent('pay')}
                         style={{ margin: 15, marginBottom: 10 }}
                     />
