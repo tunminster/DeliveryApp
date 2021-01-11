@@ -32,7 +32,7 @@ class Card extends Component{
 
                         </View>
                         <Text style={styles.price}>
-                            £{data.unitPrice}
+                            £{(data.unitPrice / 100).toFixed(2)}
                         </Text>
 
                     </View>
