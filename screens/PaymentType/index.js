@@ -230,13 +230,14 @@ class PaymentType extends Component {
                     <Button
                         title={'Credit Card'}
                         onPress={() => this.createPaymentIntent('card')}
-                        style={{ margin: 15, marginBottom: 5 }}
+                        style={{ margin: 15, marginBottom: 5, borderRadius:5 }}
                     />
 
                     <Button
-                        title={vars.isIos ? 'Apple Pay' : 'Google Pay'}
+                        title={'Pay'}
                         onPress={() => this.createPaymentIntent('pay')}
-                        style={{ margin: 15, marginBottom: 10 }}
+                        image = {vars.isIos ? require('../../assets/images/apple.png') :require('../../assets/images/google.png')}
+                        style={{ margin: 15, marginBottom: 10, backgroundColor: vars.blackColor, borderRadius:5 }}
                     />
 
                     {loading ? <Loading /> : null}

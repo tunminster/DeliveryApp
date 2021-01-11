@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert } from "react-native";
+import vars from '../utils/vars';
 
 import { AuthContext } from '../constants/Context';
 var uuid = require('react-native-uuid');
@@ -13,7 +13,7 @@ export async function AuthRequestLogin(email, password){
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Shard': 'Da',
+        'X-Shard': vars.xShard,
         'Request-Id': guid, 
       },
       body: JSON.stringify({

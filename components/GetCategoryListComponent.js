@@ -1,5 +1,6 @@
 import * as React from 'react';
 var uuid = require('react-native-uuid');
+import vars from '../utils/vars';
 
 export async function GetCategoryByParentId(parentId, authKey)
 {
@@ -9,7 +10,7 @@ export async function GetCategoryByParentId(parentId, authKey)
       method: "GET",
       headers: {
         'Authorization': 'Bearer ' + authKey,
-        'X-Shard': 'Da',
+        'X-Shard': vars.xShard,
         'Request-Id': guid,
       }
     });
