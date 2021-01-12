@@ -19,6 +19,7 @@ export function logout() {
 }
 
 export function post(url, data, success, error) {
+
     console.log({userId: AuthStore.user.id, ...data});
     
     var STORAGE_KEY = 'id_token';
@@ -27,6 +28,7 @@ export function post(url, data, success, error) {
         let guid = uuid.v1();
         console.log('uuid.....order', guid)
         const config = {
+
             headers: { Authorization: 'Bearer ' + responseData ,'Request-Id': guid}
         };
         Api.post(url, {userId: AuthStore.user.id, ...data}, config)

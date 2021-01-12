@@ -34,13 +34,15 @@
     },
     "description": "",
     "android": {
-      "package": "com.deliveryapp",
+      "package": "com.deliveryapp.app"
+
       "config":{
         "googleSignIn":{
           "apiKey":"AIzaSyA6OXx8HA3xlKM-ORCeLRyNfigpoAKEoh0",
           "certificateHash":"E228B3152CD05A65CB9E0CEADFD2CAB93DEF8546"
         }
       }
+
     }
   }
 }

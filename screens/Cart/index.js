@@ -30,7 +30,7 @@ class Cart extends Component {
                             </View>
                         </ScrollView>
                         <Button 
-                            title={`Checkout - £${getTotalPrice()}`} 
+                            title={`Checkout - £${(getTotalPrice() / 100).toFixed(2)}`} 
                             onPress={() => this.checkout()}
                         />
                     </React.Fragment>

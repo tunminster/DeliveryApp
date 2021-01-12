@@ -7,7 +7,7 @@ let axiosInstance = axios.create({
     baseURL: host
 });
 
-axiosInstance.defaults.headers.common['X-Shard'] = 'Da';
+axiosInstance.defaults.headers.common['X-Shard'] = vars.xShard;
 axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
 
 axiosInstance.interceptors.request.use((config) => {

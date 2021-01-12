@@ -1,4 +1,5 @@
 import vars from "../../utils/vars";
+import { wp } from '../../helper/responsiveScreen';
 
 export default {
     btn: {
@@ -9,10 +10,17 @@ export default {
         paddingHorizontal: 15
     },
     title: {
-        color: '#fff',
+        color: vars.whiteColor,
         fontFamily: vars.bold,
         fontWeight: '600',
         textAlign: 'center',
         fontSize: 19
+    },
+    image: {
+        tintColor: vars.isIos && vars.whiteColor,
+        marginRight: wp(2),
+        alignSelf: 'center',
+        width: vars.isIos ? wp(4) : wp(5),
+        height: wp(5)
     }
 }

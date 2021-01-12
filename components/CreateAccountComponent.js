@@ -1,5 +1,6 @@
 import * as React from 'react';
 var uuid = require('react-native-uuid');
+import vars from '../utils/vars';
 
 export async function CreateAccountComponent(email,password,confirmpassword){
   let guid = uuid.v1();
@@ -9,8 +10,8 @@ export async function CreateAccountComponent(email,password,confirmpassword){
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Shard': 'Da',
-        'Request-Id': guid, 
+        'X-Shard': vars.xShard,
+        'Request-Id': guid,
       },
       body: JSON.stringify({
         email: email,

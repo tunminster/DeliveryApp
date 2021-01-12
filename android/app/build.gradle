@@ -132,7 +132,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.deliveryapp'
+        applicationId 'com.deliveryapp.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -188,6 +188,10 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    implementation 'com.google.android.gms:play-services-wallet:17.0.0'
+    implementation 'com.android.support:appcompat-v7:24.1.1'
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }
