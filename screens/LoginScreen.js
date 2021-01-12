@@ -8,6 +8,7 @@ import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
+import vars from '../utils/vars';
 
 export const SignIn = ({navigation}) => {
     const {signIn} = React.useContext(AuthContext);
@@ -167,7 +168,7 @@ export const SignIn = ({navigation}) => {
           </View>
 
           <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg}/>
-
+          </View>
   );
 
 };
@@ -271,7 +272,6 @@ export const CreateAccount = ({navigation}) => {
 
 
   return (
-
     <View style={loginstyles.container}>
       <View style={{ marginTop: hp(14), justifyContent: 'center', alignItems: 'center' }}>
         <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
@@ -338,29 +338,15 @@ export const CreateAccount = ({navigation}) => {
             </TouchableOpacity>
             </View>
 
-            <View style={loginstyles.view}>
-            <TouchableOpacity >
-            <Image source={require('../assets/images/apple.png')} style={loginstyles.signinImage}/>
-            </TouchableOpacity>
-            </View>
+          
           </View>
 
           <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg}/>
           
       </View>
-
-      <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
-
-    </View>
-
   );
 
-
 };
-
-const testID = (id) => {
-  return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
-}
 
 export const Splash = () => (
   <ScreenContainer>
