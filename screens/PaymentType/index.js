@@ -159,7 +159,8 @@ class PaymentType extends Component {
             await Stripe.canMakeNativePayPaymentsAsync().then(async (canMakePayment) => {
                 if (canMakePayment) {
                     console.log('iosItems', this.iosItems())
-                    await Stripe.paymentRequestWithNativePayAsync(vars.isIos ? {} : this.androidItems(),
+                    await Stripe.paymentRequestWithNativePayAsync(vars.isIos ? 
+                        {currencyCode: vars.paymentCurrencyCode } : this.androidItems(), 
                         vars.isIos ? this.iosItems() : '')
                         .then(paymentResponse => {
                             console.log('paymentResponse', JSON.stringify(paymentResponse))

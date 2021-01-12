@@ -11,7 +11,7 @@ export default {
     whiteColor: '#ffffff',
     idToken: 'id_token',
     currency: '£',
-    paymentCurrencyCode: 'USD',
+    paymentCurrencyCode: 'GBP',
     androidPayMode: 'test',
     labelName: 'Delivery', 
     merchantId: 'merchant.com.deliveryapp.app',  
