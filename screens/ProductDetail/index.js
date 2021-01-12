@@ -21,12 +21,12 @@ class ProductDetail extends Component {
     };
 
     componentDidMount() {
+        let guid = uuid.v1();
+        console.log('uuid.....order', guid)
         const id = this.props.navigation.getParam('id');
-            let guid = uuid.v1();
-            console.log('uuid.....Productdetails', guid)
-            const config = {
-                headers: {'Request-Id': guid}
-            };  
+        const config = {
+            headers: {'Request-Id': guid}
+        };
         Api.get('/product/getById' + id, config).then(res => {
             this.setState({data: res, loading: false});
         });
@@ -43,7 +43,7 @@ class ProductDetail extends Component {
             prevButton: <Image source={require('../../assets/images/left-chevron.png')} style={styles.chevron} />
         };
 
-        const {id, productName, description, unitPrice } = this.state.data;
+        const {id, productName, description, unitPrice, productImageUrl } = this.state.data;
 
         return (
             <View style={styles.container}>
@@ -55,7 +55,7 @@ class ProductDetail extends Component {
                         <View style={styles.card}>
                             <Swiper {...swiperOptions}>
                                 <View style={styles.swiperItem}>
-                                    <Image source={{uri: 'https://static.wixstatic.com/media/71ac99_cf0381fa9e3343a69c047e2b7f5f59ce~mv2_d_2668_2648_s_4_2.png'}} style={styles.img} />
+                                    <Image source={{uri: productImageUrl}} style={styles.img} />
                                 </View>
                             </Swiper>
                             

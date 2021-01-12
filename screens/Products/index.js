@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput,Image, Input, TouchableOpacity, Alert, AsyncStorage, ActivityIndicator} from "react-native";
+import { View, Text, StyleSheet, Button, TextInput,Image, Input, TouchableOpacity, Alert, ActivityIndicator} from "react-native";
 import { AuthContext } from '../../constants/Context';
 import {storeData, retrieveData} from '../../components/AuthKeyStorageComponent';
 import { GetCategoryByParentId } from '../../components/GetCategoryListComponent'
@@ -49,9 +49,9 @@ class ProductScreen extends React.Component{
         retrieveData(STORAGE_KEY)
         .then((data) => {
             let guid = uuid.v1();
-            console.log('uuid.....Store', guid)
+            console.log('uuid.....order', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + data , 'Request-Id': guid}
+                headers: { Authorization: 'Bearer ' + data,'Request-Id': guid}
             };
     
             if(categoryId){

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {View, AsyncStorage, Text, Image} from 'react-native';
+import {View, Text, Image} from 'react-native';
+import {AsyncStorage} from 'react-native';
 import vars from '../../utils/vars';
 import Store from '../../config/store';
 

@@ -16,7 +16,7 @@ export async function CreateAccountComponent(email,password,confirmpassword){
       body: JSON.stringify({
         email: email,
         password: password,
-        confirmpassword:confirmpassword,
+        confirmPassword:confirmpassword,
       })
     });
 

@@ -9,7 +9,6 @@ import vars from '../../utils/vars';
 import {retrieveData} from '../../components/AuthKeyStorageComponent';
 var uuid = require('react-native-uuid');
 
-
 class Orders extends Component {
     state = {
         orders: [],
@@ -24,7 +23,7 @@ class Orders extends Component {
             let guid = uuid.v1();
             console.log('uuid.....order', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + data,  'Request-Id': guid},
+                headers: { Authorization: 'Bearer ' + data ,'Request-Id': guid}
             };
     
             Api.get('/order/getByUserId/' + AuthStore.user.id, config).then(res => {

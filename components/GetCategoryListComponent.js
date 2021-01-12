@@ -5,7 +5,6 @@ import vars from '../utils/vars';
 export async function GetCategoryByParentId(parentId, authKey)
 {
   let guid = uuid.v1();
-  console.log('uuid.....category', guid)
   let response = await fetch("https://delivery-api.harveynetwork.com/api/Category/getAllCategoriesByParentId/" + parentId, {
       method: "GET",
       headers: {

@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { AsyncStorage } from "react-native";
+import { AsyncStorage } from 'react-native';
 import AuthStore from '../config/store/auth';
 import Api from '../config/api';
 var uuid = require('react-native-uuid');
+
 
 export async function storeData(key, message)
 {
@@ -39,7 +40,6 @@ export async function storeUser(token)
 {
     try{
       let guid = uuid.v1();
-      console.log('uuid.....Store', guid)
       const config = {
           headers: { Authorization: 'Bearer ' + token , 'Request-Id': guid}
       };  
