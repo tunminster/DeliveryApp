@@ -34,8 +34,7 @@
     },
     "description": "",
     "android": {
-      "package": "com.deliveryapp.app"
-
+      "package": "com.deliveryapp.app",
       "config":{
         "googleSignIn":{
           "apiKey":"AIzaSyA6OXx8HA3xlKM-ORCeLRyNfigpoAKEoh0",

@@ -19,27 +19,23 @@ export function logout() {
 }
 
 export function post(url, data, success, error) {
-
-    console.log({userId: AuthStore.user.id, ...data});
-    
+    console.log(data);
     var STORAGE_KEY = 'id_token';
     retrieveData(STORAGE_KEY)
     .then((responseData) => {
         let guid = uuid.v1();
-        console.log('uuid.....order', guid)
+        console.log('uuid.....Store', guid)
         const config = {
-
-            headers: { Authorization: 'Bearer ' + responseData ,'Request-Id': guid}
+            headers: { Authorization: 'Bearer ' + responseData , 'Request-Id': guid}
         };
-        Api.post(url, {userId: AuthStore.user.id, ...data}, config)
+        console.log('url', url, ",,,,", config)
+        Api.post(url, data, config)
         .then(res => success(res))
         .catch(err => {
             error && error(err);
             console.log(err);
         });
-
     });
-    
 }
 
 export function get(url, success, error) {
