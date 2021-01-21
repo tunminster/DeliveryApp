@@ -154,6 +154,7 @@ export default function App(props) {
 
   function googleSignInRequest(token) {
     var STORAGE_KEY = 'id_token';
+    setIsLoading(true);
     AuthRequestGoogleLogin(token)
       .then((data) => {
         const result = JSON.parse(data);
@@ -166,6 +167,7 @@ export default function App(props) {
 
           });
 
+
         //store user  
         storeUser(result.auth_token).then((data) => {
           console.log("user stored " + data);
@@ -174,12 +176,14 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
+       setIsLoading(false);
         setUserToken(null);
       });
   };
 
   function facebookSignInRequest(token) {
     var STORAGE_KEY = 'id_token';
+    setIsLoading(true);
     AuthRequestFBLogin(token)
       .then((data) => {
         const result = JSON.parse(data);
@@ -192,7 +196,7 @@ export default function App(props) {
 
           });
 
-        //store user  
+ 
         storeUser(result.auth_token).then((data) => {
           console.log("user stored " + data);
         });
@@ -200,6 +204,7 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
+       setIsLoading(false);
         setUserToken(null);
       });
   };
