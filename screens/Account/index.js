@@ -14,7 +14,6 @@ class Account extends Component{
     render(){
         const { username } = AuthStore.user;
         const { navigate } = this.props.navigation;
-
         
         return (
             <View style={styles.container}>
@@ -38,7 +37,7 @@ class Account extends Component{
 
                     <Text style={sharedStyles.subTitle}>Addresses</Text>
                     <View style={sharedStyles.section}>
-                        {AuthStore.user.addresses.map((item,i) => <AddressItem item={item} key={i} notTransparent={true} navigation={this.props.navigation} />)}
+                        {Object.entries(AuthStore.user).length != 0  && AuthStore.user.addresses.map((item,i) => <AddressItem item={item} key={i} notTransparent={true} navigation={this.props.navigation} />)}
                         <View style={styles.btnContainer}>
                             <TouchableOpacity style={styles.btnImg} onPress={() => this.props.navigation.navigate('CreateAddress')} >
                                 <Text style={styles.btnIcon}>+</Text>
