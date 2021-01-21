@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, Alert, ActivityIndicator, Image, ScrollView, Switch } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { wp, hp, normalize } from '../helper/responsiveScreen';
@@ -8,6 +8,7 @@ import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
 import { GoogleSignin } from '@react-native-community/google-signin'
 import {LoginManager, AccessToken} from 'react-native-fbsdk'
+import Loading from '../components/loading';
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -27,7 +28,6 @@ export const SignIn = ({ navigation }) => {
   const [signedIn, setsignedInStatus] = React.useState(false);
   const [name, setName] = React.useState(null);
   const [photoUrl, setphotoUrl] = React.useState(false);
-
 
   const facebookLogIn = async () => {
 
@@ -79,7 +79,6 @@ export const SignIn = ({ navigation }) => {
     }
   }
 
-
   const dologin = () => {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
 
@@ -90,6 +89,7 @@ export const SignIn = ({ navigation }) => {
     else if (!pattern.test(email.email)) {
       alert("Enter a valid email.")
     }
+
     else if (password.password == null || password.password == '') {
       // setPasswordError("Enter a valid password");
       alert("Enter a valid password.")
@@ -103,69 +103,72 @@ export const SignIn = ({ navigation }) => {
   }
 
   return (
-    <View style={loginstyles.container}>
-      <View style={{ marginTop: hp(12), justifyContent: 'center', alignItems: 'center' }}>
-        <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
-      </View>
-      <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
+    <TouchableWithoutFeedback
+      onPress={() => Keyboard.dismiss()}>
+      <View style={loginstyles.container}>
+        <View style={{ marginTop: hp(12), justifyContent: 'center', alignItems: 'center' }}>
+          <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
 
-        <Text style={loginstyles.header}>Welcome</Text>
-        <Text style={loginstyles.txt}>Enter Your Email address for Sign In. Enjoy your food</Text>
+          <Text style={loginstyles.header}>Welcome</Text>
+          <Text style={loginstyles.txt}>Enter Your Email address for Sign In. Enjoy your food</Text>
 
-        <Custominput
-          placeholder="Email Address"
-          placeholderTextColor="rgba(0,0,0,0.32)"
-          style
-          icon={require('../assets/images/mail.png')}
-          onChangeText={text => setEmail({ email: text })}
-          autoCorrect={false}
-        />
+          <Custominput
+            placeholder="Email Address"
+            placeholderTextColor="rgba(0,0,0,0.32)"
+            style
+            icon={require('../assets/images/mail.png')}
+            onChangeText={text => setEmail({ email: text })}
+            autoCorrect={false}
+          />
 
-        <Custominput
-          password
-          placeholder="Password"
-          placeholderTextColor="rgba(0,0,0,0.32)"
-          style
-          icon={require('../assets/images/lock.png')}
-          onChangeText={text => setPassword({ password: text })}
-          autoCorrect={false}
-        />
+          <Custominput
+            password
+            placeholder="Password"
+            placeholderTextColor="rgba(0,0,0,0.32)"
+            style
+            icon={require('../assets/images/lock.png')}
+            onChangeText={text => setPassword({ password: text })}
+            autoCorrect={false}
+          />
 
-        <Text style={loginstyles.forgot}>Forgot Password?</Text>
+          <Text style={loginstyles.forgot}>Forgot Password?</Text>
 
-        <CustomButton
-          onPress={() => dologin()}
-          title={'Sign In'}
-        />
+          <CustomButton
+            onPress={() => dologin()}
+            title={'Sign In'}
+          />
 
-        <Text style={loginstyles.account}>Don't have an account?
+          <Text style={loginstyles.account}>Don't have an account?
             <TouchableOpacity onPress={() => navigation.push("CreateAccount")}>
-            <Text style={loginstyles.signup}> Sign Up</Text>
-          </TouchableOpacity>
-        </Text>
 
-        <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
-      </View>
+              <Text style={loginstyles.signup}> Sign Up</Text>
+            </TouchableOpacity>
+          </Text>
 
-      <View style={loginstyles.imagecontainer}>
-
-        <View style={loginstyles.view}>
-          <TouchableOpacity onPress={() => signInWithGoogle()}>
-            <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
-          </TouchableOpacity>
+          <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
         </View>
 
-        <View style={loginstyles.view}>
-          <TouchableOpacity onPress={() => facebookLogIn()}>
-            <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
-          </TouchableOpacity>
-        </View>
-      </View>
+        <View style={loginstyles.imagecontainer}>
 
-      <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
-    </View>
+          <View style={loginstyles.view}>
+            <TouchableOpacity onPress={() => signInWithGoogle()}>
+              <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={loginstyles.view}>
+            <TouchableOpacity onPress={() => facebookLogIn()}>
+              <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
+      </View>
+    </TouchableWithoutFeedback>
   );
-
 };
 
 export const CreateAccount = ({ navigation }) => {
@@ -261,92 +264,92 @@ export const CreateAccount = ({ navigation }) => {
     }
 
     else if (email.email != null && password.password != null) {
-
       signUp(email.email, password.password, confirmPassword.confirmpassword);
     }
   }
 
-
   return (
-    <View style={loginstyles.container}>
-      <View style={{ marginTop: hp(14), justifyContent: 'center', alignItems: 'center' }}>
-        <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
-      </View>
+    <TouchableWithoutFeedback
+      onPress={() => Keyboard.dismiss()}>
+      <View style={loginstyles.container}>
+        <View style={{ marginTop: hp(14), justifyContent: 'center', alignItems: 'center' }}>
+          <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
+        </View>
 
-      <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
-        <Text style={loginstyles.header}>Create Account</Text>
-        <Text style={loginstyles.txt}>Enter your Email Address and Password for Sign up.</Text>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
+          <Text style={loginstyles.header}>Create Account</Text>
+          <Text style={loginstyles.txt}>Enter your Email Address and Password for Sign up.</Text>
 
-        <Custominput
-          style
-          placeholder="Email Address"
-          placeholderTextColor="rgba(0,0,0,0.32)"
-          icon={require('../assets/images/mail.png')}
-          onChangeText={text => setEmail({ email: text })}
-          autoCorrect={false}
-        />
+          <Custominput
+            style
+            placeholder="Email Address"
+            placeholderTextColor="rgba(0,0,0,0.32)"
+            icon={require('../assets/images/mail.png')}
+            onChangeText={text => setEmail({ email: text })}
+            autoCorrect={false}
+          />
 
-        <Custominput
-          password
-          placeholder="Password"
-          placeholderTextColor="rgba(0,0,0,0.32)"
-          style
-          icon={require('../assets/images/lock.png')}
-          onChangeText={text => setPassword({ password: text })}
-          autoCorrect={false}
-        />
+          <Custominput
+            password
+            placeholder="Password"
+            placeholderTextColor="rgba(0,0,0,0.32)"
+            style
+            icon={require('../assets/images/lock.png')}
+            onChangeText={text => setPassword({ password: text })}
+            autoCorrect={false}
+          />
 
-        <Custominput
-          password
-          placeholder="Confirm Password"
-          placeholderTextColor="rgba(0,0,0,0.32)"
-          style
-          icon={require('../assets/images/lock.png')}
-          onChangeText={text => setConfirmPassword({ confirmpassword: text })}
-          autoCorrect={false}
-        />
+          <Custominput
+            password
+            placeholder="Confirm Password"
+            placeholderTextColor="rgba(0,0,0,0.32)"
+            style
+            icon={require('../assets/images/lock.png')}
+            onChangeText={text => setConfirmPassword({ confirmpassword: text })}
+            autoCorrect={false}
+          />
 
-        <CustomButton
-          onPress={() => register()}
-          title={'Sign Up'}
-        />
+          <CustomButton
+            onPress={() => register()}
+            title={'Sign Up'}
+          />
 
-        <Text style={loginstyles.account}>Already have an Account?
+          <Text style={loginstyles.account}>Already have an Account?
             <TouchableOpacity onPress={() => navigation.push("SignIn")}>
-            <Text style={loginstyles.signup}> Sign In</Text>
-          </TouchableOpacity>
-        </Text>
 
-        <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
-      </View>
+              <Text style={loginstyles.signup}> Sign In</Text>
+            </TouchableOpacity>
+          </Text>
 
-      <View style={loginstyles.imagecontainer}>
-
-        <View style={loginstyles.view}>
-          <TouchableOpacity onPress={() => signInWithGoogle()}>
-            <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
-          </TouchableOpacity>
+          <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
         </View>
 
-        <View style={loginstyles.view}>
-          <TouchableOpacity onPress={() => facebookLogIn()}>
-            <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
-          </TouchableOpacity>
+        <View style={loginstyles.imagecontainer}>
+
+          <View style={loginstyles.view}>
+            <TouchableOpacity onPress={() => signInWithGoogle()}>
+              <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={loginstyles.view}>
+            <TouchableOpacity onPress={() => facebookLogIn()}>
+              <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
+            </TouchableOpacity>
+          </View>
         </View>
 
+        <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
 
       </View>
-
-      <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
-
-    </View>
+    </TouchableWithoutFeedback>
   );
-
 };
 
 export const Splash = () => (
   <ScreenContainer>
-    <Text>Loading...</Text>
+    {/* <Text>Loading...</Text> */}
+    <Loading />
   </ScreenContainer>
 );
 
