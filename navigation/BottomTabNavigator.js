@@ -5,14 +5,11 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import HelloScreen from '../screens/HelloScreen'
+import TabBarText from '../components/TabBarText';
 
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
-
-
-
-
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -26,22 +23,38 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Get Started',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          tabBarLabel:({ focused }) => <TabBarText focused={focused} name="Home" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" />,
         }}
       />
       <BottomTab.Screen
-        name="Links"
+        name="Search"
         component={LinksScreen}
         options={{
-          title: 'Resources',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
+          tabBarLabel:({ focused }) => <TabBarText focused={focused} name="Search" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="search" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Orders"
+        component={LinksScreen}
+        options={{
+          tabBarLabel:({ focused }) => <TabBarText focused={focused} name="Orders" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ellipsis-horizontal-circle" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="More"
+        component={LinksScreen}
+        options={{
+          tabBarLabel:({ focused }) => <TabBarText focused={focused} name="More" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ellipsis-horizontal-circle" />,
         }}
       />
     </BottomTab.Navigator>
 
 
-    
+
   );
 }
 
@@ -50,8 +63,8 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Home':
-       return 'Restaurant test';
-    case 'Links':
+      return 'Restaurant test';
+    case 'Search':
       return 'Links to learn more';
   }
 }
