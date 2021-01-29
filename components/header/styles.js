@@ -1,16 +1,13 @@
 import vars from '../../utils/vars';
+import { wp, hp, normalize } from '../../helper/responsiveScreen'
+import Colors from '../../constants/Colors'
 
 export default {
     header: {
-        height: vars.isIos ? 65  : 55,
-        backgroundColor: '#fff',
-        justifyContent: 'space-between',
         flexDirection: 'row',
-        alignItems: 'center',
-        shadowOpacity: 0.2,
-        shadowOffset: {x: 0, y: 2},
-        shadowRadius: 4,
-        elevation: 3
+        justifyContent: 'space-between',
+        marginHorizontal: wp(6),
+        marginVertical: hp(2)
     },
     title: {
         fontFamily: vars.bold,
@@ -22,5 +19,26 @@ export default {
     close: {
         width: 25, height: 25,
         marginLeft: 15
-    }
+    },
+    headerChild: {
+        flex: 1,
+        alignSelf: 'center'
+    },
+    icon: {
+        width: wp(5),
+        height: wp(7),
+        marginLeft: wp(2),
+        alignSelf: 'center'
+    },
+    headerTitle: {
+        fontSize: normalize(14),
+        fontFamily: 'Roboto-Regular',
+        color: Colors.gray,
+        alignItems: 'center',
+        marginVertical: hp(1)
+    },
+    seperateLine: {
+        backgroundColor: Colors.border,
+        height: wp(0.2),
+    },
 }

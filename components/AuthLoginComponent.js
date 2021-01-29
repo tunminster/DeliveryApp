@@ -22,7 +22,9 @@ export async function AuthRequestLogin(email, password){
       })
     });
 
+    console.log('login response...',  response)
     let result = await response.json();
+    console.log('login response', result, response)
 
     return (result);
   
