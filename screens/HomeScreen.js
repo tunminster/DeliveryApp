@@ -7,12 +7,13 @@ import Header from '../components/header'
 import Geolocation from '@react-native-community/geolocation'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import AuthStore from '../config/store/auth';
-import vars from '../utils/vars';
-import AddressList from '../components/addressList';
+import CheckBoxView from '../components/checkBoxView';
 import { GetLocationComponent } from '../components/GetLocationComponent'
 import { retrieveData } from '../components/AuthKeyStorageComponent';
 import Api from '../config/api';
 import Loading from '../components/loading';
+import Button from '../components/button';
+import { titleCase } from '../utils/helpers'
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
 var STORAGE_KEY = 'id_token';
@@ -35,9 +36,11 @@ class HomeScreen extends Component {
       restaurantData: [],
       fottorLoading: false,
       isSearching: false,
-      storeType: '',
+      storeType: [],
       isLoading: true,
-      isRestaurantLoading: false
+      isRestaurantLoading: false,
+      filterModelVisible: false,
+      filterValue: 'distance',
     }
   }
 
@@ -47,8 +50,6 @@ class HomeScreen extends Component {
     if (Platform.OS === 'android') {
       RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
         .then(data => {
-          console.log('data...', data)
-
           if (this.state.latitude === '') {
             this.callLocation()
           }
@@ -82,7 +83,7 @@ class HomeScreen extends Component {
   }
 
   getRestaurant() {
-    const { latitude, longitude, page, search, storeType } = this.state
+    const { latitude, longitude, page, search, storeType, filterValue } = this.state
     console.log('location', latitude, longitude)
     if (page == 1) {
       this.setState({ isRestaurantLoading: true })
@@ -94,7 +95,7 @@ class HomeScreen extends Component {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };
 
-        const value = 'searchQuery=' + search + '&filters=' + '' +
+        const value = 'searchQuery=' + search + '&filters=' + filterValue +
           '&storetypes=' + storeType + '&latitude=' + latitude + '&longitude=' + longitude +
           '&page=' + page + '&pagesize=' + 20
 
@@ -188,9 +189,16 @@ class HomeScreen extends Component {
     console.log('refresh...', 1)
   }
 
+  onDonePressHandler() {
+    this.setState({ filterModelVisible: false })
+    console.log('storetypes', this.state.storeType)
+    this.setState({ restaurantData: [], page: 1 },
+      () => { this.getRestaurant() })
+  }
+
   renderCategories = (item, index) => {
     return (
-      <TouchableOpacity onPress={() => this.setState({ storeType: item.item.storeTypeId, restaurantData: [], page: 1 }
+      <TouchableOpacity onPress={() => this.setState({ storeType: titleCase(item.item.storeTypeName), restaurantData: [], page: 1 }
         , () => { this.getRestaurant() })}>
         <ImageBackground
           source={{ uri: item.item.imageUri }}
@@ -220,9 +228,23 @@ class HomeScreen extends Component {
     )
   }
 
+  onCategoryPress = (item) => {
+    let exist = this.state.storeType.includes(item)
+    if (!exist) {
+      this.state.storeType.push(item);
+      this.forceUpdate();
+    }
+    else {
+      var removeIndex = this.state.storeType.indexOf(item)
+      this.state.storeType.splice(removeIndex, 1);
+      this.forceUpdate();
+    }
+  }
+
   render() {
     const { headerTitle, isModalVisible, addressesId, curLatitude, curLongitude, search,
-      categoriesData, restaurantData, isSearching, fottorLoading, isLoading, isRestaurantLoading } = this.state
+      categoriesData, restaurantData, isSearching, fottorLoading, isLoading, isRestaurantLoading,
+      filterModelVisible, filterValue } = this.state
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -260,7 +282,7 @@ class HomeScreen extends Component {
 
                   <View style={styles.modelSeperateLine} />
 
-                  <AddressList
+                  <CheckBoxView
                     active={addressesId === 0}
                     image={require('../assets/images/navigation.png')}
                     title={'Current Location'}
@@ -281,8 +303,8 @@ class HomeScreen extends Component {
                   <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                     <View style={styles.modelSection}>
                       {Object.entries(AuthStore.user).length != 0 && AuthStore.isLogin && AuthStore.user.addresses.map((item, i) =>
-                        <View>
-                          <AddressList
+                        <View  key={i}>
+                          <CheckBoxView
                             active={addressesId === item.id}
                             image={require('../assets/images/location_outline.png')}
                             title={item.addressLine}
@@ -319,7 +341,9 @@ class HomeScreen extends Component {
                 onSubmitEditing={() =>
                   this.setState({ restaurantData: [], page: 1 },
                     () => { this.getRestaurant() })} />
-              <Image source={require('../assets/images/filter.png')} style={styles.filter} />
+              <TouchableOpacity onPress={() => this.setState({ filterModelVisible: true })} >
+                <Image source={require('../assets/images/filter.png')} style={styles.filter} />
+              </TouchableOpacity>
             </View>
 
             <ScrollView
@@ -377,12 +401,73 @@ class HomeScreen extends Component {
             </ScrollView>
 
             <View style={styles.basketContainer}>
-              <Text style={{ ...styles.basketTitle, fontSize: normalize(22) }}>View Basket</Text>
+              <Text style={{ ...styles.basketTitle, fontSize: normalize(18) }}>View Basket</Text>
               <View style={styles.basketCount}>
-                <Text style={{ ...styles.basketTitle, fontSize: normalize(16), marginHorizontal: wp(2.5), marginVertical: hp(0.5) }}>1</Text>
+                <Text style={{ ...styles.basketTitle, fontSize: normalize(15), marginHorizontal: wp(2.5), marginVertical: hp(0.5) }}>1</Text>
               </View>
-              <Text style={{ ...styles.basketTitle, position: 'absolute', right: 0, alignSelf: 'center', marginRight: wp(4), fontSize: normalize(22) }}>£5.50</Text>
+              <Text style={{ ...styles.basketTitle, position: 'absolute', right: 0, alignSelf: 'center', marginRight: wp(4), fontSize: normalize(19) }}>£5.50</Text>
             </View>
+
+            <Modal
+              transparent={true}
+              animationType={'none'}
+              visible={filterModelVisible}
+            >
+              <View style={styles.modelContainer}>
+                <View style={styles.modelChildContainer}>
+                  <View style={styles.modelHeaderView}>
+                    <TouchableOpacity onPress={() => this.setState({ filterModelVisible: false })} style={{ alignSelf: 'center' }} >
+                      <Image source={require('../assets/images/close-icon.png')} style={styles.modelIcon} />
+                    </TouchableOpacity>
+                    <Text style={styles.modelHeaderTitle}>Filters</Text>
+                  </View>
+                  <View style={styles.modelSeperateLine} />
+
+                  <CheckBoxView
+                    active={filterValue === 'distance'}
+                    image={''}
+                    title={'Distance'}
+                    onPress={() => this.setState({ filterValue: 'distance' })} />
+                  <View style={styles.modelSeperateLine} />
+                  <CheckBoxView
+                    active={filterValue === 'recommended'}
+                    image={''}
+                    title={'Recommended'}
+                    onPress={() => this.setState({ filterValue: 'recommended' })} />
+
+                  <Text style={{ ...styles.modelHeaderTitle, marginTop: hp(4), marginBottom: hp(2) }}>Categories</Text>
+                  <View style={styles.modelSeperateLine} />
+
+                  <ScrollView style={{ flex: 1, marginBottom: hp(8) }} showsVerticalScrollIndicator={false}>
+                    <View style={styles.modelSection}>
+
+                      {categoriesData && categoriesData.map((item, i) =>
+                        <View key={i}>
+                          <CheckBoxView
+                            active={this.state.storeType.length != 0 && this.state.storeType.includes(titleCase(item.storeTypeName))}
+                            image={''}
+                            title={item.storeTypeName}
+                            isCheckBox={true}
+                            onPress={() => this.onCategoryPress(titleCase(item.storeTypeName))}
+                          />
+                          <View style={styles.modelSeperateLine} />
+                        </View>
+                      )}
+                    </View>
+                  </ScrollView>
+
+                  <View style={styles.btnContainer}>
+                    <Button
+                      onPress={() => this.onDonePressHandler()}
+                      title={'Done'}
+                      style={styles.btn}
+                    />
+                  </View>
+
+                </View>
+              </View>
+            </Modal>
+
 
           </View>
         }
@@ -422,11 +507,11 @@ const styles = StyleSheet.create({
     tintColor: Colors.black
   },
   modelHeaderTitle: {
-    fontSize: normalize(20),
+    fontSize: normalize(18),
     fontFamily: 'Roboto-Regular',
     color: Colors.black,
     alignItems: 'center',
-    marginLeft: wp(5)
+    marginLeft: wp(4)
   },
   modelSeperateLine: {
     backgroundColor: Colors.border,
@@ -488,7 +573,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   headerTitle: {
-    fontSize: normalize(22),
+    fontSize: normalize(17),
     fontFamily: 'Roboto-Regular',
     color: Colors.black,
     alignItems: 'center',
@@ -516,7 +601,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(2)
   },
   restaurantTitle: {
-    fontSize: normalize(20),
+    fontSize: normalize(18),
     fontFamily: 'Roboto-Regular',
     color: Colors.black,
     fontWeight: '400',
@@ -524,7 +609,7 @@ const styles = StyleSheet.create({
     marginTop: hp(1.5)
   },
   restaurantSubTitle: {
-    fontSize: normalize(16),
+    fontSize: normalize(15),
     fontFamily: 'Roboto-Regular',
     color: Colors.gray,
     fontWeight: '400',
@@ -538,7 +623,7 @@ const styles = StyleSheet.create({
     right: wp(5),
     bottom: 0,
     marginBottom: hp(2),
-    paddingVertical: hp(2.5),
+    paddingVertical: hp(2),
     paddingHorizontal: wp(4),
     backgroundColor: Colors.tabIconSelected,
     borderRadius: wp(2),
@@ -554,8 +639,16 @@ const styles = StyleSheet.create({
     color: Colors.white,
     alignItems: 'center',
   },
+  btnContainer: {
+    position: 'absolute',
+    bottom: 0,
+    height: hp(9),
+    width: '100%'
+  },
+  btn: {
+    marginHorizontal: wp(5),
+    marginBottom: hp(2)
+  }
 });
 
 export default HomeScreen;
-
-

@@ -11,13 +11,16 @@ export default {
         width: wp(4),
         height: wp(4),
         alignSelf: 'center',
-        tintColor: Colors.black
+        tintColor: Colors.black,
+        marginRight: wp(5)
       },
       checkIcon: {
         width: wp(5),
         height: wp(5),
+        position: 'absolute',
+        right: 0,
         alignSelf: 'center',
-        marginLeft: wp(1)
+        marginHorizontal: wp(3)
       },
       title: {
         width: wp(65),
@@ -25,6 +28,5 @@ export default {
         fontFamily: 'Roboto-Regular',
         color: Colors.gray,
         alignSelf: 'center',
-        marginLeft: wp(5)
       },
 }
