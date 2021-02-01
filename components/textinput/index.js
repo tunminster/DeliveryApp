@@ -16,6 +16,7 @@ export default class Custominput extends Component{
                 style={styles.inputText}
                 onChangeText={onChangeText}
                 autoCorrect={autoCorrect}
+                autoCapitalize = 'none'
                 />
             </View>
         )
@@ -37,12 +38,14 @@ const styles=StyleSheet.create({
         fontSize:normalize(15),
         fontFamily:'Roboto-Regular',
         width:wp(60),
-        marginLeft:wp(4)
+        marginLeft:wp(3),
+        padding: wp(2)
     },
     icon:{
         resizeMode:'center',
-        width:hp(5),
-        height:hp(5),
-
+        width:hp(4.5),
+        height:hp(4.5),
+        marginLeft: wp(1),
+        alignSelf:'center'
     }
 })

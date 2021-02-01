@@ -254,37 +254,11 @@ const AuthStackScreen = () => (
 
 const PageStack = createStackNavigator();
 const PageScreen = () => (
-  <PageStack.Navigator headerMode="screen"
+  <PageStack.Navigator headerMode="screen" 
   >
     <PageStack.Screen name="Page" component={DrawerNavigator}
-      options={({ navigation, userToken }) => (
-        {
-          title: 'Restaurant Name',
-          headerStyle: {
-            backgroundColor: '#f4511e',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-              onPress={() => { navigation.dispatch(DrawerActions.openDrawer()) }}
-            />
-          ),
-          headerRight: () => (
-            <TouchableOpacity style={{ paddingRight: 15, position: 'relative' }} onPress={() => navigation.navigate('Cart')} >
-              <Image source={require('./assets/images/cart-icon-white.png')} style={{ width: 29, height: 32, resizeMode: 'contain' }} />
-              <View style={{ width: 20, height: 20, borderRadius: 10, position: 'absolute', backgroundColor: '#fff', bottom: -7, right: 7, justifyContent: 'center' }}>
-                <Text style={{ color: '#000', textAlign: 'center', fontSize: 10 }}>{Store.cartCount}</Text>
-              </View>
-            </TouchableOpacity>
-          )
-
-
-
-        }
-      )} />
+     options={{ headerShown: false }}
+      />
     <PageStack.Screen name="Products" component={ProductScreen} options={({ navigation, userToken }) => (
       {
         headerMode: 'screen',
