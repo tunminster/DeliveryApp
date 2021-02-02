@@ -40,7 +40,7 @@ class HomeScreen extends Component {
       isLoading: true,
       isRestaurantLoading: false,
       filterModelVisible: false,
-      filterValue: 'distance',
+      filterValue: '',
     }
   }
 
@@ -303,7 +303,7 @@ class HomeScreen extends Component {
                   <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                     <View style={styles.modelSection}>
                       {Object.entries(AuthStore.user).length != 0 && AuthStore.isLogin && AuthStore.user.addresses.map((item, i) =>
-                        <View  key={i}>
+                        <View key={i}>
                           <CheckBoxView
                             active={addressesId === item.id}
                             image={require('../assets/images/location_outline.png')}
@@ -420,6 +420,15 @@ class HomeScreen extends Component {
                       <Image source={require('../assets/images/close-icon.png')} style={styles.modelIcon} />
                     </TouchableOpacity>
                     <Text style={styles.modelHeaderTitle}>Filters</Text>
+
+                    <View style={styles.clearView} >
+                      <Button
+                        onPress={() => this.setState({ filterValue: '', storeType: [] })}
+                        title={'Clear'}
+                        style={styles.btnClear}
+                        txtStyle={{fontSize: normalize(15),  fontWeight: '600'}}
+                      />
+                    </View>
                   </View>
                   <View style={styles.modelSeperateLine} />
 
@@ -648,6 +657,17 @@ const styles = StyleSheet.create({
   btn: {
     marginHorizontal: wp(5),
     marginBottom: hp(2)
+  },
+  clearView: {
+    position: 'absolute',
+    right: 0,
+    marginRight: wp(2),
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  btnClear: {
+    marginHorizontal: wp(5), 
+    height: hp(4.5),
   }
 });
 
