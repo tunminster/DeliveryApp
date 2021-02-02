@@ -302,7 +302,7 @@ class HomeScreen extends Component {
 
                   <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                     <View style={styles.modelSection}>
-                      {Object.entries(AuthStore.user).length != 0 && AuthStore.isLogin && AuthStore.user.addresses.map((item, i) =>
+                      {Object.entries(AuthStore.user).length != 0 && AuthStore.isLogin && AuthStore.user.addresses.reverse().map((item, i) =>
                         <View key={i}>
                           <CheckBoxView
                             active={addressesId === item.id}
@@ -355,7 +355,13 @@ class HomeScreen extends Component {
               <FlatList
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
                 data={categoriesData}
+                ListEmptyComponent={
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={styles.txtNoResult}>{'No results found'}</Text>
+                  </View>
+                }
                 renderItem={(item, index) => this.renderCategories(item, index)}
                 keyExtractor={(item, index) => index.toString()} />
 
@@ -387,6 +393,11 @@ class HomeScreen extends Component {
                     </View>
                   }
 
+                  ListEmptyComponent={
+                    !fottorLoading ?
+                      <Text style={styles.txtNoResult}>{'No results found'}</Text> : null
+                  }
+
                   onEndReached={() => {
                     console.log("response onEndReached")
                     if (isSearching) {
@@ -403,7 +414,7 @@ class HomeScreen extends Component {
             <View style={styles.basketContainer}>
               <Text style={{ ...styles.basketTitle, fontSize: normalize(18) }}>View Basket</Text>
               <View style={styles.basketCount}>
-                <Text style={{ ...styles.basketTitle, fontSize: normalize(15), marginHorizontal: wp(2.5), marginVertical: hp(0.5) }}>1</Text>
+                <Text style={{ ...styles.basketTitle, fontSize: normalize(15), marginHorizontal: wp(2), marginVertical: hp(0.3) }}>1</Text>
               </View>
               <Text style={{ ...styles.basketTitle, position: 'absolute', right: 0, alignSelf: 'center', marginRight: wp(4), fontSize: normalize(19) }}>£5.50</Text>
             </View>
@@ -426,7 +437,7 @@ class HomeScreen extends Component {
                         onPress={() => this.setState({ filterValue: '', storeType: [] })}
                         title={'Clear'}
                         style={styles.btnClear}
-                        txtStyle={{fontSize: normalize(15),  fontWeight: '600'}}
+                        txtStyle={{ fontSize: normalize(15), fontWeight: '600' }}
                       />
                     </View>
                   </View>
@@ -476,7 +487,6 @@ class HomeScreen extends Component {
                 </View>
               </View>
             </Modal>
-
 
           </View>
         }
@@ -666,8 +676,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   btnClear: {
-    marginHorizontal: wp(5), 
+    marginHorizontal: wp(5),
     height: hp(4.5),
+  },
+  txtNoResult: {
+    marginTop: hp(1),
+    fontFamily: 'Roboto-Regular',
+    fontSize: normalize(18),
+    alignSelf: 'center',
+    color: '#777777',
   }
 });
 

@@ -42,9 +42,9 @@ const styles=StyleSheet.create({
         padding: wp(2)
     },
     icon:{
-        resizeMode:'center',
-        width:hp(4.5),
-        height:hp(4.5),
+        resizeMode:'contain',
+        width:wp(8),
+        height:hp(4),
         marginLeft: wp(1),
         alignSelf:'center'
     }

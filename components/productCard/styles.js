@@ -17,7 +17,8 @@ export default {
     img: {
         width: 120,
         height: 120,
-        resizeMode: 'contain',
+        borderRadius: 60,
+        resizeMode: 'cover',
     },
     itemName: {
         color: vars.txtColor,

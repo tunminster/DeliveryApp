@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, AsyncStorage } from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { wp, hp, normalize } from '../helper/responsiveScreen';
@@ -7,8 +7,10 @@ import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
 import { GoogleSignin } from '@react-native-community/google-signin'
-import {LoginManager, AccessToken} from 'react-native-fbsdk'
+import { LoginManager, AccessToken } from 'react-native-fbsdk'
 import Loading from '../components/loading';
+import Colors from '../constants/Colors'
+
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -28,6 +30,16 @@ export const SignIn = ({ navigation }) => {
   const [signedIn, setsignedInStatus] = React.useState(false);
   const [name, setName] = React.useState(null);
   const [photoUrl, setphotoUrl] = React.useState(false);
+
+  React.useEffect(() => {
+    (async () => {
+      let loginCredential = await AsyncStorage.getItem('login credential');
+      if (loginCredential != null) {
+        let parsed = JSON.parse(loginCredential);
+        signIn(parsed.email, parsed.password);
+      }
+    })()
+  });
 
   const facebookLogIn = async () => {
 
@@ -97,7 +109,6 @@ export const SignIn = ({ navigation }) => {
 
 
     else if (email.email != null && password.password != null) {
-
       signIn(email.email, password.password);
     }
   }
@@ -193,33 +204,33 @@ export const CreateAccount = ({ navigation }) => {
 
 
   const facebookLogIn = async () => {
-      try {
-        LoginManager.logOut()
-        LoginManager.logInWithPermissions(['public_profile', 'email']).then(
-          function (result) {
-            if (result.isCancelled) {
-              console.log("Login cancelled");
-            } else {
-              console.log(
-                'Facebook Login ===> Permissions ' +
-                result.grantedPermissions.toString(),
-                result,
-              )
-              AccessToken.getCurrentAccessToken().then(
-                data => {
-                  console.log('data', data)
-                  facebookSignIn(data.accessToken);
-                },
-              )
-            }
-          },
-          function (error) {
-            console.log('Facebook Login ===> Error... ' + error)
-          },
-        )
-      } catch (e) {
-        console.log("error", e);
-      }
+    try {
+      LoginManager.logOut()
+      LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+        function (result) {
+          if (result.isCancelled) {
+            console.log("Login cancelled");
+          } else {
+            console.log(
+              'Facebook Login ===> Permissions ' +
+              result.grantedPermissions.toString(),
+              result,
+            )
+            AccessToken.getCurrentAccessToken().then(
+              data => {
+                console.log('data', data)
+                facebookSignIn(data.accessToken);
+              },
+            )
+          }
+        },
+        function (error) {
+          console.log('Facebook Login ===> Error... ' + error)
+        },
+      )
+    } catch (e) {
+      console.log("error", e);
+    }
   }
 
   const signInWithGoogle = async () => {

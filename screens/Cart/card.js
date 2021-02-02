@@ -13,7 +13,7 @@ class Card extends Component{
                 <View style={[styles.row, {justifyContent: 'space-between'}]}>
                     <View style={{marginRight: 5}}>
                         {/* <Image source={{uri: data.images[0]}} style={styles.img} /> */}
-                        <Image source={{uri: 'https://static.wixstatic.com/media/71ac99_cf0381fa9e3343a69c047e2b7f5f59ce~mv2_d_2668_2648_s_4_2.png'}} style={styles.img} />
+                        <Image source={{uri: `${data.productImageUrl}`}} style={styles.img} />
                     </View>
 
                     <View style={{width: '71%'}}>

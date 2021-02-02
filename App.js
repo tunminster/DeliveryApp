@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Button, Alert, TouchableOpacity, Image, Text } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Button, Alert, TouchableOpacity, Image, AsyncStorage } from 'react-native';
 // import { SplashScreen } from 'expo';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -142,6 +142,11 @@ export default function App(props) {
           storeUser(result.auth_token).then((data) => {
             console.log("user stored " + data);
           });
+          let obj = {
+            email: email,
+            password: password
+          }
+          AsyncStorage.setItem('login credential', JSON.stringify(obj));
         }
 
         setIsLoading(false);
@@ -176,7 +181,7 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-       setIsLoading(false);
+        setIsLoading(false);
         setUserToken(null);
       });
   };
@@ -196,7 +201,7 @@ export default function App(props) {
 
           });
 
- 
+
         storeUser(result.auth_token).then((data) => {
           console.log("user stored " + data);
         });
@@ -204,7 +209,7 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-       setIsLoading(false);
+        setIsLoading(false);
         setUserToken(null);
       });
   };
@@ -254,11 +259,11 @@ const AuthStackScreen = () => (
 
 const PageStack = createStackNavigator();
 const PageScreen = () => (
-  <PageStack.Navigator headerMode="screen" 
+  <PageStack.Navigator headerMode="screen"
   >
     <PageStack.Screen name="Page" component={DrawerNavigator}
-     options={{ headerShown: false }}
-      />
+      options={{ headerShown: false }}
+    />
     <PageStack.Screen name="Products" component={ProductScreen} options={({ navigation, userToken }) => (
       {
         headerMode: 'screen',
@@ -405,6 +410,12 @@ const PageScreen = () => (
       )}
     />
 
+    <PageStack.Screen name="SignIn" component={SignIn}
+      options={{ headerShown: false }}
+    />
+
+    <PageStack.Screen name="CreateAccount" component={CreateAccount}
+      options={{ headerShown: false }} />
 
   </PageStack.Navigator>
 );
@@ -442,8 +453,6 @@ const RootStackScreen = ({ userToken }) => (
         //         </View>
         //     </TouchableOpacity>
         //     )
-
-
         //   }
         // )}
         />
@@ -469,5 +478,3 @@ const RootStackScreen = ({ userToken }) => (
 
   </RootStack.Navigator>
 );
-
-

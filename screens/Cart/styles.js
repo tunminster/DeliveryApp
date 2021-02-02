@@ -48,14 +48,17 @@ export default {
         color: '#333'
     },
     price: {
-        ...this.txt,
+        fontFamily: vars.bold,
+        fontSize: 14,
+        color: '#333',
         textAlign: 'right',
         marginRight: 5
     },
     img: {
         width: 80,
         height: 80,
-        resizeMode: 'contain'
+        borderRadius: 40,
+        resizeMode: 'cover',
     },
     viewBtn: {
         marginRight: 15,

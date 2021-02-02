@@ -8,17 +8,15 @@ import Store from '../../config/store';
 
 class ProductCard extends Component {
     render() {
-        const { id, productName, unitPrice, description } = this.props.data;
+        const { id, productName, unitPrice, description, productImageUrl } = this.props.data;
         // const id = 1;
         // const productName = "test";
-
-
 
         return (
 
             <View style={styles.card, sharedStyles.shadow, this.props.style}>
                 <View style={{ alignItems: 'center', marginBottom: 15, marginTop: 15 }}>
-                    <Image source={{ uri: 'https://static.wixstatic.com/media/71ac99_cf0381fa9e3343a69c047e2b7f5f59ce~mv2_d_2668_2648_s_4_2.png' }} style={styles.img} />
+                    <Image source={{ uri: productImageUrl }} style={styles.img} />
                 </View>
                 <Text style={styles.itemName} numberOfLines={2}>{productName}</Text>
                 <Text style={styles.itemDesc} numberOfLines={5}>{description}</Text>
@@ -28,10 +26,8 @@ class ProductCard extends Component {
                     </Text>
                 </Text>
 
-
-
                 <View>
-                    <TouchableOpacity style={sharedStyles.shadow, this.props.style} onPress={() => Store.addToCart(this.props.data)}>
+                    <TouchableOpacity style={sharedStyles.shadow, this.props.style} onPress={() => {Store.addToCart(this.props.data)}}>
                         <View style={styles.button}>
                             <Text style={styles.buttonText} >
                                 Add to Cart

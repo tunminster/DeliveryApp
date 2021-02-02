@@ -26,7 +26,7 @@ export default {
     },
     icon: {
         width: wp(5),
-        height: wp(7),
+        height: hp(4),
         marginLeft: wp(2),
         alignSelf: 'center'
     },

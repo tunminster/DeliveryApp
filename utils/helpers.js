@@ -10,11 +10,8 @@ var uuid = require('react-native-uuid');
 
 export function logout() {
     AuthStore.setIsLogin(false);
-    if (Store.currentRoute === 'Home')
-        NavigationService.closeDrawer();
-    else
-        NavigationService.navigate('Home');
-    setTimeout(() => AuthStore.setUser({}), 1000);
+    AuthStore.setUser({});
+    AsyncStorage.removeItem('login credential');
     AsyncStorage.removeItem('token');
 }
 
