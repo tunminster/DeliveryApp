@@ -1,20 +1,23 @@
-import React, {Component} from 'react';
-import {View, ScrollView, Image, Text, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { View, ScrollView, Image, Text, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import AuthStore from '../../config/store/auth';
 import sharedStyles from '../../utils/sharedStyles';
 import AddressItem from '../../components/addressItem';
-import {observer} from 'mobx-react';
+import { observer } from 'mobx-react';
 import vars from '../../utils/vars';
+import { logout } from '../../utils/helpers';
+import { CommonActions } from '@react-navigation/native';
+
 
 @observer
-class Account extends Component{
+class Account extends Component {
 
-    
-    render(){
+
+    render() {
         const { username } = AuthStore.user;
         const { navigate } = this.props.navigation;
-        
+
         return (
             <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -33,11 +36,24 @@ class Account extends Component{
                         <TouchableOpacity style={sharedStyles.li} onPress={() => navigate('Orders')}>
                             <Text style={sharedStyles.txt}>Orders</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity style={sharedStyles.li} onPress={() => {
+                            logout(),
+                             this.props.navigation.dispatch(
+                                CommonActions.reset({
+                                    index: 0,
+                                    routes: [
+                                        { name: 'SignIn' }
+                                    ],
+                                })
+                            );
+                        }}>
+                            <Text style={sharedStyles.txt}>Sign Out</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <Text style={sharedStyles.subTitle}>Addresses</Text>
                     <View style={sharedStyles.section}>
-                        {Object.entries(AuthStore.user).length != 0  && AuthStore.user.addresses.map((item,i) => <AddressItem item={item} key={i} notTransparent={true} navigation={this.props.navigation} />)}
+                        {Object.entries(AuthStore.user).length != 0 && AuthStore.user.addresses.map((item, i) => <AddressItem item={item} key={i} notTransparent={true} navigation={this.props.navigation} />)}
                         <View style={styles.btnContainer}>
                             <TouchableOpacity style={styles.btnImg} onPress={() => this.props.navigation.navigate('CreateAddress')} >
                                 <Text style={styles.btnIcon}>+</Text>

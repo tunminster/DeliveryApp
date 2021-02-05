@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Alert, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Modal } from 'react-native';
+import { View, ScrollView, Alert, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, 
+    ActivityIndicator, Modal, TouchableWithoutFeedback, Keyboard, } from 'react-native';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import vars from '../../utils/vars';
@@ -133,14 +134,8 @@ class AddressCreation extends Component {
                     const location = res && res.results && res.results.length ? res.results[0] : {};
                     const address_components = location.address_components;
 
-                    // console.log("description ===> ", description, lat);
-                    // console.log("location ===> ", location);
                     console.log("address_components", JSON.stringify(address_components))
-                    // console.log('area', address_components.filter(ele => ele.types.indexOf("") !== -1))
 
-                    let obj = {};
-
-                    // const country = "US";
                     const streetNumber = address_components.filter(ele => ele.types.indexOf("street_number") !== -1);
                     const streetAddress = address_components.filter(ele => ele.types.indexOf("route") !== -1);
                     const state = address_components.filter(ele => ele.types.indexOf("administrative_area_level_1") !== -1);
@@ -151,9 +146,6 @@ class AddressCreation extends Component {
                     const city1 = address_components.filter(ele => ele.types.indexOf("postal_town") !== -1);
 
                     let address = location && location.formatted_address ? location.formatted_address : ""
-
-                    console.log('addressLine:', location && location.formatted_address ? location.formatted_address : "",)
-                    console.log('add...',  city1 && city1.length ? city1[0].long_name : "")
 
                     this.setState({
                         addressLine: address.split(",").slice(0, -2).join(","),
@@ -170,11 +162,8 @@ class AddressCreation extends Component {
                     console.log('error', error)
                 });
 
-
-
-
         } catch (error) {
-            Utils.log("obj ===> ", error);
+            console.log("error ===> ", error);
         }
     }
 
@@ -206,8 +195,9 @@ class AddressCreation extends Component {
     handleRegionChange = (coordinate) => {
         console.log('coordinate', coordinate)
         this.setState({
-                lat: coordinate.latitude,
-                lng: coordinate.longitude})
+            lat: coordinate.latitude,
+            lng: coordinate.longitude
+        })
         setTimeout(() => {
             this.sortAddress("", coordinate.latitude, coordinate.longitude)
         }, 300)
@@ -217,124 +207,129 @@ class AddressCreation extends Component {
         const { addressLine, city, postCode, country, searchName, addressData, isMap, lat, lng,
             isAddress, description, loading, latDelta, lngDelta } = this.state
         return (
-            <View style={{ flex: 1, backgroundColor: Colors.white, padding: 15 }}>
+                <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: Colors.white, padding: 15 }}
+                    bounces={false}
+                    style={{ flexGrow: 1 }}
+                    nestedScrollEnabled
+                    showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} >
 
-                {isMap && !isAddress &&
-                    <View style={styles.childContainer}>
-                        <FlatList
-                            contentContainerStyle={styles.flatListContainer}
-                            data={addressData && addressData.length ? addressData : []}
-                            keyExtractor={(item, index) => `address-list-${index}`}
-                            renderItem={({ item }) => <this.AddressItem item={item} />}
-                        />
-                    </View>
-                }
+                    {isMap && !isAddress &&
+                        <View style={styles.childContainer}>
+                            <FlatList
+                                contentContainerStyle={styles.flatListContainer}
+                                data={addressData && addressData.length ? addressData : []}
+                                keyExtractor={(item, index) => `address-list-${index}`}
+                                renderItem={({ item }) => <this.AddressItem item={item} />}
+                            />
+                        </View>
+                    }
 
-                <Text>Search here:</Text>
-                <TextInput
-                    value={searchName}
-                    style={styles.inputText}
-                    onChangeText={text => this.onChangeText(text)}
-                    autoCorrect={false}
-                />
+                    <Text>Search here:</Text>
+                    <TextInput
+                        value={searchName}
+                        style={styles.inputText}
+                        onChangeText={text => this.onChangeText(text)}
+                        autoCorrect={false}
+                    />
 
-                {!isMap &&
-                    <View style={{ flex: 1 }}>
-                        <MapView
-                            ref={r => this.mapRef = r}
-                            style={styles.mapView}
-                            region={{
-                                latitude: lat == '' ? 0.0 : lat,
-                                longitude: lng == '' ? 0.0 : lng,
-                                latitudeDelta: latDelta,
-                                longitudeDelta: lngDelta,
-                            }}
-                            showsUserLocation={true}
-                            // onRegionChangeComplete={this.handleRegionChange}
-                            onPress={(event) => this.onMapPress(event.nativeEvent.coordinate)}
-                        >
-                            <MapView.Marker
-                                coordinate={{
+                    {!isMap &&
+                        <View style={{ flex: 1 }}>
+                            <MapView
+                                ref={r => this.mapRef = r}
+                                style={styles.mapView}
+                                region={{
                                     latitude: lat == '' ? 0.0 : lat,
                                     longitude: lng == '' ? 0.0 : lng,
+                                    latitudeDelta: latDelta,
+                                    longitudeDelta: lngDelta,
                                 }}
-                                draggable
-                                draggable={true}
+                                showsUserLocation={true}
+                                // onRegionChangeComplete={this.handleRegionChange}
+                                onPress={(event) => this.onMapPress(event.nativeEvent.coordinate)}
+                            >
+                                <MapView.Marker
+                                    coordinate={{
+                                        latitude: lat == '' ? 0.0 : lat,
+                                        longitude: lng == '' ? 0.0 : lng,
+                                    }}
+                                    draggable
+                                    draggable={true}
+                                />
+                            </MapView>
+                            <Button
+                                onPress={() => this.setState({ isAddress: true, searchName: '', isMap: true })}
+                                title={'Set address'}
+                                style={{ marginTop: hp(2) }}
                             />
-                        </MapView>
-                        <Button
-                            onPress={() => this.setState({ isAddress: true, searchName: '', isMap: true })}
-                            title={'Set address'}
-                            style={{ marginTop: hp(2) }}
-                        />
-                    </View>
-                }
+                        </View>
+                    }
 
-                {isAddress &&
-                    <View>
-                        <Text>Address line:</Text>
-                        <TextInput
-                            value={addressLine}
-                            style={styles.inputText}
-                            onChangeText={text => this.setState({ addressLine: text })}
-                            editable={false}
-                            autoCorrect={false}
-                        />
+                    {isAddress &&
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}>
+                            <Text>Address line:</Text>
+                            <TextInput
+                                value={addressLine}
+                                style={styles.inputText}
+                                onChangeText={text => this.setState({ addressLine: text })}
+                                editable={false}
+                                autoCorrect={false}
+                            />
 
-                        <Text>Description:</Text>
-                        <TextInput
-                            value={description}
-                            style={styles.inputText}
-                            onChangeText={text => this.setState({ description: text })}
-                            autoCorrect={false}
-                        />
+                            <Text>Description:</Text>
+                            <TextInput
+                                value={description}
+                                style={styles.inputText}
+                                onChangeText={text => this.setState({ description: text })}
+                                autoCorrect={false}
+                            />
 
-                        <Text>City:</Text>
-                        <TextInput
-                            value={city}
-                            style={styles.inputText}
-                            onChangeText={text => this.setState({ city: text })}
-                            editable={false}
-                            autoCorrect={false}
-                        />
+                            <Text>City:</Text>
+                            <TextInput
+                                value={city}
+                                style={styles.inputText}
+                                onChangeText={text => this.setState({ city: text })}
+                                editable={false}
+                                autoCorrect={false}
+                            />
 
-                        <Text>Postal code/Postcode:</Text>
-                        <TextInput
-                            keyboardType='numeric'
-                            value={postCode}
-                            style={styles.inputText}
-                            onChangeText={text => this.setState({ postCode: text })}
-                            autoCorrect={false}
-                        />
+                            <Text>Postal code/Postcode:</Text>
+                            <TextInput
+                                keyboardType='numeric'
+                                value={postCode}
+                                style={styles.inputText}
+                                onChangeText={text => this.setState({ postCode: text })}
+                                autoCorrect={false}
+                            />
 
-                        <Text>Country:</Text>
-                        <TextInput
-                            value={country}
-                            style={styles.inputText}
-                            onChangeText={text => this.setState({ country: text })}
-                            editable={false}
-                            autoCorrect={false}
-                        />
+                            <Text>Country:</Text>
+                            <TextInput
+                                value={country}
+                                style={styles.inputText}
+                                onChangeText={text => this.setState({ country: text })}
+                                editable={false}
+                                autoCorrect={false}
+                            />
 
-                        <Button
-                            onPress={() => { this.submit() }}
-                            title={'Submit'}
-                            style={{ marginTop: hp(3) }}
-                        />
-                    </View>}
+                            <Button
+                                onPress={() => { this.submit() }}
+                                title={'Submit'}
+                                style={{ marginTop: hp(3) }}
+                            />
+                        </ScrollView>}
 
-                <Modal
-                    transparent={true}
-                    animationType={'none'}
-                    visible={loading}
-                    onRequestClose={() => { console.log('close modal') }}>
-                    <View style={styles.loaderBackground}>
-                        <ActivityIndicator
-                            animating={loading} size="large" color='#000000' />
-                    </View>
-                </Modal>
+                    <Modal
+                        transparent={true}
+                        animationType={'none'}
+                        visible={loading}
+                        onRequestClose={() => { console.log('close modal') }}>
+                        <View style={styles.loaderBackground}>
+                            <ActivityIndicator
+                                animating={loading} size="large" color='#000000' />
+                        </View>
+                    </Modal>
 
-            </View>
+                </ScrollView>
         )
     }
 }

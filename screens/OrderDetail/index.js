@@ -25,7 +25,7 @@ class OrderDetail extends Component {
                         {
                             data.orderItems.map((orderItem, i) => 
                                 <View style={styles.card} key={i}>
-                                    <Image source={{uri: 'https://static.wixstatic.com/media/71ac99_cf0381fa9e3343a69c047e2b7f5f59ce~mv2_d_2668_2648_s_4_2.png'}} style={styles.img} />
+                                    <Image source={{uri: orderItem.productImageUrl}} style={styles.img} />
                                     <View style={{flex: 1}}>
                                         <Text style={sharedStyles.txt}>{orderItem.productName}</Text>
                                         <Text style={sharedStyles.txt}>Quantity: <Text style={styles.bold}>{orderItem.count}</Text></Text>
