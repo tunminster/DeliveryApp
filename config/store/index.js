@@ -8,6 +8,7 @@ class Store{
     @observable cartCount = 0;
     @observable popularProducts = [];
     @observable allProducts = [];
+    @observable addBasket = [];
 
     @action setCurrentRoute(route) {
         this.currentRoute = route;
@@ -16,7 +17,7 @@ class Store{
     @action addToCart(data) {
         let existData = this.cart.find(x => x.id === data.id);
         if (existData) {
-            existData.count += 1;
+            // existData.count += 1;
         } else {
             data.count = 1;
             this.cart.push(data);

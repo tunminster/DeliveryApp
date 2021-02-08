@@ -31,16 +31,6 @@ export const SignIn = ({ navigation }) => {
   const [name, setName] = React.useState(null);
   const [photoUrl, setphotoUrl] = React.useState(false);
 
-  React.useEffect(() => {
-    (async () => {
-      let loginCredential = await AsyncStorage.getItem('login credential');
-      if (loginCredential != null) {
-        let parsed = JSON.parse(loginCredential);
-        signIn(parsed.email, parsed.password);
-      }
-    })()
-  });
-
   const facebookLogIn = async () => {
 
     try {

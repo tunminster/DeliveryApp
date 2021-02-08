@@ -28,7 +28,6 @@ export default {
         width: wp(5),
         height: hp(4),
         marginLeft: wp(2),
-        alignSelf: 'center'
     },
     headerTitle: {
         fontSize: normalize(14),

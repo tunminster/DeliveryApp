@@ -46,8 +46,6 @@ export default function App(props) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
 
-
-
   const authContext = React.useMemo(() => {
     return {
       signIn: (email, password) => {
@@ -104,6 +102,16 @@ export default function App(props) {
           'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
           'Roboto-Bold': require('./assets/fonts/Roboto-Bold.ttf'),
         });
+
+        let loginCredential = await AsyncStorage.getItem('login credential');
+        console.log('loginCredential', loginCredential)
+        if (loginCredential != null) {
+          let parsed = JSON.parse(loginCredential);
+          loginRequest(parsed.email, parsed.password);
+        } else {
+          setIsLoading(false)
+        }
+
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);
@@ -114,9 +122,9 @@ export default function App(props) {
     }
 
     loadResourcesAndDataAsync();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000)
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 1000)
 
   }, []);
 
@@ -152,6 +160,8 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
+        AsyncStorage.removeItem('login credential');
+        console.log('error.', error)
         setIsLoading(false);
         setUserToken(null);
       });
