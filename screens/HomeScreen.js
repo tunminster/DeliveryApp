@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, ImageBackground, ActivityIndicator } from 'react-native';
+import {
+  FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput,
+  ImageBackground, ActivityIndicator, UIManager, LayoutAnimation, TouchableWithoutFeedback
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { wp, hp, normalize } from '../helper/responsiveScreen'
 import Colors from '../constants/Colors'
@@ -13,7 +16,11 @@ import { retrieveData } from '../components/AuthKeyStorageComponent';
 import Api from '../config/api';
 import Loading from '../components/loading';
 import Button from '../components/button';
-import { titleCase } from '../utils/helpers'
+import { titleCase, getTotalPrice } from '../utils/helpers'
+import BasketView from '../components/basketView';
+import Store from '../config/store';
+import vars from "../utils/vars";
+
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
 var STORAGE_KEY = 'id_token';
@@ -39,8 +46,20 @@ class HomeScreen extends Component {
       storeType: [],
       isLoading: true,
       isRestaurantLoading: false,
-      filterModelVisible: false,
+      filterModalVisible: false,
       filterValue: '',
+      isMenuLoading: false,
+      menuModelVisible: false,
+      menuData: [],
+      expandeIndex: -1,
+      isCategoryLoading: false,
+      menuDetailVisible: false,
+      menuDetaildata: null,
+      menuDetailIndex: -1,
+      menuDetailCount: 0
+    }
+    if (Platform.OS === 'android') {
+      UIManager.setLayoutAnimationEnabledExperimental(true); // USed for collaps animation
     }
   }
 
@@ -66,6 +85,7 @@ class HomeScreen extends Component {
   }
 
   getCategories() {
+    this.setState({ isCategoryLoading: true })
     retrieveData(STORAGE_KEY)
       .then((data) => {
         const config = {
@@ -75,10 +95,13 @@ class HomeScreen extends Component {
         console.log('config', config)
         Api.get('/v1/StoreType/GetAllStoreTypes', config).then(res => {
           console.log('GetAllStoreTypes res', res);
-          this.setState({ categoriesData: res })
+          this.setState({ categoriesData: res, isCategoryLoading: false })
         }).catch(err => {
+          this.setState({ isCategoryLoading: false })
           console.log("Error ", err);
         });
+      }).catch(err => {
+        this.setState({ isCategoryLoading: false })
       });
   }
 
@@ -116,6 +139,29 @@ class HomeScreen extends Component {
           this.setState({ isRestaurantLoading: false })
           console.log("Error ", err);
         });
+      }).catch(err => {
+        this.setState({ isRestaurantLoading: false })
+      });
+  }
+
+  getMenu(storeId) {
+    this.setState({ isMenuLoading: true })
+    retrieveData(STORAGE_KEY)
+      .then((data) => {
+        const config = {
+          headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
+        };
+
+        console.log('config', config)
+        Api.get('V1/Store/Store-Details?storeId=' + storeId, config).then(res => {
+          console.log('Store details res', JSON.stringify(res));
+          this.setState({ isMenuLoading: false, menuModelVisible: true, menuData: res })
+        }).catch(err => {
+          console.log("Error ", err);
+          this.setState({ isMenuLoading: false })
+        });
+      }).catch(err => {
+        this.setState({ isMenuLoading: false })
       });
   }
 
@@ -158,6 +204,7 @@ class HomeScreen extends Component {
       },
       error => {
         console.log('Error...', JSON.stringify(error))
+        this.setState({ isLoading: false })
       },
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 5000 },
     )
@@ -190,8 +237,7 @@ class HomeScreen extends Component {
   }
 
   onDonePressHandler() {
-    this.setState({ filterModelVisible: false })
-    console.log('storetypes', this.state.storeType)
+    this.setState({ filterModalVisible: false })
     this.setState({ restaurantData: [], page: 1 },
       () => { this.getRestaurant() })
   }
@@ -214,17 +260,19 @@ class HomeScreen extends Component {
   renderRestaurant = (item, index) => {
     const address = item.item.addressLine1
     return (
-      <View style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}>
+      <TouchableOpacity
+        style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
+        onPress={() => this.getMenu(item.item.storeId)}>
         <Image
           source={{ uri: item.item.imageUri }}
           resizeMode='cover'
           style={styles.restaurantImage} />
-        <Text style={styles.restaurantTitle}>{item.item.storeName}</Text>
+        <Text style={{ ...styles.restaurantTitle, marginTop: hp(1.5) }}>{item.item.storeName}</Text>
         {item.item.storeType != null &&
-          <Text style={styles.restaurantSubTitle}>{item.item.storeType}</Text>
+          <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.item.storeType}</Text>
         }
-        <Text style={styles.restaurantSubTitle}>{` ${item.item.distance.toFixed(2)} miles away`}</Text>
-      </View>
+        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{` ${item.item.distance.toFixed(2)} miles away`}</Text>
+      </TouchableOpacity>
     )
   }
 
@@ -241,10 +289,53 @@ class HomeScreen extends Component {
     }
   }
 
+  toggleExpand = (index) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    if (this.state.expandeIndex == index) {
+      this.setState({ expandeIndex: -1 })
+    } else {
+      this.setState({ expandeIndex: index })
+    }
+  }
+
+  onMenuPress = (value) => {
+    Store.addToCart(value)
+    Store.cart.map((item, i) => {
+      if (value.id == item.id) {
+        this.setState({
+          menuModelVisible: false,
+          menuDetailVisible: true,
+          menuDetaildata: item,
+          menuDetailIndex: i,
+          menuDetailCount: item.count
+        })
+      }
+    })
+  }
+
+  onMenuDetailCancelPress = () => {
+    let existData = Store.addBasket.find(x => x.id === this.state.menuDetaildata.id);
+    if(!existData) {
+      Store.removeFromCart(this.state.menuDetailIndex)
+    }
+    this.setState({ menuModelVisible: true, menuDetailVisible: false })
+  }
+
+  onUpdateCountPress = (value) => {
+    Store.updateCardItem(this.state.menuDetailIndex, value)
+    Store.cart.map((item, i) => {
+      if (this.state.menuDetaildata.id == item.id) {
+        this.setState({ menuDetailCount: item.count })
+      }
+    })
+  }
+
   render() {
-    const { headerTitle, isModalVisible, addressesId, curLatitude, curLongitude, search,
-      categoriesData, restaurantData, isSearching, fottorLoading, isLoading, isRestaurantLoading,
-      filterModelVisible, filterValue } = this.state
+    const { headerTitle, isModalVisible, addressesId, curLatitude, curLongitude, search, categoriesData,
+      restaurantData, isSearching, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
+      filterValue, isMenuLoading, menuModelVisible, menuData, expandeIndex, isCategoryLoading,
+      menuDetaildata, menuDetailVisible, menuDetailCount, menuDetailIndex } = this.state
+
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -264,7 +355,10 @@ class HomeScreen extends Component {
                 <View style={styles.modelChildContainer}>
                   <View style={styles.modelHeaderView}>
                     <TouchableOpacity onPress={() => this.setState({ isModalVisible: false })} style={{ alignSelf: 'center' }} >
-                      <Image source={require('../assets/images/close-icon.png')} style={styles.modelIcon} />
+                      <Image source={require('../assets/images/close-icon.png')} style={{
+                        ...styles.modelIcon,
+                        tintColor: Colors.black
+                      }} />
                     </TouchableOpacity>
                     <Text style={styles.modelHeaderTitle}>Select Location</Text>
                   </View>
@@ -341,7 +435,7 @@ class HomeScreen extends Component {
                 onSubmitEditing={() =>
                   this.setState({ restaurantData: [], page: 1 },
                     () => { this.getRestaurant() })} />
-              <TouchableOpacity onPress={() => this.setState({ filterModelVisible: true })} >
+              <TouchableOpacity onPress={() => this.setState({ filterModalVisible: true })} >
                 <Image source={require('../assets/images/filter.png')} style={styles.filter} />
               </TouchableOpacity>
             </View>
@@ -351,31 +445,26 @@ class HomeScreen extends Component {
               showsVerticalScrollIndicator={false}>
 
               <Text style={styles.headerTitle}>Categories</Text>
-
-              <FlatList
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}
-                data={categoriesData}
-                ListEmptyComponent={
-                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={styles.txtNoResult}>{'No results found'}</Text>
-                  </View>
-                }
-                renderItem={(item, index) => this.renderCategories(item, index)}
-                keyExtractor={(item, index) => index.toString()} />
+              {isCategoryLoading
+                ? <Loading /> :
+                <FlatList
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ flexGrow: 1 }}
+                  data={categoriesData}
+                  ListEmptyComponent={
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={styles.txtNoResult}>{'No results found'}</Text>
+                    </View>
+                  }
+                  renderItem={(item, index) => this.renderCategories(item, index)}
+                  keyExtractor={(item, index) => index.toString()} />
+              }
 
               <Text style={styles.headerTitle}>Nearby Restaurants</Text>
 
-              {isRestaurantLoading ?
-                <View style={{ padding: wp(5) }}>
-                  <ActivityIndicator
-                    size={"large"}
-                    color={Colors.light_text_color}
-                    animating={true}
-                  />
-                </View> :
-
+              {isRestaurantLoading
+                ? <Loading /> :
                 <FlatList
                   showsVerticalScrollIndicator={false}
                   data={restaurantData}
@@ -411,24 +500,27 @@ class HomeScreen extends Component {
               }
             </ScrollView>
 
-            <View style={styles.basketContainer}>
-              <Text style={{ ...styles.basketTitle, fontSize: normalize(18) }}>View Basket</Text>
-              <View style={styles.basketCount}>
-                <Text style={{ ...styles.basketTitle, fontSize: normalize(15), marginHorizontal: wp(2), marginVertical: hp(0.3) }}>1</Text>
-              </View>
-              <Text style={{ ...styles.basketTitle, position: 'absolute', right: 0, alignSelf: 'center', marginRight: wp(4), fontSize: normalize(19) }}>£5.50</Text>
-            </View>
+            {Store.cart.length != 0 &&
+              <BasketView
+                onPress={() => console.log('basket...')}
+                style={{ marginBottom: hp(2) }}
+                count={Store.cart.length}
+                amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+            }
 
             <Modal
               transparent={true}
               animationType={'none'}
-              visible={filterModelVisible}
+              visible={filterModalVisible}
             >
               <View style={styles.modelContainer}>
                 <View style={styles.modelChildContainer}>
                   <View style={styles.modelHeaderView}>
-                    <TouchableOpacity onPress={() => this.setState({ filterModelVisible: false })} style={{ alignSelf: 'center' }} >
-                      <Image source={require('../assets/images/close-icon.png')} style={styles.modelIcon} />
+                    <TouchableOpacity onPress={() => this.setState({ filterModalVisible: false })} style={{ alignSelf: 'center' }} >
+                      <Image source={require('../assets/images/close-icon.png')} style={{
+                        ...styles.modelIcon,
+                        tintColor: Colors.black
+                      }} />
                     </TouchableOpacity>
                     <Text style={styles.modelHeaderTitle}>Filters</Text>
 
@@ -458,7 +550,7 @@ class HomeScreen extends Component {
                   <Text style={{ ...styles.modelHeaderTitle, marginTop: hp(4), marginBottom: hp(2) }}>Categories</Text>
                   <View style={styles.modelSeperateLine} />
 
-                  <ScrollView style={{ flex: 1, marginBottom: hp(8) }} showsVerticalScrollIndicator={false}>
+                  <ScrollView style={{ flex: 1, marginBottom: hp(10) }} showsVerticalScrollIndicator={false}>
                     <View style={styles.modelSection}>
 
                       {categoriesData && categoriesData.map((item, i) =>
@@ -488,6 +580,145 @@ class HomeScreen extends Component {
               </View>
             </Modal>
 
+            <Modal
+              transparent={true}
+              animationType={'none'}
+              visible={isMenuLoading}
+              onRequestClose={() => { console.log('close modal') }}>
+              <View style={styles.loaderBackground}>
+                <ActivityIndicator
+                  animating={isMenuLoading} size="large" color='#000000' />
+              </View>
+            </Modal>
+
+            <Modal
+              transparent={true}
+              animationType={'none'}
+              visible={menuModelVisible} >
+              <View style={styles.modelContainer}>
+                <View style={styles.modelChildContainer}>
+                  <TouchableOpacity onPress={() => this.setState({ menuModelVisible: false })}
+                    style={styles.modalCancelView} >
+                    <Image source={require('../assets/images/close-icon.png')}
+                      style={{ ...styles.modelIcon }} />
+                  </TouchableOpacity>
+
+                  <ScrollView style={{ flex: 1, marginHorizontal: wp(4), marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
+                    <Image
+                      source={{ uri: menuData.imageUri }}
+                      resizeMode='cover'
+                      style={styles.modalRestaurantImage} />
+
+                    {menuData.storeType != null &&
+                      <Text style={{ ...styles.restaurantSubTitle, color: Colors.orange }}>{menuData.storeType}</Text>
+                    }
+                    <Text style={{ ...styles.restaurantTitle, marginTop: hp(0.5) }}>{menuData.storeName}</Text>
+                    <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{menuData.addressLine1}</Text>
+
+                    {menuData.storeCategoriesList && menuData.storeCategoriesList.map((item, index) =>
+                      <View key={index}>
+                        <TouchableWithoutFeedback
+                          onPress={() => this.toggleExpand(index)}>
+                          <View style={styles.modalMenuTitle}>
+                            <Text style={{ ...styles.restaurantTitle, }}>{item.categoryName}</Text>
+                            <Image source={expandeIndex == index ? require('../assets/images/down_arrow.png')
+                              : require('../assets/images/right_arrow.png')} style={styles.modelIcon} />
+                          </View>
+                        </TouchableWithoutFeedback>
+                        <View style={styles.modelSeperateLine} />
+                        {expandeIndex == index &&
+                          item.products && item.products.map((item, index) =>
+                            <View key={index}>
+                              <TouchableOpacity style={{ flexDirection: 'row', flex: 1, marginTop: hp(1) }}
+                                onPress={() => this.onMenuPress(item)}>
+                                <View style={{ flexDirection: 'column', flex: 0.7 }}>
+                                  <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
+                                  <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
+                                  <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`£ ${(item.unitPrice / 100).toFixed(2)}`}</Text>
+                                </View>
+
+                                <Image
+                                  source={{ uri: item.productImageUrl }}
+                                  resizeMode='cover'
+                                  style={{ flex: 0.3, marginLeft: wp(2), height: hp(10), alignSelf: 'center' }} />
+                              </TouchableOpacity>
+                              <View style={{ ...styles.modelSeperateLine, marginTop: hp(0.5) }} />
+                            </View>
+                          )
+                        }
+                      </View>
+                    )}
+                  </ScrollView>
+                  {Store.cart.length != 0 &&
+                    <BasketView
+                      onPress={() => console.log('basket...')}
+                      style={{ marginBottom: hp(1) }}
+                      count={Store.cart.length}
+                      amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+                  }
+                </View>
+              </View>
+            </Modal>
+
+            {menuDetaildata != null &&
+              <Modal
+                transparent={true}
+                animationType={'none'}
+                visible={menuDetailVisible} >
+                <View style={styles.modelContainer}>
+                  <View style={styles.modelChildContainer}>
+                    <TouchableOpacity onPress={() => this.onMenuDetailCancelPress()}
+                      style={styles.modalCancelView} >
+                      <Image source={require('../assets/images/close-icon.png')}
+                        style={styles.modelIcon} />
+                    </TouchableOpacity>
+
+                    <View style={{ flex: 1, marginHorizontal: wp(4), justifyContent: 'space-between', marginBottom: hp(9) }} showsVerticalScrollIndicator={false}>
+                      <View>
+                        <Image
+                          source={{ uri: menuDetaildata.productImageUrl }}
+                          resizeMode='cover'
+                          style={styles.modalRestaurantImage} />
+
+                        <View style={{ flexDirection: 'row', marginVertical: hp(1), justifyContent: 'space-between' }}>
+                          <Text style={{ ...styles.restaurantTitle, fontWeight: 'bold' }}>
+                            {menuDetaildata.productName}</Text>
+                          <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, marginRight: wp(2), fontWeight: '700' }}>
+                            {`£ ${(menuDetaildata.unitPrice / 100).toFixed(2)}`}</Text>
+                        </View>
+                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{menuDetaildata.description}</Text>
+                      </View>
+
+                      <View style={styles.btnCountContainer}>
+                        <TouchableOpacity onPress={() => menuDetailCount > 1 && this.onUpdateCountPress(-1)} >
+                          <Image source={require('../assets/images/minus_icon.png')}
+                            style={styles.modelPlusIcon} />
+                        </TouchableOpacity>
+                        <Text style={styles.modelCountText}>{menuDetailCount}</Text>
+                        <TouchableOpacity onPress={() => this.onUpdateCountPress(1)}>
+                          <Image source={require('../assets/images/plus_icon.png')}
+                            style={styles.modelPlusIcon} />
+                        </TouchableOpacity>
+                      </View>
+
+                    </View>
+
+                    <View style={styles.btnContainer}>
+                      <View style={{ ...styles.modelSeperateLine, marginBottom: hp(1) }} />
+                      <Button
+                        onPress={() => {
+                          this.setState({ menuModelVisible: true, menuDetailVisible: false })
+                          Store.addBasket.push(menuDetaildata)
+                        }}
+                        title={'Add to Basket'}
+                        style={styles.btn}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </Modal>
+            }
+
           </View>
         }
       </View>
@@ -512,18 +743,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     height: hp(90),
     width: wp(90),
-    paddingBottom: hp(2.5),
-    borderRadius: wp(5)
+    // paddingBottom: hp(2.5),
+    // borderRadius: wp(5)
   },
   modelHeaderView: {
     flexDirection: 'row',
     padding: wp(4)
   },
   modelIcon: {
-    width: wp(4),
-    height: wp(4),
+    width: wp(5),
+    height: wp(5),
     alignSelf: 'center',
-    tintColor: Colors.black
   },
   modelHeaderTitle: {
     fontSize: normalize(18),
@@ -625,48 +855,24 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontWeight: '400',
     alignItems: 'center',
-    marginTop: hp(1.5)
   },
   restaurantSubTitle: {
     fontSize: normalize(15),
     fontFamily: 'Roboto-Regular',
-    color: Colors.gray,
     fontWeight: '400',
     alignItems: 'center',
     marginTop: hp(0.5)
   },
-  basketContainer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    left: wp(5),
-    right: wp(5),
-    bottom: 0,
-    marginBottom: hp(2),
-    paddingVertical: hp(2),
-    paddingHorizontal: wp(4),
-    backgroundColor: Colors.tabIconSelected,
-    borderRadius: wp(2),
-  },
-  basketCount: {
-    backgroundColor: '#FF7D81',
-    borderRadius: wp(1),
-    marginLeft: wp(2),
-    alignItems: 'center'
-  },
-  basketTitle: {
-    fontFamily: 'Roboto-Regular',
-    color: Colors.white,
-    alignItems: 'center',
-  },
   btnContainer: {
     position: 'absolute',
     bottom: 0,
-    height: hp(9),
+    height: hp(8),
     width: '100%'
   },
   btn: {
+    height: hp(6),
     marginHorizontal: wp(5),
-    marginBottom: hp(2)
+    marginBottom: hp(1)
   },
   clearView: {
     position: 'absolute',
@@ -685,6 +891,61 @@ const styles = StyleSheet.create({
     fontSize: normalize(18),
     alignSelf: 'center',
     color: '#777777',
+  },
+  loaderBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: 'rgba(52, 52, 52, 0.5)'
+  },
+  modalRestaurantImage: {
+    width: '100%',
+    alignSelf: 'center',
+    marginVertical: hp(1),
+    height: Platform.OS == 'ios' ? hp(24) : hp(28),
+    borderRadius: wp(2)
+  },
+  modalCancelView: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    zIndex: 1,
+    marginLeft: wp(5),
+    marginTop: hp(2),
+  },
+  modalMenuTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: hp(1.5),
+    marginBottom: hp(1),
+    alignItems: 'center'
+  },
+  btnCountContainer: {
+    flexDirection: 'row',
+    borderWidth: 2,
+    borderRadius: wp(1),
+    borderColor: Colors.gray,
+    marginBottom: hp(1),
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: wp(2.5),
+    marginHorizontal: wp(1)
+  },
+  modelPlusIcon: {
+    width: wp(6),
+    height: wp(6),
+    alignSelf: 'center',
+  },
+  modelCountText: {
+    fontSize: normalize(18),
+    fontFamily: 'Roboto-Regular',
+    fontWeight: '400',
+    alignItems: 'center',
+    marginHorizontal: wp(7),
+    alignSelf: 'center',
+    color: Colors.gray,
+    fontWeight: '700'
   }
 });
 

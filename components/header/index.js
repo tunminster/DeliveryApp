@@ -13,7 +13,7 @@ class Header extends Component {
                     <Text numberOfLines={1} style={styles.headerTitle}>{title}</Text>
                     <View style={styles.seperateLine} />
                 </View>
-                <Image source={require('../../assets/images/location.png')} style={styles.icon} />
+                <Image source={require('../../assets/images/location.png')} resizeMode='contain' style={styles.icon} />
             </View>
         )
     }
