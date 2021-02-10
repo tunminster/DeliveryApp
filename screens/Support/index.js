@@ -12,7 +12,7 @@ import AuthStore from '../../config/store/auth';
 
 class Support extends Component {
     static navigationOptions = ({navigation}) => ({
-        headerLeft: <BackIcon navigation={navigation} />
+        headerLeft:  <BackIcon onPress={() =>  navigation.goBack() } />
     });
 
     

@@ -1,26 +1,20 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Alert, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, 
-    ActivityIndicator, Modal, TouchableWithoutFeedback, Keyboard, } from 'react-native';
-import Input from '../../components/input';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Modal, Dimensions } from 'react-native';
 import Button from '../../components/button';
-import vars from '../../utils/vars';
 import { post } from '../../utils/helpers';
-import Api from '../../config/api';
 import AuthStore from '../../config/store/auth';
-import { useForm, Controller } from "react-hook-form";
 import { storeData, retrieveData, storeUser } from '../../components/AuthKeyStorageComponent';
 import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import { AutoCompleteComponent } from '../../components/AutoCompleteComponent'
 import { GetLocationComponent } from '../../components/GetLocationComponent'
 import Colors from '../../constants/Colors'
 import MapView from 'react-native-maps';
-var uuid = require('react-native-uuid');
+import Custominput from '../../components/textinput';
+import SmartScrollView from '../../components/SmartScrollView'
+import { Platform } from 'react-native';
+import BackIcon from '../../components/backIcon';
 
 class AddressCreation extends Component {
-
-    static navigationOptions = ({ navigation }) => ({
-        headerLeft: <BackIcon navigation={navigation} />
-    });
 
     constructor(props) {
         super(props)
@@ -42,6 +36,16 @@ class AddressCreation extends Component {
             loading: false,
             latDelta: 0.1,
             lngDelta: 0.1
+        }
+    }
+
+    componentDidMount = () => {
+        this.setState({
+            lat: this.props.route.params.curLatitude,
+            lng: this.props.route.params.curLongitude
+        })
+        if (this.props.route.params.curLatitude != '') {
+            this.sortAddress("", this.props.route.params.curLatitude, this.props.route.params.curLongitude)
         }
     }
 
@@ -207,11 +211,38 @@ class AddressCreation extends Component {
         const { addressLine, city, postCode, country, searchName, addressData, isMap, lat, lng,
             isAddress, description, loading, latDelta, lngDelta } = this.state
         return (
-                <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: Colors.white, padding: 15 }}
-                    bounces={false}
-                    style={{ flexGrow: 1 }}
-                    nestedScrollEnabled
-                    showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} >
+            // <KeyboardAwareScrollView
+            //     contentContainerStyle={{
+            //         flexGrow: 1, backgroundColor: Colors.white,
+            //         padding: 15
+            //     }}
+            //     bounces={false}
+            //     style={{ flex: 1 }}
+            //     showsVerticalScrollIndicator={false}
+            //     enableOnAndroid={true}>
+
+            <View style={{ flex: 1 }}>
+
+                <View style={{ flexDirection: 'row', paddingVertical: wp(3), paddingHorizontal: wp(3), backgroundColor: Colors.headerBackground }}>
+                    <BackIcon
+                        tintColor={Colors.white}
+                        onPress={() => {
+                            if (isAddress) {
+                                this.setState({ isAddress: false, isMap: false })
+                            } else {
+                                this.props.navigation.goBack()
+                            }
+                        }} />
+
+                    <Text style={styles.headerText}>{'Address Creation'}</Text>
+                </View>
+
+                <SmartScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.container}
+                    applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+                    disabled={false}
+                    alwaysBounceVertical={false} >
 
                     {isMap && !isAddress &&
                         <View style={styles.childContainer}>
@@ -224,13 +255,25 @@ class AddressCreation extends Component {
                         </View>
                     }
 
-                    <Text>Search here:</Text>
-                    <TextInput
-                        value={searchName}
-                        style={styles.inputText}
-                        onChangeText={text => this.onChangeText(text)}
-                        autoCorrect={false}
-                    />
+                    {/* <Text>Search here:</Text>
+                        <TextInput
+                            value={searchName}
+                            style={styles.inputText}
+                            onChangeText={text => this.onChangeText(text)}
+                            autoCorrect={false}
+                        /> */}
+                    {!isAddress &&
+                        <View style={{ marginBottom: hp(-1) }}>
+                            <Custominput
+                                placeholder="Search here"
+                                placeholderTextColor="rgba(0,0,0,0.32)"
+                                icon={require('../../assets/images/search.png')}
+                                style
+                                value={searchName}
+                                onChangeText={text => this.onChangeText(text)}
+                                autoCorrect={false} />
+                        </View>
+                    }
 
                     {!isMap &&
                         <View style={{ flex: 1 }}>
@@ -257,58 +300,85 @@ class AddressCreation extends Component {
                                 />
                             </MapView>
                             <Button
-                                onPress={() => this.setState({ isAddress: true, searchName: '', isMap: true })}
+                                onPress={() => this.setState({ isAddress: true, isMap: true })}
                                 title={'Set address'}
-                                style={{ marginTop: hp(2) }}
+                                style={{ marginVertical: hp(2), }}
                             />
                         </View>
                     }
 
                     {isAddress &&
-                        <ScrollView
-                            showsVerticalScrollIndicator={false}>
-                            <Text>Address line:</Text>
-                            <TextInput
-                                value={addressLine}
-                                style={styles.inputText}
+                        <View>
+                            {/* <Text>Address line:</Text>
+                                <TextInput
+                                    value={addressLine}
+                                    style={styles.inputText}
+                                    onChangeText={text => this.setState({ addressLine: text })}
+                                    editable={false}
+                                    autoCorrect={false}
+                                /> */}
+
+                            <Custominput
+                                placeholder="Address line"
+                                placeholderTextColor="rgba(0,0,0,0.32)"
+                                style
                                 onChangeText={text => this.setState({ addressLine: text })}
-                                editable={false}
                                 autoCorrect={false}
+                                value={addressLine}
                             />
 
-                            <Text>Description:</Text>
-                            <TextInput
-                                value={description}
-                                style={styles.inputText}
-                                onChangeText={text => this.setState({ description: text })}
-                                autoCorrect={false}
-                            />
+                            {/* <Text>City:</Text>
+                                <TextInput
+                                    value={city}
+                                    style={styles.inputText}
+                                    onChangeText={text => this.setState({ city: text })}
+                                    editable={false}
+                                    autoCorrect={false}
+                                /> */}
 
-                            <Text>City:</Text>
-                            <TextInput
-                                value={city}
-                                style={styles.inputText}
+                            <Custominput
+                                placeholder="City"
+                                placeholderTextColor="rgba(0,0,0,0.32)"
+                                style
                                 onChangeText={text => this.setState({ city: text })}
-                                editable={false}
                                 autoCorrect={false}
+                                value={city}
                             />
 
-                            <Text>Postal code/Postcode:</Text>
+                            {/* <Text>Postal code/Postcode:</Text>
                             <TextInput
                                 keyboardType='numeric'
                                 value={postCode}
                                 style={styles.inputText}
                                 onChangeText={text => this.setState({ postCode: text })}
                                 autoCorrect={false}
+                            /> */}
+
+                            <Custominput
+                                placeholder="Postal code/Postcode"
+                                placeholderTextColor="rgba(0,0,0,0.32)"
+                                style
+                                onChangeText={text => this.setState({ postCode: text })}
+                                autoCorrect={false}
+                                value={postCode}
                             />
 
-                            <Text>Country:</Text>
+                            {/* <Text>Country:</Text>
                             <TextInput
                                 value={country}
                                 style={styles.inputText}
                                 onChangeText={text => this.setState({ country: text })}
                                 editable={false}
                                 autoCorrect={false}
+                            /> */}
+
+                            <Custominput
+                                placeholder="Country"
+                                placeholderTextColor="rgba(0,0,0,0.32)"
+                                style
+                                onChangeText={text => this.setState({ country: text })}
+                                autoCorrect={false}
+                                value={country}
                             />
 
                             <Button
@@ -316,7 +386,7 @@ class AddressCreation extends Component {
                                 title={'Submit'}
                                 style={{ marginTop: hp(3) }}
                             />
-                        </ScrollView>}
+                        </View>}
 
                     <Modal
                         transparent={true}
@@ -329,12 +399,21 @@ class AddressCreation extends Component {
                         </View>
                     </Modal>
 
-                </ScrollView>
+                    {/* </KeyboardAwareScrollView> */}
+                </SmartScrollView>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.white,
+        paddingHorizontal: wp(5),
+        paddingTop: hp(2),
+        minHeight: Dimensions.get('window').height - hp(14)
+    },
     inputText: {
         fontSize: normalize(18),
         fontFamily: 'Roboto-Regular',
@@ -357,7 +436,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         left: 0,
-        backgroundColor: Colors.white
+        // backgroundColor: Colors.white
     },
     mapView: {
         flex: 1,
@@ -371,147 +450,618 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         backgroundColor: 'rgba(52, 52, 52, 0.5)'
     },
+    headerText: {
+        fontSize: normalize(20),
+        fontFamily: 'Roboto-Regular',
+        color: Colors.white,
+        marginLeft: wp(5),
+        alignSelf: 'center',
+        fontWeight: 'bold'
+    }
 });
 
 export default AddressCreation;
 
+// {/* <View style={{ flex: 1 }}>
 
-// export default function AddressCreation({navigation}){
-//     const navigationOptions = ({navigation}) => ({
-//         headerLeft: <BackIcon navigation={navigation} />
-//     });
+// <View style={{ flexDirection: 'row', paddingVertical: wp(3), paddingHorizontal: wp(3), backgroundColor: Colors.headerBackground }}>
+//     <BackIcon
+//         tintColor={Colors.white}
+//         onPress={() => {
+//             if (isAddress) {
+//                 this.setState({ isAddress: false, isMap: false })
+//             } else {
+//                 this.props.navigation.goBack()
+//             }
+//         }} />
 
-//     const {control, handleSubmit, errors } = useForm();
-//     const onSubmit = data =>{
-//         console.warn(data);
-//         const addressDto = {};
+//     <Text style={styles.headerText}>{'Address Creation'}</Text>
+// </View>
 
-//         addressDto['customerId'] = AuthStore.user.id;
-//         addressDto['addressLine'] = data.addressLine;
-//         addressDto['description'] = '';
-//         addressDto['city'] = data.city;
-//         addressDto['postCode'] = data.postCode;
-//         addressDto['lat'] = '';
-//         addressDto['lng'] = '';
-//         addressDto['country'] = data.country;
-//         addressDto['disabled'] = false;
+// <SmartScrollView
+//     showsVerticalScrollIndicator={false}
+//     contentContainerStyle={styles.container}
+//     applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+//     disabled={false}
+//     alwaysBounceVertical={false} >
 
+//     {/* {isMap && !isAddress &&
+//        <View style={styles.childContainer}>
+//        <FlatList
+//            contentContainerStyle={styles.flatListContainer}
+//            data={addressData && addressData.length ? addressData : []}
+//            keyExtractor={(item, index) => `address-list-${index}`}
+//            renderItem={({ item }) => <this.AddressItem item={item} />}
+//        />
+//    </View> 
+//     } */}
 
-//         var STORAGE_KEY = 'id_token';
-//         retrieveData(STORAGE_KEY)
-//         .then((data) => {
-//             let guid = uuid.v1();
-//             const config = {
-//                 headers: { Authorization: 'Bearer ' + data,'Request-Id': guid}
-//             };
-
-//             Api.post('/address/create' , addressDto, config).then(res => {
-//                 console.log(res);
-//                 navigation.navigate('PaymentType');
-//             }, err => console.error(err));
-//         });
-//     }
-
-//     return (
-//         <View style={{flex:1, backgroundColor: vars.bgColor, padding:15}}>
-//             <Text style={styleSheets.text}>AddressLine:</Text>
-//             <Controller
-//                 control={control}
-//                 render={({ onChange, onBlur, value }) => (
-//                 <TextInput
-//                     style={styleSheets.input}
-//                     onBlur={onBlur}
-//                     onChangeText={value => onChange(value)}
-//                     value={value}
-//                 />
-//                 )}
-//                 name="addressLine"
-//                 rules={{ required: true }}
-//                 defaultValue=""
-//             />
-//             {errors.addressLine && <Text style={styleSheets.text_error}>AddressLine is required.</Text>}
-
-//             <Text style={styleSheets.text}>City:</Text>        
-//             <Controller
-//                 control={control}
-//                 render={({ onChange, onBlur, value }) => (
-//                 <TextInput
-//                     style={styleSheets.input}
-//                     onBlur={onBlur}
-//                     onChangeText={value => onChange(value)}
-//                     value={value}
-//                 />
-//                 )}
-//                 name="city"
-//                 rules={{ required: true }}
-//                 defaultValue=""
-//             />
-//             {errors.city && <Text style={styleSheets.text_error}>City is required.</Text>}
-
-//             <Text style={styleSheets.text}>Postal code/Postcode:</Text>        
-//             <Controller
-//                 control={control}
-//                 render={({ onChange, onBlur, value }) => (
-//                 <TextInput
-//                     style={styleSheets.input}
-//                     onBlur={onBlur}
-//                     onChangeText={value => onChange(value)}
-//                     value={value}
-//                 />
-//                 )}
-//                 name="postCode"
-//                 rules={{ required: true }}
-//                 defaultValue=""
-//             />
-//             {errors.postCode && <Text style={styleSheets.text_error}>Postcode is required.</Text>}
-
-//             <Text style={styleSheets.text}>Country:</Text>        
-//             <Controller
-//                 control={control}
-//                 render={({ onChange, onBlur, value }) => (
-//                 <TextInput
-//                     style={styleSheets.input}
-//                     onBlur={onBlur}
-//                     onChangeText={value => onChange(value)}
-//                     value={value}
-//                 />
-//                 )}
-//                 name="country"
-//                 rules={{ required: true }}
-//                 defaultValue=""
-//             />
-//             {errors.country && <Text style={styleSheets.text_error}>Country is required.</Text>}
-
-//             <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-
-
+// {/* <Text>Search here:</Text>
+//     <TextInput
+//         value={searchName}
+//         style={styles.inputText}
+//         onChangeText={text => this.onChangeText(text)}
+//         autoCorrect={false}
+//     /> */}
+// {
+//     !isAddress &&
+//     <View>
+//         <View style={{ marginBottom: hp(-1) }}>
+//             <Custominput
+//                 placeholder="Search here"
+//                 placeholderTextColor="rgba(0,0,0,0.32)"
+//                 icon={require('../../assets/images/search.png')}
+//                 style
+//                 value={searchName}
+//                 onChangeText={text => this.onChangeText(text)}
+//                 autoCorrect={false} />
 //         </View>
-//     );
 
+//         {/* <View style={{ flex: 1 }}>
+//                 <MapView
+//                     ref={r => this.mapRef = r}
+//                     style={styles.mapView}
+//                     region={{
+//                         latitude: lat == '' ? 0.0 : lat,
+//                         longitude: lng == '' ? 0.0 : lng,
+//                         latitudeDelta: latDelta,
+//                         longitudeDelta: lngDelta,
+//                     }}
+//                     showsUserLocation={true}
+//                     // onRegionChangeComplete={this.handleRegionChange}
+//                     onPress={(event) => this.onMapPress(event.nativeEvent.coordinate)}
+//                 >
+//                     <MapView.Marker
+//                         coordinate={{
+//                             latitude: lat == '' ? 0.0 : lat,
+//                             longitude: lng == '' ? 0.0 : lng,
+//                         }}
+//                         draggable
+//                         draggable={true}
+//                     />
+//                 </MapView>
+//                 <Button
+//                     onPress={() => this.setState({ isAddress: true, isMap: true })}
+//                     title={'Set address'}
+//                     style={{ marginVertical: hp(2), }}
+//                 />
+
+//             </View> */}
+
+//     </View>
 
 // }
 
-// const styleSheets = StyleSheet.create({
-//     text: {
-//         alignItems: 'center',
-//         color: '#0e101c',
-//         fontSize: 16,
-//         fontWeight: '600',
-//         paddingTop: 10,
-//         marginLeft:12,
-//         marginBottom: 5
-//       },
-//     text_error:{
-//         alignItems: 'center',
-//         color: '#ec5990',
-//         fontSize: 14,
-//         fontWeight: '600',
-//         marginLeft:12,
-//         marginBottom: 5
-//     },
-//     input: {
-//         height: 40,
-//         margin: 12,
-//         borderWidth: 1,
-//       },
-// });
+// {
+//     isMap &&
+//     <View style={{ flex: 1 }}>
+//         <MapView
+//             ref={r => this.mapRef = r}
+//             style={styles.mapView}
+//             region={{
+//                 latitude: lat == '' ? 0.0 : lat,
+//                 longitude: lng == '' ? 0.0 : lng,
+//                 latitudeDelta: latDelta,
+//                 longitudeDelta: lngDelta,
+//             }}
+//             showsUserLocation={true}
+//             // onRegionChangeComplete={this.handleRegionChange}
+//             onPress={(event) => this.onMapPress(event.nativeEvent.coordinate)}
+//         >
+//             <MapView.Marker
+//                 coordinate={{
+//                     latitude: lat == '' ? 0.0 : lat,
+//                     longitude: lng == '' ? 0.0 : lng,
+//                 }}
+//                 draggable
+//                 draggable={true}
+//             />
+//         </MapView>
+//         <View style={styles.childContainer}>
+//             <FlatList
+//                 contentContainerStyle={styles.flatListContainer}
+//                 data={addressData && addressData.length ? addressData : []}
+//                 keyExtractor={(item, index) => `address-list-${index}`}
+//                 renderItem={({ item }) => <this.AddressItem item={item} />}
+//             />
+//         </View>
+//         <Button
+//             onPress={() => this.setState({ isAddress: true, isMap: true })}
+//             title={'Set address'}
+//             style={{ marginVertical: hp(2), }}
+//         />
+//     </View>
+// }
+
+// {
+//     isAddress &&
+//     <View>
+//         {/* <Text>Address line:</Text>
+//             <TextInput
+//                 value={addressLine}
+//                 style={styles.inputText}
+//                 onChangeText={text => this.setState({ addressLine: text })}
+//                 editable={false}
+//                 autoCorrect={false}
+//             /> */}
+
+//         <Custominput
+//             placeholder="Address line"
+//             placeholderTextColor="rgba(0,0,0,0.32)"
+//             style
+//             onChangeText={text => this.setState({ addressLine: text })}
+//             autoCorrect={false}
+//             value={addressLine}
+//         />
+
+//         {/* <Text>City:</Text>
+//             <TextInput
+//                 value={city}
+//                 style={styles.inputText}
+//                 onChangeText={text => this.setState({ city: text })}
+//                 editable={false}
+//                 autoCorrect={false}
+//             /> */}
+
+//         <Custominput
+//             placeholder="City"
+//             placeholderTextColor="rgba(0,0,0,0.32)"
+//             style
+//             onChangeText={text => this.setState({ city: text })}
+//             autoCorrect={false}
+//             value={city}
+//         />
+
+//         {/* <Text>Postal code/Postcode:</Text>
+//         <TextInput
+//             keyboardType='numeric'
+//             value={postCode}
+//             style={styles.inputText}
+//             onChangeText={text => this.setState({ postCode: text })}
+//             autoCorrect={false}
+//         /> */}
+
+//         <Custominput
+//             placeholder="Postal code/Postcode"
+//             placeholderTextColor="rgba(0,0,0,0.32)"
+//             style
+//             onChangeText={text => this.setState({ postCode: text })}
+//             autoCorrect={false}
+//             value={postCode}
+//         />
+
+//         {/* <Text>Country:</Text>
+//         <TextInput
+//             value={country}
+//             style={styles.inputText}
+//             onChangeText={text => this.setState({ country: text })}
+//             editable={false}
+//             autoCorrect={false}
+//         /> */}
+
+//         <Custominput
+//             placeholder="Country"
+//             placeholderTextColor="rgba(0,0,0,0.32)"
+//             style
+//             onChangeText={text => this.setState({ country: text })}
+//             autoCorrect={false}
+//             value={country}
+//         />
+
+//         <Button
+//             onPress={() => { this.submit() }}
+//             title={'Submit'}
+//             style={{ marginTop: hp(3) }}
+//         />
+//     </View>
+// }
+
+// <Modal
+//     transparent={true}
+//     animationType={'none'}
+//     visible={loading}
+//     onRequestClose={() => { console.log('close modal') }}>
+//     <View style={styles.loaderBackground}>
+//         <ActivityIndicator
+//             animating={loading} size="large" color='#000000' />
+//     </View>
+// </Modal>
+
+// {/* </KeyboardAwareScrollView> */ }
+// </SmartScrollView >
+// </View > * /}
+
+
+// return (
+//     // <KeyboardAwareScrollView
+//     //     contentContainerStyle={{
+//     //         flexGrow: 1, backgroundColor: Colors.white,
+//     //         padding: 15
+//     //     }}
+//     //     bounces={false}
+//     //     style={{ flex: 1 }}
+//     //     showsVerticalScrollIndicator={false}
+//     //     enableOnAndroid={true}>
+
+//     <View style={{ flex: 1 }}>
+
+//         <View style={{ flexDirection: 'row', paddingVertical: wp(3), paddingHorizontal: wp(3), backgroundColor: Colors.headerBackground }}>
+//             <BackIcon
+//                 tintColor={Colors.white}
+//                 onPress={() => {
+//                     if (isAddress) {
+//                         this.setState({ isAddress: false, isMap: false })
+//                     } else {
+//                         this.props.navigation.goBack()
+//                     }
+//                 }} />
+
+//             <Text style={styles.headerText}>{'Address Creation'}</Text>
+//         </View>
+
+//         <SmartScrollView
+//             showsVerticalScrollIndicator={false}
+//             contentContainerStyle={styles.container}
+//             applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+//             disabled={false}
+//             alwaysBounceVertical={false} >
+
+//             {isMap && !isAddress &&
+//                 <View style={styles.childContainer}>
+//                     <FlatList
+//                         contentContainerStyle={styles.flatListContainer}
+//                         data={addressData && addressData.length ? addressData : []}
+//                         keyExtractor={(item, index) => `address-list-${index}`}
+//                         renderItem={({ item }) => <this.AddressItem item={item} />}
+//                     />
+//                 </View>
+//             }
+
+//             {/* <Text>Search here:</Text>
+//             <TextInput
+//                 value={searchName}
+//                 style={styles.inputText}
+//                 onChangeText={text => this.onChangeText(text)}
+//                 autoCorrect={false}
+//             /> */}
+//             {!isAddress &&
+//                 <View style={{ marginBottom: hp(-1) }}>
+//                     <Custominput
+//                         placeholder="Search here"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         icon={require('../../assets/images/search.png')}
+//                         style
+//                         value={searchName}
+//                         onChangeText={text => this.onChangeText(text)}
+//                         autoCorrect={false} />
+//                 </View>
+//             }
+
+//             {!isMap &&
+//                 <View style={{ flex: 1 }}>
+//                     <MapView
+//                         ref={r => this.mapRef = r}
+//                         style={styles.mapView}
+//                         region={{
+//                             latitude: lat == '' ? 0.0 : lat,
+//                             longitude: lng == '' ? 0.0 : lng,
+//                             latitudeDelta: latDelta,
+//                             longitudeDelta: lngDelta,
+//                         }}
+//                         showsUserLocation={true}
+//                         // onRegionChangeComplete={this.handleRegionChange}
+//                         onPress={(event) => this.onMapPress(event.nativeEvent.coordinate)}
+//                     >
+//                         <MapView.Marker
+//                             coordinate={{
+//                                 latitude: lat == '' ? 0.0 : lat,
+//                                 longitude: lng == '' ? 0.0 : lng,
+//                             }}
+//                             draggable
+//                             draggable={true}
+//                         />
+//                     </MapView>
+//                     <Button
+//                         onPress={() => this.setState({ isAddress: true, isMap: true })}
+//                         title={'Set address'}
+//                         style={{ marginVertical: hp(2), }}
+//                     />
+//                 </View>
+//             }
+
+//             {isAddress &&
+//                 <View>
+//                     {/* <Text>Address line:</Text>
+//                     <TextInput
+//                         value={addressLine}
+//                         style={styles.inputText}
+//                         onChangeText={text => this.setState({ addressLine: text })}
+//                         editable={false}
+//                         autoCorrect={false}
+//                     /> */}
+
+//                     <Custominput
+//                         placeholder="Address line"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ addressLine: text })}
+//                         autoCorrect={false}
+//                         value={addressLine}
+//                     />
+
+//                     {/* <Text>City:</Text>
+//                     <TextInput
+//                         value={city}
+//                         style={styles.inputText}
+//                         onChangeText={text => this.setState({ city: text })}
+//                         editable={false}
+//                         autoCorrect={false}
+//                     /> */}
+
+//                     <Custominput
+//                         placeholder="City"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ city: text })}
+//                         autoCorrect={false}
+//                         value={city}
+//                     />
+
+//                     {/* <Text>Postal code/Postcode:</Text>
+//                 <TextInput
+//                     keyboardType='numeric'
+//                     value={postCode}
+//                     style={styles.inputText}
+//                     onChangeText={text => this.setState({ postCode: text })}
+//                     autoCorrect={false}
+//                 /> */}
+
+//                     <Custominput
+//                         placeholder="Postal code/Postcode"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ postCode: text })}
+//                         autoCorrect={false}
+//                         value={postCode}
+//                     />
+
+//                     {/* <Text>Country:</Text>
+//                 <TextInput
+//                     value={country}
+//                     style={styles.inputText}
+//                     onChangeText={text => this.setState({ country: text })}
+//                     editable={false}
+//                     autoCorrect={false}
+//                 /> */}
+
+//                     <Custominput
+//                         placeholder="Country"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ country: text })}
+//                         autoCorrect={false}
+//                         value={country}
+//                     />
+
+//                     <Button
+//                         onPress={() => { this.submit() }}
+//                         title={'Submit'}
+//                         style={{ marginTop: hp(3) }}
+//                     />
+//                 </View>}
+
+//             <Modal
+//                 transparent={true}
+//                 animationType={'none'}
+//                 visible={loading}
+//                 onRequestClose={() => { console.log('close modal') }}>
+//                 <View style={styles.loaderBackground}>
+//                     <ActivityIndicator
+//                         animating={loading} size="large" color='#000000' />
+//                 </View>
+//             </Modal>
+
+//             {/* </KeyboardAwareScrollView> */}
+//         </SmartScrollView>
+//     </View>
+// )
+
+
+// render() {
+//     const { addressLine, city, postCode, country, searchName, addressData, isMap, lat, lng,
+//         isAddress, description, loading, latDelta, lngDelta } = this.state
+//     return (
+//         // <KeyboardAwareScrollView
+//         //     contentContainerStyle={{
+//         //         flexGrow: 1, backgroundColor: Colors.white,
+//         //         padding: 15
+//         //     }}
+//         //     bounces={false}
+//         //     style={{ flex: 1 }}
+//         //     showsVerticalScrollIndicator={false}
+//         //     enableOnAndroid={true}>
+
+//         <SmartScrollView
+//             showsVerticalScrollIndicator={false}
+//             contentContainerStyle={styles.container}
+//             applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+//             disabled={false}
+//             alwaysBounceVertical={false} >
+
+//             {isMap && !isAddress &&
+//                 <View style={styles.childContainer}>
+//                     <FlatList
+//                         contentContainerStyle={styles.flatListContainer}
+//                         data={addressData && addressData.length ? addressData : []}
+//                         keyExtractor={(item, index) => `address-list-${index}`}
+//                         renderItem={({ item }) => <this.AddressItem item={item} />}
+//                     />
+//                 </View>
+//             }
+
+//             {/* <Text>Search here:</Text>
+//                 <TextInput
+//                     value={searchName}
+//                     style={styles.inputText}
+//                     onChangeText={text => this.onChangeText(text)}
+//                     autoCorrect={false}
+//                 /> */}
+
+//             <Custominput
+//                 placeholder="Search here"
+//                 placeholderTextColor="rgba(0,0,0,0.32)"
+//                 icon={require('../../assets/images/search.png')}
+//                 style
+//                 value={searchName}
+//                 onChangeText={text => this.onChangeText(text)}
+//                 autoCorrect={false}
+//             />
+
+//             {!isMap &&
+//                 <View style={{ flex: 1 }}>
+//                     <MapView
+//                         ref={r => this.mapRef = r}
+//                         style={styles.mapView}
+//                         region={{
+//                             latitude: lat == '' ? 0.0 : lat,
+//                             longitude: lng == '' ? 0.0 : lng,
+//                             latitudeDelta: latDelta,
+//                             longitudeDelta: lngDelta,
+//                         }}
+//                         showsUserLocation={true}
+//                         // onRegionChangeComplete={this.handleRegionChange}
+//                         onPress={(event) => this.onMapPress(event.nativeEvent.coordinate)}
+//                     >
+//                         <MapView.Marker
+//                             coordinate={{
+//                                 latitude: lat == '' ? 0.0 : lat,
+//                                 longitude: lng == '' ? 0.0 : lng,
+//                             }}
+//                             draggable
+//                             draggable={true}
+//                         />
+//                     </MapView>
+//                     <Button
+//                         onPress={() => this.setState({ isAddress: true, searchName: '', isMap: true })}
+//                         title={'Set address'}
+//                         style={{ marginTop: hp(2), }}
+//                     />
+//                 </View>
+//             }
+
+//             {isAddress &&
+//                 <View>
+//                     {/* <Text>Address line:</Text>
+//                         <TextInput
+//                             value={addressLine}
+//                             style={styles.inputText}
+//                             onChangeText={text => this.setState({ addressLine: text })}
+//                             editable={false}
+//                             autoCorrect={false}
+//                         /> */}
+
+//                     <Custominput
+//                         placeholder="Address line"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ addressLine: text })}
+//                         autoCorrect={false}
+//                         value={addressLine}
+//                     />
+
+//                     {/* <Text>City:</Text>
+//                         <TextInput
+//                             value={city}
+//                             style={styles.inputText}
+//                             onChangeText={text => this.setState({ city: text })}
+//                             editable={false}
+//                             autoCorrect={false}
+//                         /> */}
+
+//                     <Custominput
+//                         placeholder="City"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ city: text })}
+//                         autoCorrect={false}
+//                         value={city}
+//                     />
+
+//                     {/* <Text>Postal code/Postcode:</Text>
+//                     <TextInput
+//                         keyboardType='numeric'
+//                         value={postCode}
+//                         style={styles.inputText}
+//                         onChangeText={text => this.setState({ postCode: text })}
+//                         autoCorrect={false}
+//                     /> */}
+
+//                     <Custominput
+//                         placeholder="Postal code/Postcode"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ postCode: text })}
+//                         autoCorrect={false}
+//                         value={postCode}
+//                     />
+
+//                     {/* <Text>Country:</Text>
+//                     <TextInput
+//                         value={country}
+//                         style={styles.inputText}
+//                         onChangeText={text => this.setState({ country: text })}
+//                         editable={false}
+//                         autoCorrect={false}
+//                     /> */}
+
+//                     <Custominput
+//                         placeholder="Country"
+//                         placeholderTextColor="rgba(0,0,0,0.32)"
+//                         style
+//                         onChangeText={text => this.setState({ country: text })}
+//                         autoCorrect={false}
+//                         value={country}
+//                     />
+
+//                     <Button
+//                         onPress={() => { this.submit() }}
+//                         title={'Submit'}
+//                         style={{ marginTop: hp(3) }}
+//                     />
+//                 </View>}
+
+//             <Modal
+//                 transparent={true}
+//                 animationType={'none'}
+//                 visible={loading}
+//                 onRequestClose={() => { console.log('close modal') }}>
+//                 <View style={styles.loaderBackground}>
+//                     <ActivityIndicator
+//                         animating={loading} size="large" color='#000000' />
+//                 </View>
+//             </Modal>
+
+//             {/* </KeyboardAwareScrollView> */}
+//         </SmartScrollView>
+//     )
+// }

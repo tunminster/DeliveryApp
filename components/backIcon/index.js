@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import { TouchableOpacity, Image} from 'react-native';
+import { wp, hp, normalize } from '../../helper/responsiveScreen'
 
 class BackIcon extends Component {
+    
     render() {
+        const { onPress, tintColor } = this.props;
         return (
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image source={require('../../assets/images/back-icon.png')} style={{width: 30, resizeMode: 'contain', marginLeft: 15, height: 30}} />
+            <TouchableOpacity style = {{alignSelf:'center', padding: wp(2)}} onPress={() => onPress()}>
+                <Image  tintColor={tintColor} source={require('../../assets/images/back-icon.png')} resizeMode='contain'  style={{width: wp(5), height: wp(5)}} />
             </TouchableOpacity>
         )
     }

@@ -4,7 +4,7 @@ import * as React from 'react';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
-import HelloScreen from '../screens/HelloScreen'
+import MoreScreen from '../screens/MoreScreen'
 import TabBarText from '../components/TabBarText';
 
 
@@ -36,7 +36,7 @@ export default function BottomTabNavigator() {
         }}
       />
       <BottomTab.Screen
-        name="Orders"
+        name="Order"
         component={LinksScreen}
         options={{
           tabBarLabel:({ focused }) => <TabBarText focused={focused} name="Orders" />,
@@ -45,7 +45,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="More"
-        component={LinksScreen}
+        component={MoreScreen}
         options={{
           tabBarLabel:({ focused }) => <TabBarText focused={focused} name="More" />,
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ellipsis-horizontal-circle" />,

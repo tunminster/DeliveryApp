@@ -9,6 +9,7 @@ class Store{
     @observable popularProducts = [];
     @observable allProducts = [];
     @observable addBasket = [];
+    @observable restaurantData = null
 
     @action setCurrentRoute(route) {
         this.currentRoute = route;
