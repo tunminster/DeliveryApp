@@ -10,7 +10,7 @@ var uuid = require('react-native-uuid');
 
 class ProductDetail extends Component {
     static navigationOptions = ({navigation}) => ({
-        headerLeft: <BackIcon navigation={navigation} />
+        headerLeft:  <BackIcon onPress={() => navigation.goBack() } />
     });
 
     state = {

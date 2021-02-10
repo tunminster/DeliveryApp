@@ -289,12 +289,13 @@ const PageScreen = () => (
       component={Cart}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Checkout',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff'
+          headerShown: false
+          // headerMode: 'screen',
+          // title: 'Basket',
+          // headerStyle: {
+          //   backgroundColor: '#fff'
+          // },
+          // headerTintColor: '#000'
         }
 
       )}
@@ -367,13 +368,14 @@ const PageScreen = () => (
       component={AddressCreation}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Address Creation',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: ''
+          headerShown: false
+          // headerMode: 'screen',
+          // title: 'Address Creation',
+          // headerStyle: {
+          //   backgroundColor: '#f4511e'
+          // },
+          // headerTintColor: '#fff',
+          // headerBackTitle: ''
         }
       )}
     />

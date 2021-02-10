@@ -1,74 +1,67 @@
 import vars from '../../utils/vars';
+import Colors from '../../constants/Colors'
+import { wp, hp, normalize } from '../../helper/responsiveScreen'
 
 export default {
     container: {
         flex: 1,
-        backgroundColor: vars.bgColor
+        backgroundColor: Colors.white,
+        paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
     },
-    card: {
-        backgroundColor: '#fff',
-        padding: 10,
-    },
-    cardFooter: {
-        height: 45,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: 'rgba(0,0,0,0.19)',
-        marginTop: 15,
-        justifyContent: 'flex-end',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    incrementBtn: {
-        backgroundColor: vars.baseColor,
-        width: 30,
-        height: 21,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    btnLeft: {
-        borderTopLeftRadius: 15,
-        borderBottomLeftRadius: 15,
-        marginRight: 10,
-    },
-    btnRight: {
-        borderTopRightRadius: 15,
-        borderBottomRightRadius: 15,
-        marginLeft: 10
-    },
-    row: {
-        flexDirection: 'row'
-    },
-    whiteTxt: {
-        color: '#fff'
-    },
-    txt: {
-        fontFamily: vars.bold,
-        fontSize: 14,
-        color: '#333'
-    },
-    price: {
-        fontFamily: vars.bold,
-        fontSize: 14,
-        color: '#333',
-        textAlign: 'right',
-        marginRight: 5
-    },
-    img: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        resizeMode: 'cover',
-    },
-    viewBtn: {
-        marginRight: 15,
-        backgroundColor: vars.baseColor,
-        justifyContent: 'center',
+    restaurantTitle: {
+        fontSize: normalize(20),
+        fontFamily: 'Roboto-Regular',
+        fontWeight: '500',
         alignItems: 'center',
-        width: 120,
-        height: 30
     },
-    delete: {
-        backgroundColor: '#d63f2f'
+    restaurantSubTitle: {
+        fontSize: normalize(16),
+        fontFamily: 'Roboto-Regular',
+        fontWeight: '500',
+        alignSelf: 'center',
+        color: Colors.gray
+    },
+    icon: {
+        width: wp(6),
+        height: wp(6),
+    },
+    childContainer: {
+        flexDirection: 'row',
+        marginLeft: wp(5),
+        marginTop: hp(1.5)
+    },
+    seperateLine: {
+        backgroundColor: Colors.border,
+        height: wp(0.2),
+    },
+    cartContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: hp(1),
+        marginLeft: wp(1)
+    },
+    cartIcon: {
+        width: wp(5),
+        height: wp(5),
+        alignSelf: 'center',
+    },
+    btn: {
+        height: hp(7),
+        marginHorizontal: wp(5),
+        marginVertical: hp(1.5)
+    },
+    bottomContainer: {
+        position: 'absolute',
+        bottom: 0,
+        height: hp(17),
+        width: '100%'
+    },
+    bottomChildContainer: {
+        flexDirection: 'row',
+        height: hp(6),
+        marginHorizontal: wp(3),
+        justifyContent:'space-between',
+        alignItems: 'center'
     }
 }

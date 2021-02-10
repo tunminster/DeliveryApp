@@ -12,7 +12,7 @@ import Loading from '../../components/loading';
 
 class Payment extends Component {
     static navigationOptions = ({ navigation }) => ({
-        headerLeft: <BackIcon navigation={navigation} />
+        headerLeft:  <BackIcon onPress={() =>  navigation.goBack() } />
     });
 
     state = {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput,
-  ImageBackground, ActivityIndicator, UIManager, LayoutAnimation, TouchableWithoutFeedback
+  ImageBackground, ActivityIndicator, UIManager, LayoutAnimation, TouchableWithoutFeedback, Alert
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { wp, hp, normalize } from '../helper/responsiveScreen'
@@ -56,7 +56,9 @@ class HomeScreen extends Component {
       menuDetailVisible: false,
       menuDetaildata: null,
       menuDetailIndex: -1,
-      menuDetailCount: 0
+      menuDetailCount: 0,
+      newOrderModelVisible: false,
+      newStoreName: '',
     }
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true); // USed for collaps animation
@@ -64,24 +66,31 @@ class HomeScreen extends Component {
   }
 
   componentDidMount = async () => {
+    this.focusListener = this.props.navigation.addListener("focus", () => {
+      this.forceUpdate()
+    })
     this.getCategories()
 
-    if (Platform.OS === 'android') {
-      RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
-        .then(data => {
-          if (this.state.latitude === '') {
-            this.callLocation()
-          }
+      if (Platform.OS === 'android') {
+        RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
+          .then(data => {
+            if (this.state.latitude === '') {
+              this.callLocation()
+            }
 
-        }).catch(err => {
-          console.log("Error " + err.message + ", Code : " + err.code);
-          this.gpsDialog()
-        });
-    } else {
-      if (this.state.latitude == '') {
-        this.callLocation()
+          }).catch(err => {
+            console.log("Error " + err.message + ", Code : " + err.code);
+            this.gpsDialog()
+          });
+      } else {
+        if (this.state.latitude == '') {
+          this.callLocation()
+        }
       }
-    }
+  }
+
+  componentWillUnmount() {
+    this.focusListener();
   }
 
   getCategories() {
@@ -227,13 +236,12 @@ class HomeScreen extends Component {
   }
 
   refresh() {
-    this.forceUpdate()
     this.setState({ isModalVisible: true });
     setTimeout(() => {
+      this.forceUpdate()
       this.setState({ isModalVisible: true });
+      console.log('refresh...', 1)
     }, 1000)
-
-    console.log('refresh...', 1)
   }
 
   onDonePressHandler() {
@@ -299,23 +307,46 @@ class HomeScreen extends Component {
   }
 
   onMenuPress = (value) => {
-    Store.addToCart(value)
-    Store.cart.map((item, i) => {
-      if (value.id == item.id) {
-        this.setState({
-          menuModelVisible: false,
-          menuDetailVisible: true,
-          menuDetaildata: item,
-          menuDetailIndex: i,
-          menuDetailCount: item.count
+
+    if (Store.cart.length != 0) {
+      let existData = Store.cart.find(x => x.storeId === value.storeId);
+      if (existData) {
+        Store.addToCart(value)
+        Store.cart.map((item, i) => {
+          if (value.id == item.id) {
+            this.setState({
+              menuModelVisible: false,
+              menuDetailVisible: true,
+              menuDetaildata: item,
+              menuDetailIndex: i,
+              menuDetailCount: item.count
+            })
+          }
         })
+      } else {
+        if (Store.restaurantData) {
+          this.setState({ newOrderModelVisible: true, newStoreName: Store.restaurantData.storeType })
+        }
       }
-    })
+    } else {
+      Store.addToCart(value)
+      Store.cart.map((item, i) => {
+        if (value.id == item.id) {
+          this.setState({
+            menuModelVisible: false,
+            menuDetailVisible: true,
+            menuDetaildata: item,
+            menuDetailIndex: i,
+            menuDetailCount: item.count
+          })
+        }
+      })
+    }
   }
 
   onMenuDetailCancelPress = () => {
     let existData = Store.addBasket.find(x => x.id === this.state.menuDetaildata.id);
-    if(!existData) {
+    if (!existData) {
       Store.removeFromCart(this.state.menuDetailIndex)
     }
     this.setState({ menuModelVisible: true, menuDetailVisible: false })
@@ -330,12 +361,34 @@ class HomeScreen extends Component {
     })
   }
 
+  onAddBasketPress = (menuDetaildata) => {
+    let restaurantData = this.state.restaurantData.find(x => x.storeId === menuDetaildata.storeId)
+    this.setState({ menuModelVisible: true, menuDetailVisible: false })
+    Store.addBasket.push(menuDetaildata)
+    Store.restaurantData = restaurantData
+  }
+
+  onConfirmPress = () => {
+    this.setState({ newOrderModelVisible: false })
+    Store.setCart([]);
+    Store.resetCartCount();
+  }
+
+  basketRefresh = () => {
+    this.forceUpdate()
+  }
+
+  onBasketViewPress = () => {
+    this.setState({ menuModelVisible: false })
+    // this.props.navigation.navigate('Cart')
+    this.props.navigation.navigate('Cart', { onGoBack: () => this.basketRefresh() });
+  }
+
   render() {
     const { headerTitle, isModalVisible, addressesId, curLatitude, curLongitude, search, categoriesData,
       restaurantData, isSearching, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
       filterValue, isMenuLoading, menuModelVisible, menuData, expandeIndex, isCategoryLoading,
-      menuDetaildata, menuDetailVisible, menuDetailCount, menuDetailIndex } = this.state
-
+      menuDetaildata, menuDetailVisible, menuDetailCount, newOrderModelVisible, newStoreName } = this.state
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -368,6 +421,8 @@ class HomeScreen extends Component {
                     this.setState({ isModalVisible: false }),
                       this.props.navigation.navigate('CreateAddress', {
                         onGoBack: () => this.refresh(),
+                        curLatitude: curLatitude,
+                        curLongitude: curLongitude
                       })
                   }}>
                     <Image source={require('../assets/images/add.png')} style={styles.modelAddIcon} />
@@ -396,7 +451,7 @@ class HomeScreen extends Component {
 
                   <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                     <View style={styles.modelSection}>
-                      {Object.entries(AuthStore.user).length != 0 && AuthStore.isLogin && AuthStore.user.addresses.reverse().map((item, i) =>
+                      {Object.entries(AuthStore.user).length != 0 && AuthStore.isLogin && AuthStore.user.addresses.slice(0).reverse().map((item, i) =>
                         <View key={i}>
                           <CheckBoxView
                             active={addressesId === item.id}
@@ -502,7 +557,7 @@ class HomeScreen extends Component {
 
             {Store.cart.length != 0 &&
               <BasketView
-                onPress={() => console.log('basket...')}
+                onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
                 amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
@@ -651,11 +706,37 @@ class HomeScreen extends Component {
                   </ScrollView>
                   {Store.cart.length != 0 &&
                     <BasketView
-                      onPress={() => console.log('basket...')}
+                      onPress={() => this.onBasketViewPress()}
                       style={{ marginBottom: hp(1) }}
                       count={Store.cart.length}
                       amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
                   }
+
+                  <Modal
+                    transparent={true}
+                    animationType={'none'}
+                    visible={newOrderModelVisible} >
+                    <View style={styles.modelContainer}>
+                      <View style={{ backgroundColor: Colors.white, width: wp(70) }}>
+                        <Text style={{ ...styles.restaurantTitle, marginVertical: hp(1.5), fontWeight: 'bold', alignSelf: 'center' }}>{'Start new order?'}</Text>
+                        <Text style={{ ...styles.restaurantSubTitle, marginHorizontal: wp(7), color: Colors.gray }}>{'Items currently from '}
+                          <Text style={{ ...styles.restaurantSubTitle, color: Colors.black }}>{newStoreName}</Text>
+                          <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{' will be removed'}</Text></Text>
+
+                        <View style={{ ...styles.modelSeperateLine, marginTop: hp(1.5) }} />
+
+                        <View style={styles.modelConfirmContainer}>
+                          <TouchableOpacity style={{ width: wp(35) }} onPress={() => this.setState({ newOrderModelVisible: false })}>
+                            <Text style={{ ...styles.restaurantTitle, textAlign: 'center', }}>{'Cancel'}</Text>
+                          </TouchableOpacity>
+                          <View style={styles.modelVerticalLine} />
+                          <TouchableOpacity style={{ width: wp(35) }} onPress={() => this.onConfirmPress()}>
+                            <Text style={{ ...styles.restaurantTitle, textAlign: 'center', }}>{'Confirm'}</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+                  </Modal>
                 </View>
               </View>
             </Modal>
@@ -706,10 +787,7 @@ class HomeScreen extends Component {
                     <View style={styles.btnContainer}>
                       <View style={{ ...styles.modelSeperateLine, marginBottom: hp(1) }} />
                       <Button
-                        onPress={() => {
-                          this.setState({ menuModelVisible: true, menuDetailVisible: false })
-                          Store.addBasket.push(menuDetaildata)
-                        }}
+                        onPress={() => this.onAddBasketPress(menuDetaildata)}
                         title={'Add to Basket'}
                         style={styles.btn}
                       />
@@ -940,12 +1018,23 @@ const styles = StyleSheet.create({
   modelCountText: {
     fontSize: normalize(18),
     fontFamily: 'Roboto-Regular',
-    fontWeight: '400',
     alignItems: 'center',
     marginHorizontal: wp(7),
     alignSelf: 'center',
     color: Colors.gray,
     fontWeight: '700'
+  },
+  modelVerticalLine: {
+    width: 1,
+    backgroundColor: Colors.border,
+    height: hp(6)
+  },
+  modelConfirmContainer: {
+    width: wp(70),
+    flexDirection: 'row',
+    height: hp(6),
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 
