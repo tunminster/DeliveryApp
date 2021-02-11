@@ -24,7 +24,7 @@ class Cart extends Component {
         return (
             <View style={styles.container}>
 
-                <View style={{ flexDirection: 'row', paddingVertical: wp(3), paddingHorizontal: wp(3) }}>
+                <View style={styles.header}>
                     <BackIcon
                         onPress={() => {
                             this.props.navigation.goBack()
