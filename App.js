@@ -30,6 +30,7 @@ import ProfileNavigatorScreens from './navigation/profileNavigator';
 import Orders from './screens/Orders';
 import OrderDetail from './screens/OrderDetail';
 import Support from './screens/Support';
+import RestaurantList from './screens/RestaurantList';
 
 const Stack = createStackNavigator();
 state = {
@@ -104,13 +105,20 @@ export default function App(props) {
         });
 
         let loginCredential = await AsyncStorage.getItem('login credential');
-        console.log('loginCredential', loginCredential)
+        let facebookCredential = await AsyncStorage.getItem('facebook credential');
+        let googleCredential = await AsyncStorage.getItem('google credential');
+        console.log('google credential', googleCredential)
         if (loginCredential != null) {
           let parsed = JSON.parse(loginCredential);
           loginRequest(parsed.email, parsed.password);
+        } else if (facebookCredential != null) {
+          facebookSignInRequest(facebookCredential);
+        } else if (googleCredential != null) {
+          googleSignInRequest(googleCredential);
         } else {
           setIsLoading(false)
         }
+
 
       } catch (e) {
         // We might want to provide this error information to an error reporting service
@@ -172,6 +180,7 @@ export default function App(props) {
     setIsLoading(true);
     AuthRequestGoogleLogin(token)
       .then((data) => {
+        console.log('google response', data)
         const result = JSON.parse(data);
         setUserToken(result.auth_token);
 
@@ -187,10 +196,12 @@ export default function App(props) {
         storeUser(result.auth_token).then((data) => {
           console.log("user stored " + data);
         });
+        AsyncStorage.setItem('google credential', token);
 
         setIsLoading(false);
 
       }).catch((error) => {
+        AsyncStorage.removeItem('google credential');
         setIsLoading(false);
         setUserToken(null);
       });
@@ -216,9 +227,12 @@ export default function App(props) {
           console.log("user stored " + data);
         });
 
+        AsyncStorage.setItem('facebook credential', token);
+
         setIsLoading(false);
 
       }).catch((error) => {
+        AsyncStorage.removeItem('facebook credential');
         setIsLoading(false);
         setUserToken(null);
       });
@@ -428,6 +442,15 @@ const PageScreen = () => (
 
     <PageStack.Screen name="CreateAccount" component={CreateAccount}
       options={{ headerShown: false }} />
+
+    <PageStack.Screen name="RestaurantList"
+      component={RestaurantList}
+      options={({ navigation }) => (
+        {
+          headerShown: false
+        }
+      )}
+    />
 
   </PageStack.Navigator>
 );

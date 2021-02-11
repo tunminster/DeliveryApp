@@ -8,6 +8,10 @@ export default {
         backgroundColor: Colors.white,
         paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
     },
+    header: {
+        flexDirection: 'row',
+        padding: wp(3)
+    },
     restaurantTitle: {
         fontSize: normalize(20),
         fontFamily: 'Roboto-Regular',
@@ -61,7 +65,7 @@ export default {
         flexDirection: 'row',
         height: hp(6),
         marginHorizontal: wp(3),
-        justifyContent:'space-between',
+        justifyContent: 'space-between',
         alignItems: 'center'
     }
 }
