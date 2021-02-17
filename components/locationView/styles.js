@@ -56,4 +56,30 @@ export default {
     height: wp(6),
     alignSelf: 'center',
   },
+  dialogTitle: {
+    fontSize: normalize(18),
+    fontFamily: 'Roboto-Regular',
+    color: Colors.black,
+    fontWeight: '400',
+    alignItems: 'center',
+  },
+  dialogSubTitle: {
+    fontSize: normalize(15),
+    fontFamily: 'Roboto-Regular',
+    fontWeight: '400',
+    alignItems: 'center',
+    marginTop: hp(0.5)
+  },
+  modelConfirmContainer: {
+    width: wp(70),
+    flexDirection: 'row',
+    height: hp(6),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modelVerticalLine: {
+    width: 1,
+    backgroundColor: Colors.border,
+    height: hp(6)
+  },
 }

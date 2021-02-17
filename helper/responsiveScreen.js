@@ -2,8 +2,12 @@ import { StyleSheet, Dimensions, Platform, PixelRatio } from 'react-native';
 
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 
+const isIOS = (Platform.OS === 'ios');
+const d = Dimensions.get("window")
+
 export const isiPAD = ((viewportHeight / viewportWidth) < 1.6)
 export const isTablet = ((viewportHeight / viewportWidth) < 1.6)
+export const isX = Platform.OS === "ios" && (d.height > 800 || d.width > 800) ? true : false
 
 export function wp(percentage) {
   const value = (percentage * viewportWidth) / 100;

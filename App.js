@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import DrawerNavigator from './navigation/DrawerNavigator';
+import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
 
@@ -168,8 +169,10 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-        AsyncStorage.removeItem('login credential');
         console.log('error.', error)
+        if(error == 'TypeError: Network request failed') {
+          alert('Please check your internet connection and try again.');
+        }
         setIsLoading(false);
         setUserToken(null);
       });
@@ -201,7 +204,9 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-        AsyncStorage.removeItem('google credential');
+        if(error == 'TypeError: Network request failed') {
+          alert('Please check your internet connection and try again.');
+        }
         setIsLoading(false);
         setUserToken(null);
       });
@@ -222,7 +227,6 @@ export default function App(props) {
 
           });
 
-
         storeUser(result.auth_token).then((data) => {
           console.log("user stored " + data);
         });
@@ -232,7 +236,9 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-        AsyncStorage.removeItem('facebook credential');
+        if(error == 'TypeError: Network request failed') {
+          alert('Please check your internet connection and try again.');
+        }
         setIsLoading(false);
         setUserToken(null);
       });
@@ -285,7 +291,7 @@ const PageStack = createStackNavigator();
 const PageScreen = () => (
   <PageStack.Navigator headerMode="screen"
   >
-    <PageStack.Screen name="Page" component={DrawerNavigator}
+    <PageStack.Screen name="Page" component={BottomTabNavigator}
       options={{ headerShown: false }}
     />
     <PageStack.Screen name="Products" component={ProductScreen} options={({ navigation, userToken }) => (
@@ -319,13 +325,14 @@ const PageScreen = () => (
       component={PaymentType}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'PaymentType',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: 'Back'
+          headerShown: false
+          // headerMode: 'screen',
+          // title: 'PaymentType',
+          // headerStyle: {
+          //   backgroundColor: '#f4511e'
+          // },
+          // headerTintColor: '#fff',
+          // headerBackTitle: 'Back'
         }
       )}
     />

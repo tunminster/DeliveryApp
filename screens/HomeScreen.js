@@ -61,6 +61,9 @@ class HomeScreen extends Component {
       menuDetailCount: 0,
       newOrderModelVisible: false,
       newStoreName: '',
+      newAddressModelVisible: false,
+      deliverAddress: null,
+      tempAddress: null
     }
   }
 
@@ -225,7 +228,10 @@ class HomeScreen extends Component {
         console.log('userLocation', responseJson)
         const userLocation = responseJson.results[0]
         console.log('userLocation', userLocation.formatted_address)
-        this.setState({ headerTitle: userLocation.formatted_address, restaurantData: [], page: 1, isLoading: false },
+        this.setState({
+          headerTitle: userLocation.formatted_address, restaurantData: [], page: 1,
+          isLoading: false, deliverAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude }
+        },
           () => { this.getRestaurant() })
         this.forceUpdate()
       }).catch((error) => {
@@ -378,7 +384,7 @@ class HomeScreen extends Component {
   onBasketViewPress = () => {
     this.setState({ menuModelVisible: false })
     // this.props.navigation.navigate('Cart')
-    this.props.navigation.navigate('Cart', { onGoBack: () => this.basketRefresh() });
+    this.props.navigation.navigate('Cart', { onGoBack: () => this.basketRefresh(), deliverAddress: this.state.deliverAddress });
   }
 
   onNewAddressPressHandler = () => {
@@ -391,11 +397,67 @@ class HomeScreen extends Component {
     })
   }
 
+  onCurrentLocationPress = () => {
+    const { curLatitude, curLongitude } = this.state
+    this.setState({
+      latitude: curLatitude,
+      longitude: curLongitude,
+      isModalVisible: false,
+      addressesId: 0
+    }, () => {
+      this.fetchAddress()
+    })
+
+  }
+
+  onAddressPress = (item) => {
+    if (Store.cart.length != 0) {
+      if (this.state.headerTitle != item.addressLine) {
+        this.setState({ newAddressModelVisible: true, tempAddress: item })
+      } else {
+        this.setState({ isModalVisible: false, deliverAddress: item })
+      }
+    } else {
+      this.setState({
+        headerTitle: item.addressLine,
+        latitude: item.lat,
+        longitude: item.lng,
+        isModalVisible: false,
+        addressesId: item.id,
+        restaurantData: [],
+        page: 1,
+        deliverAddress: item
+      }, () => {
+        this.getRestaurant()
+      })
+    }
+  }
+
+  onNewAddressConfirmPress = () => {
+    const { tempAddress } = this.state
+    this.setState({
+      headerTitle: tempAddress.addressLine,
+      latitude: tempAddress.lat,
+      longitude: tempAddress.lng,
+      isModalVisible: false,
+      addressesId: tempAddress.id,
+      restaurantData: [],
+      page: 1,
+      newAddressModelVisible: false,
+      deliverAddress: tempAddress
+    }, () => {
+      this.getRestaurant()
+    })
+    // this.setState({ newAddressModelVisible: false })
+    Store.setCart([]);
+    Store.resetCartCount();
+  }
+
   render() {
-    const { headerTitle, isModalVisible, addressesId, curLatitude, curLongitude, search, categoriesData,
-      restaurantData, isSearching, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
-      filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading,
-      menuDetaildata, menuDetailVisible, menuDetailCount, newOrderModelVisible, newStoreName, page, storeType } = this.state
+    const { headerTitle, isModalVisible, addressesId, search, categoriesData, restaurantData,
+      isSearching, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible, filterValue,
+      isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
+      menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible } = this.state
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -411,25 +473,12 @@ class HomeScreen extends Component {
               onLocationCancelPress={() => this.setState({ isModalVisible: false })}
               onNewAddressPressHandler={() => this.onNewAddressPressHandler()}
               addressesId={addressesId}
-              onCurrentLocationPress={() => this.setState({
-                latitude: curLatitude,
-                longitude: curLongitude,
-                isModalVisible: false,
-                addressesId: 0
-              }, () => {
-                this.fetchAddress()
-              })}
-              onAddressPress={(item) => this.setState({
-                headerTitle: item.addressLine,
-                latitude: item.lat,
-                longitude: item.lng,
-                isModalVisible: false,
-                addressesId: item.id,
-                restaurantData: [],
-                page: 1
-              }, () => {
-                this.getRestaurant()
-              })}
+              onCurrentLocationPress={() => this.onCurrentLocationPress()}
+              onAddressPress={(item) => this.onAddressPress(item)}
+              newOrderModelVisible={newAddressModelVisible}
+              newStoreName={headerTitle}
+              newOrderCancel={() => this.setState({ newAddressModelVisible: false, tempAddress: null })}
+              onConfirmPress={() => this.onNewAddressConfirmPress()}
             />
 
             <View style={{ ...styles.shadow, backgroundColor: Colors.border, height: 0.3, marginTop: hp(0.5) }} />
@@ -629,12 +678,16 @@ const styles = StyleSheet.create({
     borderRadius: wp(2),
   },
   categoriesTitle: {
-    fontSize: normalize(12),
-    fontFamily: 'Roboto-Regular',
+    fontSize: Platform.OS == 'ios' ? normalize(15) : normalize(17),
+    fontFamily: 'Roboto-Bold',
     color: Colors.white,
     fontWeight: 'bold',
+    alignSelf: 'center',
     textAlign: 'center',
-    marginTop: Platform.OS == 'ios' ? hp(12) : hp(14),
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: hp(1),
+    // marginTop: Platform.OS == 'ios' ? hp(12) : hp(14),
     marginHorizontal: wp(2),
   },
   restaurantImage: {

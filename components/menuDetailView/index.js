@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Image, TouchableOpacity, View, Modal } from 'react-native';
+import { Text, Image, TouchableOpacity, View, Modal, ImageBackground } from 'react-native';
 import styles from './styles';
 import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Colors from '../../constants/Colors'
@@ -17,18 +17,22 @@ class MenuDetailView extends Component {
                 visible={menuDetailVisible} >
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
-                        <TouchableOpacity onPress={() => onMenuDetailCancelPress()}
-                            style={styles.modalCancelView} >
-                            <Image source={require('../../assets/images/close-icon.png')}
-                                style={styles.modelIcon} />
-                        </TouchableOpacity>
-
-                        <View style={{ flex: 1, marginHorizontal: wp(4), justifyContent: 'space-between', marginBottom: hp(9) }} showsVerticalScrollIndicator={false}>
+                        <View style={{ flex: 1, marginTop: hp(0.7),paddingHorizontal: wp(4), justifyContent: 'space-between', marginBottom: hp(9) }} showsVerticalScrollIndicator={false}>
                             <View>
-                                <Image
+                                <ImageBackground
                                     source={{ uri: menuDetaildata.productImageUrl }}
                                     resizeMode='cover'
-                                    style={styles.modalRestaurantImage} />
+                                    style={styles.modalRestaurantImage} 
+                                    imageStyle={{ borderRadius: wp(2) }}>
+                                    <TouchableOpacity onPress={() => onMenuDetailCancelPress()}
+                                        style={styles.modalCancelView} >
+                                        <Image source={require('../../assets/images/close_fill_icon.png')}
+                                            style={{
+                                                width: wp(7.5),
+                                                height: wp(7.5), 
+                                            }} />
+                                    </TouchableOpacity>
+                                </ImageBackground>
 
                                 <View style={{ flexDirection: 'row', marginVertical: hp(1), justifyContent: 'space-between' }}>
                                     <Text style={{ ...styles.restaurantTitle, fontWeight: 'bold' }}>

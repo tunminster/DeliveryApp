@@ -14,9 +14,14 @@ import BackIcon from '../../components/backIcon';
 @observer
 class Cart extends Component {
 
-
     checkout() {
-        this.props.navigation.navigate('PaymentType');
+        if (Store.cart.length != 0) {
+            this.props.navigation.navigate('PaymentType', {
+                deliverAddress: this.props.route.params.deliverAddress
+              });
+        } else {
+            alert("Please add item")
+        }
     }
 
     render() {
@@ -32,7 +37,7 @@ class Cart extends Component {
                         }} />
                     <Text style={{ ...styles.restaurantTitle, color: Colors.black, marginLeft: wp(5), alignSelf: 'center', fontWeight: 'bold' }}>{'Basket'}</Text>
                 </View>
-                <View style={{ ...styles.seperateLine, }} />
+                <View style={styles.seperateLine} />
 
                 <Text style={{ ...styles.restaurantTitle, color: Colors.black, marginLeft: wp(5), marginTop: hp(3) }}>{Store.restaurantData.storeName}</Text>
                 <View style={styles.childContainer}>
@@ -46,9 +51,10 @@ class Cart extends Component {
                 <View style={{ ...styles.seperateLine, marginTop: hp(3) }} />
 
                 <ScrollView style={{ marginBottom: hp(17) }}>
-                    {Store.cart.map((item, i) => <CartItem
-                        onPress={() => this.forceUpdate()}
-                        data={item} key={i} index={i} navigation={this.props.navigation} />)}
+                    {Store.cart.map((item, i) =>
+                        <CartItem
+                            onPress={() => this.forceUpdate()}
+                            data={item} key={i} index={i} navigation={this.props.navigation} />)}
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{'Subtotal'}</Text>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`£ ${(getTotalPrice() / 100).toFixed(2)}`}</Text>

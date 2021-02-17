@@ -210,6 +210,7 @@ class AddressCreation extends Component {
     render() {
         const { addressLine, city, postCode, country, searchName, addressData, isMap, lat, lng,
             isAddress, description, loading, latDelta, lngDelta } = this.state
+            console.log("lat....", lat)
         return (
             // <KeyboardAwareScrollView
             //     contentContainerStyle={{

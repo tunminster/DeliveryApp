@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Text, Image, TouchableOpacity, View, Modal, TouchableWithoutFeedback,
-    ScrollView, UIManager, LayoutAnimation } from 'react-native';
+import {
+    Text, Image, TouchableOpacity, View, Modal, TouchableWithoutFeedback,
+    ScrollView, UIManager, LayoutAnimation, ImageBackground
+} from 'react-native';
 import styles from './styles';
 import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Store from '../../config/store';
@@ -38,58 +40,73 @@ class MenuView extends Component {
                 visible={menuModelVisible} >
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
-                        <TouchableOpacity onPress={() => onCancelPress()}
-                            style={styles.modalCancelView} >
-                            <Image source={require('../../assets/images/close-icon.png')}
-                                style={styles.modelIcon} />
-                        </TouchableOpacity>
 
-                        <ScrollView style={{ flex: 1, marginHorizontal: wp(4), marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
-                            <Image
-                                source={{ uri: menuData.imageUri }}
-                                resizeMode='cover'
-                                style={styles.modalRestaurantImage} />
 
-                            {menuData.storeType != null &&
-                                <Text style={{ ...styles.restaurantSubTitle, color: Colors.orange }}>{menuData.storeType}</Text>
-                            }
-                            <Text style={{ ...styles.restaurantTitle, marginTop: hp(0.5) }}>{menuData.storeName}</Text>
-                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{menuData.addressLine1}</Text>
+                        <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
+                            <View style={{ paddingHorizontal: wp(4), marginTop: hp(0.7) }}>
+                                <ImageBackground
+                                    source={{ uri: menuData.imageUri }}
+                                    resizeMode='cover'
+                                    style={styles.modalRestaurantImage}
+                                    imageStyle={{ borderRadius: wp(2) }} >
 
-                            {menuData.storeCategoriesList && menuData.storeCategoriesList.map((item, index) =>
-                                <View key={index}>
-                                    <TouchableWithoutFeedback
-                                        onPress={() => this.toggleExpand(index)}>
-                                        <View style={styles.modalMenuTitle}>
-                                            <Text style={{ ...styles.restaurantTitle, }}>{item.categoryName}</Text>
-                                            <Image source={expandeIndex == index ? require('../../assets/images/down_arrow.png')
-                                                : require('../../assets/images/right_arrow.png')} style={styles.modelIcon} />
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                    <View style={styles.modelSeperateLine} />
-                                    {expandeIndex == index &&
-                                        item.products && item.products.map((item, index) =>
-                                            <View key={index}>
-                                                <TouchableOpacity style={{ flexDirection: 'row', flex: 1, marginTop: hp(1) }}
-                                                    onPress={() => onMenuPress(item)}>
-                                                    <View style={{ flexDirection: 'column', flex: 0.7 }}>
-                                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
-                                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
-                                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`£ ${(item.unitPrice / 100).toFixed(2)}`}</Text>
-                                                    </View>
+                                    <TouchableOpacity onPress={() => onCancelPress()}
+                                        style={styles.modalCancelView} >
+                                        <Image source={require('../../assets/images/close_fill_icon.png')}
+                                            style={{
+                                                width: wp(7.5),
+                                                height: wp(7.5), 
+                                            }} />
+                                    </TouchableOpacity>
 
-                                                    <Image
-                                                        source={{ uri: item.productImageUrl }}
-                                                        resizeMode='cover'
-                                                        style={{ flex: 0.3, marginLeft: wp(2), height: hp(10), alignSelf: 'center' }} />
-                                                </TouchableOpacity>
-                                                <View style={{ ...styles.modelSeperateLine, marginTop: hp(0.5) }} />
+                                </ImageBackground>
+                            </View>
+
+                            <View style={{ paddingHorizontal: wp(4), }}>
+                                {menuData.storeType != null &&
+                                    <Text style={{ ...styles.restaurantSubTitle, color: Colors.orange }}>{menuData.storeType}</Text>
+                                }
+                                <Text style={{ ...styles.restaurantTitle, marginTop: hp(0.5) }}>{menuData.storeName}</Text>
+                                <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{menuData.addressLine1}</Text>
+
+                                {menuData.storeCategoriesList && menuData.storeCategoriesList.map((item, index) =>
+                                    <View key={index}>
+                                        <TouchableWithoutFeedback
+                                            onPress={() => this.toggleExpand(index)}>
+                                            <View style={styles.modalMenuTitle}>
+                                                <Text style={{ ...styles.restaurantTitle, }}>{item.categoryName}</Text>
+                                                <Image source={expandeIndex == index ? require('../../assets/images/down_arrow.png')
+                                                    : require('../../assets/images/right_arrow.png')} style={styles.modelIcon} />
                                             </View>
-                                        )
-                                    }
-                                </View>
-                            )}
+                                        </TouchableWithoutFeedback>
+                                        <View style={styles.modelSeperateLine} />
+                                        {expandeIndex == index &&
+                                            item.products && item.products.map((item, index) =>
+                                                <View key={index}>
+                                                    <TouchableOpacity style={{ flexDirection: 'row', flex: 1, marginTop: hp(1) }}
+                                                        onPress={() => onMenuPress(item)}>
+                                                        <View style={{ flexDirection: 'column', flex: 0.7 }}>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`£ ${(item.unitPrice / 100).toFixed(2)}`}</Text>
+                                                        </View>
+
+                                                        <Image
+                                                            source={{ uri: item.productImageUrl }}
+                                                            resizeMode='cover'
+                                                            style={{ flex: 0.3, marginLeft: wp(2), height: hp(10), alignSelf: 'center' }} />
+                                                    </TouchableOpacity>
+                                                    <View style={{ ...styles.modelSeperateLine, marginTop: hp(0.5) }} />
+                                                </View>
+                                            )
+                                        }
+                                    </View>
+
+                                )}
+                            </View>
+
                         </ScrollView>
+
                         {Store.cart.length != 0 &&
                             <BasketView
                                 onPress={() => onBasketViewPress()}

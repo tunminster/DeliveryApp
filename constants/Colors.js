@@ -20,5 +20,6 @@ export default {
   light_text_color: "#606A7B",
   green: "#008000",
   orange: "#ff8c00",
-  headerBackground: '#f4511e'
+  headerBackground: '#f4511e',
+  darkGray: '#696969'
 };
