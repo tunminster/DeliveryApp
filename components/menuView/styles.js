@@ -16,13 +16,9 @@ export default {
     width: wp(90),
   },
   modalCancelView: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    zIndex: 1,
-    marginLeft: wp(3),
-    marginTop: hp(0.5),
-    padding: wp(2)
+    padding: wp(1),
+    marginLeft: wp(-3),
+    marginTop: wp(-3),
   },
   modelIcon: {
     width: wp(5),
@@ -34,7 +30,7 @@ export default {
     alignSelf: 'center',
     marginVertical: hp(1),
     height: Platform.OS == 'ios' ? hp(24) : hp(28),
-    borderRadius: wp(2)
+    borderRadius: wp(2),
   },
   restaurantTitle: {
     fontSize: normalize(18),
@@ -67,7 +63,7 @@ export default {
     height: hp(6),
     justifyContent: 'center',
     alignItems: 'center'
-  }, 
+  },
   modelVerticalLine: {
     width: 1,
     backgroundColor: Colors.border,

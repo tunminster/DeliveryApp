@@ -107,7 +107,7 @@ export const SignIn = ({ navigation }) => {
     <TouchableWithoutFeedback
       onPress={() => Keyboard.dismiss()}>
       <View style={loginstyles.container}>
-        <View style={{ marginTop: hp(12), justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ marginTop: hp(8), justifyContent: 'center', alignItems: 'center' }}>
           <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
@@ -273,7 +273,7 @@ export const CreateAccount = ({ navigation }) => {
     <TouchableWithoutFeedback
       onPress={() => Keyboard.dismiss()}>
       <View style={loginstyles.container}>
-        <View style={{ marginTop: hp(14), justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ marginTop: hp(11), justifyContent: 'center', alignItems: 'center' }}>
           <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
         </View>
 
@@ -390,6 +390,8 @@ const styles = StyleSheet.create({
 const loginstyles = StyleSheet.create({
   logo: {
     resizeMode: 'stretch',
+    width: wp(30),
+    height: wp(30)
   },
   container: {
     // flex:1,
@@ -403,7 +405,7 @@ const loginstyles = StyleSheet.create({
     color: vars.blackColor,
     width: wp(90),
     marginBottom: hp(2),
-    marginTop: hp(15)
+    marginTop: hp(12)
   },
   txt: {
     fontFamily: 'Roboto-Regular',

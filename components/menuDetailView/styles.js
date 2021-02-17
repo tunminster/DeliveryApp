@@ -16,13 +16,9 @@ export default {
     width: wp(90),
   },
   modalCancelView: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    zIndex: 1,
-    marginLeft: wp(3),
-    marginTop: hp(0.5),
-    padding: wp(2),
+    padding: wp(1),
+    marginLeft: wp(-3),
+    marginTop: wp(-3),
   },
   modelIcon: {
     width: wp(5),

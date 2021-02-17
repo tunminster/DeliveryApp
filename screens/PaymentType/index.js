@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, Alert, Platform, Image, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles';
 import sharedStyles from '../../utils/sharedStyles';
 import AuthStore from '../../config/store/auth';
@@ -10,8 +10,23 @@ import { getTotalPrice, post } from '../../utils/helpers';
 import { observer } from 'mobx-react';
 import { PaymentMethodComponent } from '../../components/PaymentMethodComponent'
 import Loading from '../../components/loading';
+import FullScreenLoader from '../../components/fullScreenLoader';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
 import vars from '../../utils/vars';
+import BackIcon from '../../components/backIcon';
+import { wp, hp, normalize, isX } from '../../helper/responsiveScreen';
+import Colors from '../../constants/Colors'
+import MapView from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
+
+const dropDownList = [
+    {
+        title: 'Pick up order at',
+    },
+    {
+        title: 'Deliver to',
+    },
+]
 
 @observer
 class PaymentType extends Component {
@@ -20,9 +35,20 @@ class PaymentType extends Component {
         details: {},
         stripePaymentIntentId: '',
         loading: false,
+        lat: 0.0,
+        lng: 0.0,
+        latDelta: 0.1,
+        lngDelta: 0.1,
+        dropdownVisible: false,
+        dropdownValue: 'Pick up order at',
+        deliverAddress: this.props.route.params.deliverAddress
     };
 
     async componentDidMount() {
+        console.log('store...', this.state.deliverAddress)
+        if (this.state.dropdownValue == 'Pick up order at') {
+            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude })
+        }
         try {
             await Stripe.setOptionsAsync({
                 publishableKey: vars.publishableKey,
@@ -159,8 +185,8 @@ class PaymentType extends Component {
             await Stripe.canMakeNativePayPaymentsAsync().then(async (canMakePayment) => {
                 if (canMakePayment) {
                     console.log('iosItems', this.iosItems())
-                    await Stripe.paymentRequestWithNativePayAsync(vars.isIos ? 
-                        {currencyCode: vars.paymentCurrencyCode } : this.androidItems(), 
+                    await Stripe.paymentRequestWithNativePayAsync(vars.isIos ?
+                        { currencyCode: vars.paymentCurrencyCode } : this.androidItems(),
                         vars.isIos ? this.iosItems() : '')
                         .then(paymentResponse => {
                             console.log('paymentResponse', JSON.stringify(paymentResponse))
@@ -204,45 +230,119 @@ class PaymentType extends Component {
             });
     }
 
+    onDropdownPress = (item) => {
+        const { deliverAddress, dropdownVisible } = this.state;
+        this.setState({ dropdownVisible: !dropdownVisible, dropdownValue: item.title })
+        if (item.title == 'Pick up order at') {
+            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: 0 })
+        } else {
+            this.setState({ lat: deliverAddress.lat, lng: deliverAddress.lng, selectedAddress: deliverAddress.id })
+        }
+    }
+
     render() {
-        const { selectedAddress, loading } = this.state;
+        const { selectedAddress, loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue,
+            deliverAddress } = this.state;
         return (
             <View style={styles.container}>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={sharedStyles.subTitle}>Choose Address</Text>
-                    <View style={sharedStyles.section}>
-                        {AuthStore.isLogin && AuthStore.user.addresses.map((item, i) =>
 
-                            <AddressItem item={item} key={i} active={selectedAddress === item.id} onPress={() => this.setState({ selectedAddress: item.id })} />
-                        )}
-                        <View style={styles.btnContainer}>
-                            <TouchableOpacity style={styles.btnImg} onPress={() => this.props.navigation.navigate('CreateAddress')}>
-                                <Text style={styles.btnIcon}>+</Text>
-                            </TouchableOpacity>
+                <View>
+                    <View style={styles.header}>
+                        <BackIcon
+                            onPress={() => this.props.navigation.goBack()} />
+                        <Text style={styles.headerTitle}>{'Payment'}</Text>
+                    </View>
+                    <View style={styles.seperateLine} />
+
+                    <TouchableWithoutFeedback onPress={() => this.setState({ dropdownVisible: !dropdownVisible })}>
+                        <View style={styles.dropDownView}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Image source={require('../../assets/images/clock.png')}
+                                    resizeMode='contain' style={styles.icon} />
+                                <Text style={{ ...styles.title, marginLeft: wp(3), color: Colors.black, }}>{dropdownValue}</Text>
+                            </View>
+                            <Image source={dropdownVisible ? require('../../assets/images/up_arrow.png') : require('../../assets/images/down_arrow.png')} style={styles.downIcon} />
+                        </View>
+                    </TouchableWithoutFeedback>
+
+                    {dropdownVisible &&
+                        <View style={styles.dropDownItem}>
+                            {dropDownList.map((item, index) =>
+                                <TouchableWithoutFeedback key={index}
+                                    onPress={() => this.onDropdownPress(item)} >
+                                    <View>
+                                        <View style={styles.seperateLine} />
+                                        <Text style={{ ...styles.title, paddingVertical: hp(0.7), marginLeft: wp(3), color: Colors.black, }}>{item.title}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )}
+                        </View>
+                    }
+
+                    <View style={styles.mapContainer}>
+                        <MapView
+                            ref={r => this.mapRef = r}
+                            style={styles.mapView}
+                            region={{
+                                latitude: lat,
+                                longitude: lng,
+                                latitudeDelta: latDelta,
+                                longitudeDelta: lngDelta,
+                            }}
+                            showsUserLocation={true}
+                        >
+                            <MapView.Marker
+                                coordinate={{
+                                    latitude: lat,
+                                    longitude: lng,
+                                }}
+                                draggable
+                                draggable={true}
+                            />
+                        </MapView>
+                    </View>
+
+                    <View style={styles.seperateLine} />
+                    <View style={{ flexDirection: 'row', paddingVertical: hp(1.5) }}>
+                        <View style={{ width: wp(15), alignItems: 'center', justifyContent: 'center' }}>
+                            <Ionicons
+                                name={'home'}
+                                size={wp(8)}
+                                color={vars.baseColor} />
+                        </View>
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                            {dropdownValue == 'Pick up order at' &&
+                                <Text style={{ ...styles.title, color: Colors.gray, fontWeight: 'bold', alignSelf: 'flex-start' }}>{Store.restaurantData.storeName}</Text>
+                            }
+                            <Text style={{ ...styles.title, color: Colors.gray, width:wp(80) }}>{
+                                dropdownValue == 'Pick up order at' ? `${Store.restaurantData.addressLine1}, ${Store.restaurantData.postalCode}`
+                                    : `${deliverAddress.addressLine}, ${deliverAddress.postCode}`}</Text>
                         </View>
 
                     </View>
-                    <Text style={sharedStyles.subTitle}>Choose Payment Type</Text>
-                    {/* <Button 
-                        title={'App Balance'}
-                        onPress={() => this.payment('balance')}
-                        style={{margin:15, marginBottom: 5}}
-                    /> */}
+                    <View style={styles.seperateLine} />
+
+                </View>
+
+                <View>
                     <Button
                         title={'Credit Card'}
                         onPress={() => this.createPaymentIntent('card')}
-                        style={{ margin: 15, marginBottom: 5, borderRadius:5 }}
+                        style={{ margin: 15, marginBottom: 0, borderRadius: 5 }}
                     />
 
                     <Button
                         title={'Pay'}
                         onPress={() => this.createPaymentIntent('pay')}
-                        image = {vars.isIos ? require('../../assets/images/apple.png') :require('../../assets/images/google.png')}
-                        style={{ margin: 15, marginBottom: 10, backgroundColor: vars.blackColor, borderRadius:5 }}
+                        image={vars.isIos ? require('../../assets/images/apple.png') : require('../../assets/images/google.png')}
+                        style={{ margin: 15, marginBottom: 10, backgroundColor: vars.blackColor, borderRadius: 5 }}
                     />
+                </View>
 
-                    {loading ? <Loading /> : null}
-                </ScrollView>
+                {/* {loading ? <Loading /> : null} */}
+                <FullScreenLoader
+                    loading={loading} />
+                {/* </ScrollView> */}
             </View>
         )
     }

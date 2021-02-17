@@ -4,6 +4,7 @@ import styles from './styles';
 import Store from '../../config/store';
 import { observer } from 'mobx-react'
 import { wp, hp, normalize } from '../../helper/responsiveScreen';
+import Colors from '../../constants/Colors'
 
 @observer
 class CartItem extends Component {
@@ -16,7 +17,7 @@ class CartItem extends Component {
     }
 
     onUpdateCountPress = (index, data, value) => {
-        const {  onPress } = this.props;
+        const { onPress } = this.props;
         onPress()
         Store.updateCardItem(index, value)
         Store.cart.map((item, i) => {
@@ -34,7 +35,16 @@ class CartItem extends Component {
                 <View style={styles.cartContainer}>
                     <View style={{ flexDirection: 'row', }}>
                         <TouchableOpacity
-                            style={{ padding: wp(2) }}
+                            style={{ padding: wp(2),  }}
+                            onPress={() => {
+                                Store.removeFromCart(index)
+                                onPress()
+                            }}>
+                            <Image source={require('../../assets/images/close-icon.png')}
+                                style={{ ...styles.cartIcon, tintColor: Colors.errorBackground }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ padding: wp(2),  }}
                             onPress={() => menuDetailCount > 1 && this.onUpdateCountPress(index, data, -1)}>
                             <Image source={require('../../assets/images/minus_icon.png')}
                                 style={styles.cartIcon} />
@@ -55,7 +65,7 @@ class CartItem extends Component {
                             ...styles.restaurantSubTitle,
                             fontWeight: '700',
                             marginLeft: wp(2),
-                            width: wp(55),
+                            width: wp(47),
                         }}>{data.productName}</Text>
                     </View>
                     <Text style={{
