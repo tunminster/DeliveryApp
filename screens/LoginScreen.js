@@ -34,7 +34,6 @@ export const SignIn = ({ navigation }) => {
   const facebookLogIn = async () => {
 
     try {
-      LoginManager.logOut()
       LoginManager.logInWithPermissions(['public_profile', 'email']).then(
         function (result) {
           if (result.isCancelled) {
@@ -71,7 +70,6 @@ export const SignIn = ({ navigation }) => {
         offlineAccess: false,
       })
 
-      await GoogleSignin.signOut()
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
       googleSignIn(userInfo.idToken)

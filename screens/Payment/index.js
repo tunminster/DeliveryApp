@@ -1,22 +1,18 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Alert, AsyncStorage, Text } from 'react-native';
+import { View, ScrollView, Alert, AsyncStorage, Text, StyleSheet } from 'react-native';
 import { CreditCardInput } from 'react-native-credit-card-input';
 import Button from '../../components/button';
 import BackIcon from '../../components/backIcon';
-import Input from '../../components/input';
 import { post } from '../../utils/helpers';
-import AuthStore from '../../config/store/auth';
-import sharedStyles from '../../utils/sharedStyles';
 import { PaymentMethodComponent } from '../../components/PaymentMethodComponent'
 import Loading from '../../components/loading';
+import { wp, hp, normalize, } from '../../helper/responsiveScreen';
+import Colors from '../../constants/Colors'
 
 class Payment extends Component {
-    static navigationOptions = ({ navigation }) => ({
-        headerLeft:  <BackIcon onPress={() =>  navigation.goBack() } />
-    });
 
     state = {
-        cardData: {},
+        cardData: null,
         disabled: true,
         amount: '',
         viaCart: this.props.route.params.viaCart,
@@ -31,53 +27,24 @@ class Payment extends Component {
     sendRequest() {
         console.log("sendRequest : " + JSON.stringify(this.state.viaCart));
         console.log("card details:" + JSON.stringify(this.state.cardData));
-        if (this.state.viaCart)
-            this.payment();
-        else
+        if (this.state.viaCart) {
+            if (this.state.cardData) {
+                this.payment();
+            } else {
+                alert('Please Enter Card Data')
+            }
+        } else {
             this.addBalance();
+        }
     }
-
-    // addBalance() {
-    //     alert('added balanced.');
-    //     post('/user/updateBalance', {balance: this.state.amount}, res => {
-    //         console.log(res);
-    //         AsyncStorage.setItem('user', JSON.stringify(res.user));
-    //         AuthStore.setUser(res.user);
-    //         Alert.alert('Payment Success', 'Balance added: ' + this.state.amount + '$', [{text: 'Ok', onPress: ()=>this.props.navigation.goBack()}]);
-    //     }, err => Alert.alert('Error', err.response.data, [{text: 'Ok'}]));
-    // }
 
     payment() {
 
         var strExpiryDate = this.state.cardData.values.expiry.toString().split('/');
-
         var strExpiryMonth = strExpiryDate[0];
         var strExpiryYear = String(new Date().getFullYear()).substr(0, 2) + strExpiryDate[1];
-
-
         var totalprice = this.state.viaCart.totalPrice.toFixed(2);
         var strCard = String(this.state.cardData.values.number).replace(/\s/g, '');
-
-        // this.state.orderDto = {
-        //     cardHolderName: "Test Holder name",
-        //     cardNumber: strCard,
-        //     cvc: this.state.cardData.values.cvc,
-        //     expiryMonth: strExpiryMonth,
-        //     expiryYear: strExpiryYear,
-        //     totalAmount: totalprice,
-        //     customerId: AuthStore.user.id,
-        //     shippingAddressId: this.state.viaCart.shippingAddressId,
-        //     saveCard: true,
-        //     orderItems: this.state.viaCart.products
-        // }
-
-        //const {viaCart} = this.state;
-        // const { orderDto } = this.state;
-        // console.log('orderDto', orderDto)
-        // post('/order/create', orderDto, res => {
-        //     console.log(res);
-        //     this.props.navigation.navigate('PaymentSuccess');
-        // }, err => alert('Error in Payment.'));
 
         const data = "type=card" + "&card[number]=" + strCard + "&card[exp_month]=" + strExpiryMonth
             + "&card[exp_year]=" + strExpiryYear + "&card[cvc]=" + this.state.cardData.values.cvc
@@ -110,37 +77,64 @@ class Payment extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 10 }}>
-                {this.state.loading ? <Loading /> :
-                    <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.container}>
+
+                <View style={styles.header}>
+                    <BackIcon
+                        onPress={() => this.props.navigation.goBack()} />
+                    <Text style={styles.headerTitle}>{'Payment'}</Text>
+                </View>
+                <View style={styles.seperateLine} />
+
+                {this.state.loading ?
+                    <Loading /> :
+                    <View style={styles.childContainer}>
                         <CreditCardInput onChange={cardData => this.setState({ cardData })} />
-                        <View style={{ margin: 15 }}>
-                            {this.state.viaCart ?
-                                <Text>
+                        <Button
+                            onPress={() => this.sendRequest()}
+                            title={'Confirm'}
+                            style={styles.btn}
+                        />
+                    </View>
 
-                                </Text>
-                                :
-                                <Input
-                                    label={'Amount($)'}
-                                    value={this.state.amount}
-                                    onChange={amount => this.setState({ amount })}
-                                    type={'numeric'}
-                                />
-                            }
-                            <Button
-                                onPress={() => this.sendRequest()}
-                                title={'Confirm'}
-                                style={{ marginTop: 15 }}
-                            />
-
-
-                        </View>
-                    </ScrollView>
                 }
             </View>
         )
     }
 
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.white,
+        paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
+    },
+    header: {
+        flexDirection: 'row',
+        padding: wp(3)
+    },
+    headerTitle: {
+        fontSize: normalize(20),
+        fontFamily: 'Roboto-Regular',
+        color: Colors.black,
+        marginLeft: wp(5),
+        alignSelf: 'center',
+        fontWeight: 'bold'
+    },
+    seperateLine: {
+        backgroundColor: Colors.border,
+        height: wp(0.2),
+    },
+    childContainer: {
+        marginTop: hp(2),
+        flex: 1,
+        justifyContent: 'space-between'
+    },
+    btn: {
+        margin: wp(6),
+        backgroundColor: Colors.btnColor
+    }
+});
 
 export default Payment;

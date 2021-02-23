@@ -310,12 +310,6 @@ const PageScreen = () => (
       options={({ navigation }) => (
         {
           headerShown: false
-          // headerMode: 'screen',
-          // title: 'Basket',
-          // headerStyle: {
-          //   backgroundColor: '#fff'
-          // },
-          // headerTintColor: '#000'
         }
 
       )}
@@ -326,13 +320,6 @@ const PageScreen = () => (
       options={({ navigation }) => (
         {
           headerShown: false
-          // headerMode: 'screen',
-          // title: 'PaymentType',
-          // headerStyle: {
-          //   backgroundColor: '#f4511e'
-          // },
-          // headerTintColor: '#fff',
-          // headerBackTitle: 'Back'
         }
       )}
     />
@@ -341,13 +328,7 @@ const PageScreen = () => (
       component={Payment}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Payment',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: 'Back'
+          headerShown: false
         }
       )}
     />
@@ -404,13 +385,7 @@ const PageScreen = () => (
     <PageStack.Screen name="Orders" component={Orders}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Orders',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: ''
+          headerShown: false
         }
       )}
     />

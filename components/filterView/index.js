@@ -19,15 +19,13 @@ class FilterView extends Component {
                 visible={filterModalVisible}>
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
+                        <TouchableOpacity onPress={() => onFilterCancelPress()} style={styles.closeView} >
+                            <Image source={require('../../assets/images/close_fill_icon.png')}
+                                style={styles.closeIcon} />
+                        </TouchableOpacity>
                         <View style={styles.modelHeaderView}>
-                            <TouchableOpacity onPress={() => onFilterCancelPress()} style={{ alignSelf: 'center', padding: wp(2) }} >
-                                <Image source={require('../../assets/images/close-icon.png')} style={{
-                                    ...styles.modelIcon,
-                                    tintColor: Colors.black,
 
-                                }} />
-                            </TouchableOpacity>
-                            <Text style={styles.modelHeaderTitle}>Filters</Text>
+                            <Text style={{ ...styles.modelHeaderTitle, alignSelf: 'center', marginLeft: wp(35) }}>Filters</Text>
 
                             <View style={styles.clearView} >
                                 <Button

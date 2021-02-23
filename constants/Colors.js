@@ -2,7 +2,7 @@ const tintColor = '#2f95dc';
 
 export default {
   tintColor,
-  tabIconDefault: '#ccc',
+  tabIconDefault: '#989898',
   tabIconSelected: '#FE595E',
   tabBar: '#fefefe',
   errorBackground: 'red',
@@ -21,5 +21,7 @@ export default {
   green: "#008000",
   orange: "#ff8c00",
   headerBackground: '#f4511e',
-  darkGray: '#696969'
+  darkGray: '#696969',
+  transparant: '#00000040',
+  btnColor: '#E31A22'
 };

@@ -12,6 +12,7 @@ class MoreScreen extends Component {
   render() {
     const { username } = AuthStore.user;
     const { navigation } = this.props;
+    console.log('AuthStore.user', AuthStore.user)
     return (
       <View style={styles.container}>
         <View>
