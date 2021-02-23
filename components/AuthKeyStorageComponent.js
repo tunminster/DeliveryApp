@@ -5,8 +5,7 @@ import Api from '../config/api';
 var uuid = require('react-native-uuid');
 
 
-export async function storeData(key, message)
-{
+export async function storeData(key, message) {
   try {
     await AsyncStorage.setItem(
       key,
@@ -14,7 +13,7 @@ export async function storeData(key, message)
     );
 
     AuthStore.setIsLogin(true);
-    
+
     return "true";
   } catch (error) {
     // Error saving data
@@ -22,34 +21,35 @@ export async function storeData(key, message)
   }
 }
 
-export async function retrieveData (key)
-{
-  try{
+export async function retrieveData(key) {
+  try {
     const value = await AsyncStorage.getItem(key);
 
-    if(value !== null){
+    if (value !== null) {
       return value;
     }
   }
-  catch(error){
+  catch (error) {
     console.error(error.message);
   }
 }
 
-export async function storeUser(token)
-{
-    try{
-      let guid = uuid.v1();
-      const config = {
-          headers: { Authorization: 'Bearer ' + token , 'Request-Id': guid}
-      };  
-      Api.get('/customer/getcustomer', config).then(res => {
-          console.log("api result is " + res);
-          AuthStore.setUser(res);
-      });
-      return true;
-    }
-    catch(error){
-      console.error(error.message);
-    }
+export async function storeUser(token) {
+  try {
+    let guid = uuid.v1();
+    const config = {
+      headers: { Authorization: 'Bearer ' + token, 'Request-Id': guid }
+    };
+    console.log('config!', config)
+    Api.get('/customer/getcustomer', config).then(res => {
+      console.log("api result is " + JSON.stringify(res));
+      AuthStore.setUser(res);
+    }).catch((error) => {
+      console.error('error..', error);
+    });
+    return true;
+  }
+  catch (error) {
+    console.log('error', error);
+  }
 }

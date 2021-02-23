@@ -28,45 +28,51 @@ class CartItem extends Component {
     }
 
     render() {
-        const { index, data, onPress } = this.props;
+        const { index, data, onPress, isEdit } = this.props;
         const { menuDetailCount } = this.state;
         return (
             <View>
                 <View style={styles.cartContainer}>
                     <View style={{ flexDirection: 'row', }}>
-                        <TouchableOpacity
-                            style={{ padding: wp(2),  }}
-                            onPress={() => {
-                                Store.removeFromCart(index)
-                                onPress()
-                            }}>
-                            <Image source={require('../../assets/images/close-icon.png')}
-                                style={{ ...styles.cartIcon, tintColor: Colors.errorBackground }} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{ padding: wp(2),  }}
-                            onPress={() => menuDetailCount > 1 && this.onUpdateCountPress(index, data, -1)}>
-                            <Image source={require('../../assets/images/minus_icon.png')}
-                                style={styles.cartIcon} />
-                        </TouchableOpacity>
-                        <Text style={{
-                            ...styles.restaurantSubTitle,
-                            fontWeight: '700',
-                            marginHorizontal: wp(1)
-                        }}>{menuDetailCount}</Text>
-                        <TouchableOpacity
-                            style={{ padding: wp(2) }}
-                            onPress={() => this.onUpdateCountPress(index, data, 1)}>
-                            <Image source={require('../../assets/images/plus_icon.png')}
-                                style={styles.cartIcon} />
-                        </TouchableOpacity>
+                        {isEdit ?
+                            <TouchableOpacity
+                                style={{ padding: wp(2), }}
+                                onPress={() => {
+                                    Store.removeFromCart(index)
+                                    onPress()
+                                }}>
+                                <Image source={require('../../assets/images/close_fill_icon.png')}
+                                    style={{ ...styles.cartIcon,  }} />
+                            </TouchableOpacity>
+                            :
+                            <View style={{ flexDirection: 'row', }}>
+                                <TouchableOpacity
+                                    style={{ padding: wp(2), }}
+                                    onPress={() => menuDetailCount > 1 && this.onUpdateCountPress(index, data, -1)}>
+                                    <Image source={require('../../assets/images/minus_icon.png')}
+                                        style={styles.cartIcon} />
+                                </TouchableOpacity>
+                                <Text style={{
+                                    ...styles.restaurantSubTitle,
+                                    fontWeight: '700',
+                                    marginHorizontal: wp(1)
+                                }}>{menuDetailCount}</Text>
+                                <TouchableOpacity
+                                    style={{ padding: wp(2) }}
+                                    onPress={() => this.onUpdateCountPress(index, data, 1)}>
+                                    <Image source={require('../../assets/images/plus_icon.png')}
+                                        style={styles.cartIcon} />
+                                </TouchableOpacity>
+                            </View>
+                        }
 
                         <Text numberOfLines={1} style={{
                             ...styles.restaurantSubTitle,
                             fontWeight: '700',
                             marginLeft: wp(2),
-                            width: wp(47),
+                            width: wp(55),
                         }}>{data.productName}</Text>
+
                     </View>
                     <Text style={{
                         ...styles.restaurantSubTitle,

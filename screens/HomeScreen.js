@@ -44,7 +44,6 @@ class HomeScreen extends Component {
       page: 1,
       restaurantData: [],
       fottorLoading: false,
-      isSearching: false,
       storeType: [],
       isLoading: true,
       isRestaurantLoading: false,
@@ -63,7 +62,8 @@ class HomeScreen extends Component {
       newStoreName: '',
       newAddressModelVisible: false,
       deliverAddress: null,
-      tempAddress: null
+      tempAddress: null,
+      onEndReachedCalledDuringMomentum: true
     }
   }
 
@@ -77,7 +77,7 @@ class HomeScreen extends Component {
       RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
         .then(data => {
           if (this.state.latitude === '') {
-            this.callLocation()
+            this.callLocation(false)
           }
 
         }).catch(err => {
@@ -86,7 +86,7 @@ class HomeScreen extends Component {
         });
     } else {
       if (this.state.latitude == '') {
-        this.callLocation()
+        this.callLocation(false)
       }
     }
   }
@@ -120,7 +120,7 @@ class HomeScreen extends Component {
     const { latitude, longitude, page, search, storeType, filterValue } = this.state
     console.log('location', latitude, longitude)
     if (page == 1) {
-      this.setState({ isRestaurantLoading: true })
+      this.setState({ isRestaurantLoading: true, fottorLoading:false })
     }
 
     retrieveData(STORAGE_KEY)
@@ -136,15 +136,14 @@ class HomeScreen extends Component {
         console.log('value', value)
 
         Api.get('/V1/Store/Stores-Search?' + value, config).then(res => {
-          console.log('restaurant res', res);
+          console.log('restaurant res', JSON.stringify(res));
           if (res.length != 0) {
             this.setState({
               restaurantData: [...this.state.restaurantData, ...res],
-              isSearching: true,
               isRestaurantLoading: false
             })
           } else {
-            this.setState({ isSearching: false, fottorLoading: false, isRestaurantLoading: false })
+            this.setState({ onEndReachedCalledDuringMomentum: true, fottorLoading: false, isRestaurantLoading: false })
           }
         }).catch(err => {
           this.setState({ isRestaurantLoading: false })
@@ -188,7 +187,7 @@ class HomeScreen extends Component {
     }
   }
 
-  callLocation() {
+  callLocation(value) {
     console.log('callLocation Called')
 
     Geolocation.getCurrentPosition(
@@ -210,7 +209,7 @@ class HomeScreen extends Component {
           curLatitude: region.latitude,
           curLongitude: region.longitude
         }, () => {
-          this.fetchAddress()
+          this.fetchAddress(value)
         })
       },
       error => {
@@ -222,17 +221,23 @@ class HomeScreen extends Component {
 
   }
 
-  fetchAddress = () => {
+  fetchAddress = (isValue) => {
     GetLocationComponent(null, this.state.latitude, this.state.longitude)
       .then((responseJson) => {
         console.log('userLocation', responseJson)
         const userLocation = responseJson.results[0]
-        console.log('userLocation', userLocation.formatted_address)
-        this.setState({
-          headerTitle: userLocation.formatted_address, restaurantData: [], page: 1,
-          isLoading: false, deliverAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude }
-        },
-          () => { this.getRestaurant() })
+        console.log('userLocation', userLocation.formatted_address, isValue)
+        if (isValue) {
+          this.setState({
+            isLoading: false, tempAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
+          })
+        } else {
+          this.setState({
+            headerTitle: userLocation.formatted_address, restaurantData: [], page: 1,
+            isLoading: false, deliverAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
+          },
+            () => { this.getRestaurant() })
+        }
         this.forceUpdate()
       }).catch((error) => {
         console.log('error', error)
@@ -272,7 +277,9 @@ class HomeScreen extends Component {
           resizeMode='cover'
           imageStyle={{ borderRadius: wp(2) }}
           style={styles.categoriesImage} >
-          <Text style={styles.categoriesTitle}>{item.item.storeTypeName}</Text>
+          <View style={styles.categoryTextView}>
+            <Text style={styles.categoriesTitle}>{item.item.storeTypeName}</Text>
+          </View>
         </ImageBackground>
       </TouchableOpacity>
     )
@@ -398,16 +405,20 @@ class HomeScreen extends Component {
   }
 
   onCurrentLocationPress = () => {
-    const { curLatitude, curLongitude } = this.state
-    this.setState({
-      latitude: curLatitude,
-      longitude: curLongitude,
-      isModalVisible: false,
-      addressesId: 0
-    }, () => {
-      this.fetchAddress()
-    })
-
+    if (Store.cart.length != 0) {
+      this.setState({
+        newAddressModelVisible: true,
+      }, () => {
+        this.callLocation(true)
+      })
+    } else {
+      this.setState({
+        isModalVisible: false,
+        addressesId: 0
+      }, () => {
+        this.callLocation(false)
+      })
+    }
   }
 
   onAddressPress = (item) => {
@@ -426,7 +437,7 @@ class HomeScreen extends Component {
         addressesId: item.id,
         restaurantData: [],
         page: 1,
-        deliverAddress: item
+        deliverAddress: item,
       }, () => {
         this.getRestaurant()
       })
@@ -455,8 +466,8 @@ class HomeScreen extends Component {
 
   render() {
     const { headerTitle, isModalVisible, addressesId, search, categoriesData, restaurantData,
-      isSearching, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible, filterValue,
-      isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
+      onEndReachedCalledDuringMomentum, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
+      filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
       menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible } = this.state
     return (
       <View style={styles.container}>
@@ -498,65 +509,61 @@ class HomeScreen extends Component {
               </TouchableOpacity>
             </View>
 
-            <ScrollView
-              style={{ flex: 1, marginLeft: wp(5) }}
-              showsVerticalScrollIndicator={false}>
-
-              <Text style={styles.headerTitle}>Categories</Text>
-              {isCategoryLoading
-                ? <Loading /> :
-                <FlatList
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ flexGrow: 1 }}
-                  data={categoriesData}
-                  ListEmptyComponent={
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style={styles.txtNoResult}>{'No results found'}</Text>
-                    </View>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={restaurantData}
+              renderItem={(item, index) => this.renderRestaurant(item, index)}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={{ paddingLeft: wp(5), }}
+              ListHeaderComponent={
+                <View>
+                  <Text style={styles.headerTitle}>Categories</Text>
+                  {isCategoryLoading
+                    ? <Loading /> :
+                    <FlatList
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{ flexGrow: 1 }}
+                      data={categoriesData}
+                      ListEmptyComponent={
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                          <Text style={styles.txtNoResult}>{'No results found'}</Text>
+                        </View>
+                      }
+                      renderItem={(item, index) => this.renderCategories(item, index)}
+                      keyExtractor={(item, index) => index.toString()} />
                   }
-                  renderItem={(item, index) => this.renderCategories(item, index)}
-                  keyExtractor={(item, index) => index.toString()} />
+
+                  <Text style={styles.headerTitle}>Nearby Restaurants</Text>
+                </View>
               }
 
-              <Text style={styles.headerTitle}>Nearby Restaurants</Text>
-
-              {isRestaurantLoading
-                ? <Loading /> :
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  data={restaurantData}
-                  renderItem={(item, index) => this.renderRestaurant(item, index)}
-                  keyExtractor={(item, index) => index.toString()}
-
-                  ListFooterComponent={
-                    fottorLoading &&
-                    <View style={{ padding: wp(5) }}>
-                      <ActivityIndicator
-                        size={"large"}
-                        color={Colors.light_text_color}
-                        animating={true}
-                      />
-                    </View>
-                  }
-
-                  ListEmptyComponent={
-                    !fottorLoading ?
-                      <Text style={styles.txtNoResult}>{'No results found'}</Text> : null
-                  }
-
-                  onEndReached={() => {
-                    console.log("response onEndReached")
-                    if (isSearching) {
-                      this.setState({ page: page + 1, fottorLoading: true }, () => {
-                        this.getRestaurant();
-                      })
-                    }
-                  }}
-                  onEndReachedThreshold={0.1}
-                />
+              ListFooterComponent={
+                fottorLoading &&
+                <View style={{ padding: wp(5) }}>
+                  <ActivityIndicator
+                    size={"large"}
+                    color={Colors.light_text_color}
+                    animating={true}
+                  />
+                </View>
               }
-            </ScrollView>
+
+              ListEmptyComponent={
+                isRestaurantLoading ? <Loading /> :
+                  <Text style={styles.txtNoResult}>{'No results found'}</Text>
+              }
+              onMomentumScrollBegin={() => this.setState({ onEndReachedCalledDuringMomentum: false })}
+              onEndReached={() => {
+                if (!onEndReachedCalledDuringMomentum) {
+                  console.log("response onEndReached")
+                  this.setState({ page: page + 1, fottorLoading: true, onEndReachedCalledDuringMomentum: false }, () => {
+                    this.getRestaurant();
+                  })
+                }
+              }}
+              onEndReachedThreshold={0.1}
+            />
 
             {Store.cart.length != 0 &&
               <BasketView
@@ -684,11 +691,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
     textAlign: 'center',
-    position: 'absolute',
-    bottom: 0,
-    marginBottom: hp(1),
+    // position: 'absolute',
+    // bottom: 0,
+    // marginBottom: hp(1),
     // marginTop: Platform.OS == 'ios' ? hp(12) : hp(14),
     marginHorizontal: wp(2),
+
   },
   restaurantImage: {
     width: '100%',
@@ -716,6 +724,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#777777',
   },
+  categoryTextView: {
+    backgroundColor: Colors.transparant,
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+    paddingBottom: hp(1),
+    borderBottomRightRadius: wp(2),
+    borderBottomLeftRadius: wp(2)
+  }
 });
 
 export default HomeScreen;

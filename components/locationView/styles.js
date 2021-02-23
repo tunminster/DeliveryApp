@@ -16,7 +16,7 @@ export default {
     width: wp(90),
   },
   modelHeaderView: {
-    flexDirection: 'row',
+    alignItems: 'center',
     padding: wp(2)
   },
   modelIcon: {
@@ -30,7 +30,7 @@ export default {
     color: Colors.black,
     alignItems: 'center',
     marginLeft: wp(2),
-    marginVertical:wp(2)
+    marginVertical: wp(2)
   },
   modelSeperateLine: {
     backgroundColor: Colors.border,
@@ -82,4 +82,14 @@ export default {
     backgroundColor: Colors.border,
     height: hp(6)
   },
+  closeIcon: {
+    width: wp(8),
+    height: wp(8),
+  },
+  closeView: {
+    position: 'absolute',
+    left: wp(-4.5),
+    top: wp(-4.5),
+    padding: wp(2)
+  }
 }
