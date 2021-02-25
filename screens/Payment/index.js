@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         margin: wp(6),
-        backgroundColor: Colors.btnColor
+        backgroundColor: Colors.tabIconSelected
     }
 });
 

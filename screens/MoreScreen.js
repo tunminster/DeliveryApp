@@ -36,7 +36,7 @@ class MoreScreen extends Component {
           <ProfileItem
             title={'Saved addresses'}
             image={require('../assets/images/location.png')}
-            onPress={() => console.log('press')}
+            onPress={() => navigation.navigate('PaymentSuccess')}
           />
           <View style={styles.seperateLine} />
         </View>

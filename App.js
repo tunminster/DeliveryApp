@@ -58,10 +58,9 @@ export default function App(props) {
         CreateAccountComponent(email, password, confirmpassword)
           .then((data) => {
             const result = JSON.stringify(data);
+            console.log('result', result, data)
             if (result.toUpperCase() == '"Account created"'.toUpperCase()) {
-
               loginRequest(email, password);
-
             }
             else {
               Alert.alert("Please try to create account again.");
@@ -337,13 +336,14 @@ const PageScreen = () => (
       component={PaymentSuccess}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Payment Success',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: 'Back'
+          headerShown: false
+          // headerMode: 'screen',
+          // title: 'Payment Success',
+          // headerStyle: {
+          //   backgroundColor: '#f4511e'
+          // },
+          // headerTintColor: '#fff',
+          // headerBackTitle: 'Back'
         }
       )}
     />

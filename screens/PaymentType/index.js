@@ -309,7 +309,7 @@ class PaymentType extends Component {
                             <Ionicons
                                 name={'home'}
                                 size={wp(8)}
-                                color={Colors.btnColor} />
+                                color={Colors.tabIconSelected} />
                         </View>
                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             {dropdownValue == 'Pick up order at' &&

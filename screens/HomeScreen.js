@@ -63,7 +63,8 @@ class HomeScreen extends Component {
       newAddressModelVisible: false,
       deliverAddress: null,
       tempAddress: null,
-      onEndReachedCalledDuringMomentum: true
+      onEndReachedCalledDuringMomentum: true,
+      storeOpeningHours: null
     }
   }
 
@@ -120,7 +121,7 @@ class HomeScreen extends Component {
     const { latitude, longitude, page, search, storeType, filterValue } = this.state
     console.log('location', latitude, longitude)
     if (page == 1) {
-      this.setState({ isRestaurantLoading: true, fottorLoading:false })
+      this.setState({ isRestaurantLoading: true, fottorLoading: false })
     }
 
     retrieveData(STORAGE_KEY)
@@ -289,7 +290,10 @@ class HomeScreen extends Component {
     return (
       <TouchableOpacity
         style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
-        onPress={() => this.getMenu(item.item.storeId)}>
+        onPress={() => {
+          this.getMenu(item.item.storeId)
+          this.setState({ storeOpeningHours: item.item.storeOpeningHours })
+        }}>
         <Image
           source={{ uri: item.item.imageUri }}
           resizeMode='cover'
@@ -467,8 +471,10 @@ class HomeScreen extends Component {
   render() {
     const { headerTitle, isModalVisible, addressesId, search, categoriesData, restaurantData,
       onEndReachedCalledDuringMomentum, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
-      filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
-      menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible } = this.state
+      filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata,
+      menuDetailVisible, menuDetailCount, newOrderModelVisible, newStoreName, page, storeType,
+      newAddressModelVisible, storeOpeningHours } = this.state
+
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -591,6 +597,7 @@ class HomeScreen extends Component {
               menuModelVisible={menuModelVisible}
               onCancelPress={() => this.setState({ menuModelVisible: false })}
               menuData={menuData}
+              storeOpeningHours={storeOpeningHours}
               onMenuPress={(item) => this.onMenuPress(item)}
               onBasketViewPress={() => this.onBasketViewPress()}
               getTotalPrice={getTotalPrice()}
@@ -685,16 +692,12 @@ const styles = StyleSheet.create({
     borderRadius: wp(2),
   },
   categoriesTitle: {
-    fontSize: Platform.OS == 'ios' ? normalize(15) : normalize(17),
+    fontSize: normalize(14),
     fontFamily: 'Roboto-Bold',
     color: Colors.white,
     fontWeight: 'bold',
     alignSelf: 'center',
     textAlign: 'center',
-    // position: 'absolute',
-    // bottom: 0,
-    // marginBottom: hp(1),
-    // marginTop: Platform.OS == 'ios' ? hp(12) : hp(14),
     marginHorizontal: wp(2),
 
   },

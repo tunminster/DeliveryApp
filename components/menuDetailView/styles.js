@@ -85,6 +85,6 @@ export default {
     height: hp(6),
     marginHorizontal: wp(5),
     marginBottom: hp(1),
-    backgroundColor: Colors.btnColor
+    backgroundColor: Colors.tabIconSelected
   },
 }

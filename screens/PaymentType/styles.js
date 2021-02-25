@@ -104,7 +104,7 @@ export default {
         margin: 15,
         marginBottom: 0,
         borderRadius: 5,
-        backgroundColor: Colors.btnColor
+        backgroundColor: Colors.tabIconSelected
     },
     btnPay: {
         margin: 15,

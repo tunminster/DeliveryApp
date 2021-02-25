@@ -8,12 +8,14 @@ import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Store from '../../config/store';
 import BasketView from '../../components/basketView';
 import Colors from '../../constants/Colors'
+import moment from 'moment';
 
 class MenuView extends Component {
     constructor(props) {
         super(props)
         this.state = {
             expandeIndex: -1,
+            isStoreOpeningHours: false
         }
         if (Platform.OS === 'android') {
             UIManager.setLayoutAnimationEnabledExperimental(true); // USed for collaps animation
@@ -30,9 +32,13 @@ class MenuView extends Component {
     }
 
     render() {
-        const { expandeIndex } = this.state;
-        const { menuModelVisible, onCancelPress, menuData, onMenuPress, onBasketViewPress,
-            getTotalPrice, newOrderModelVisible, newStoreName, newOrderCancel, onConfirmPress } = this.props;
+        const { expandeIndex, isStoreOpeningHours } = this.state;
+        const { menuModelVisible, onCancelPress, menuData, onMenuPress, onBasketViewPress, getTotalPrice,
+            newOrderModelVisible, newStoreName, newOrderCancel, onConfirmPress, storeOpeningHours } = this.props;
+        let storeOpeningData = null
+        if (storeOpeningHours)
+            storeOpeningData = storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday())
+
         return (
             <Modal
                 transparent={true}
@@ -40,8 +46,6 @@ class MenuView extends Component {
                 visible={menuModelVisible} >
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
-
-
                         <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
                             <View style={{ paddingHorizontal: wp(4), marginTop: hp(0.7) }}>
                                 <ImageBackground
@@ -55,7 +59,7 @@ class MenuView extends Component {
                                         <Image source={require('../../assets/images/close_fill_icon.png')}
                                             style={{
                                                 width: wp(7.5),
-                                                height: wp(7.5), 
+                                                height: wp(7.5),
                                             }} />
                                     </TouchableOpacity>
 
@@ -67,7 +71,20 @@ class MenuView extends Component {
                                     <Text style={{ ...styles.restaurantSubTitle, color: Colors.orange }}>{menuData.storeType}</Text>
                                 }
                                 <Text style={{ ...styles.restaurantTitle, marginTop: hp(0.5) }}>{menuData.storeName}</Text>
-                                <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{menuData.addressLine1}</Text>
+                                <TouchableWithoutFeedback onPress={() => storeOpeningData && this.setState({ isStoreOpeningHours: !isStoreOpeningHours })}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, }}>{menuData.addressLine1}</Text>
+                                        {storeOpeningData && <Image source={isStoreOpeningHours ? require('../../assets/images/down_arrow.png') : require('../../assets/images/right_arrow.png')} style={styles.modelIcon} />}
+                                    </View>
+                                </TouchableWithoutFeedback>
+
+                                {isStoreOpeningHours &&
+                                    <View>
+                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`Date : ${moment().format('DD/MM/YYYY')}`}</Text>
+                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`Opening Time : ${storeOpeningData.open}`}</Text>
+                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`Closing Time : ${storeOpeningData.close}`}</Text>
+                                    </View>
+                                }
 
                                 {menuData.storeCategoriesList && menuData.storeCategoriesList.map((item, index) =>
                                     <View key={index}>

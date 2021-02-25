@@ -55,7 +55,7 @@ export default {
         height: hp(7),
         marginHorizontal: wp(5),
         marginVertical: hp(1.5),
-        backgroundColor: Colors.btnColor
+        backgroundColor: Colors.tabIconSelected
     },
     bottomContainer: {
         position: 'absolute',
@@ -73,6 +73,6 @@ export default {
     editIcon:{
         width: wp(6),
         height: wp(6),
-        tintColor: Colors.btnColor
+        tintColor: Colors.tabIconSelected
     }
 }
