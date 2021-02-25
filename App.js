@@ -393,13 +393,7 @@ const PageScreen = () => (
     <PageStack.Screen name="OrderDetail" component={OrderDetail}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'OrderDetail',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: ''
+          headerShown: false
         }
       )}
     />

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Alert, AsyncStorage, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Alert, AsyncStorage, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { CreditCardInput } from 'react-native-credit-card-input';
 import Button from '../../components/button';
 import BackIcon from '../../components/backIcon';
@@ -88,15 +88,17 @@ class Payment extends Component {
 
                 {this.state.loading ?
                     <Loading /> :
-                    <View style={styles.childContainer}>
-                        <CreditCardInput onChange={cardData => this.setState({ cardData })} />
-                        <Button
-                            onPress={() => this.sendRequest()}
-                            title={'Confirm'}
-                            style={styles.btn}
-                        />
-                    </View>
-
+                    <TouchableWithoutFeedback
+                        onPress={() => Keyboard.dismiss()}>
+                        <View style={styles.childContainer}>
+                            <CreditCardInput onChange={cardData => this.setState({ cardData })} />
+                            <Button
+                                onPress={() => this.sendRequest()}
+                                title={'Confirm'}
+                                style={styles.btn}
+                            />
+                        </View>
+                    </TouchableWithoutFeedback>
                 }
             </View>
         )

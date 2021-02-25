@@ -1,52 +1,67 @@
-import React, {Component} from 'react';
-import {View, Text, Image, ScrollView} from 'react-native';
-import sharedStyles from '../../utils/sharedStyles';
+import React, { Component } from 'react';
+import { View, Text, Image, ScrollView } from 'react-native';
 import styles from './styles';
-import moment from 'moment';
 import Button from "../../components/button";
-import ProductCard from '../../components/productCard';
-import vars from '../../utils/vars';
+import BackIcon from '../../components/backIcon';
+import { wp, hp, normalize } from '../../helper/responsiveScreen';
+import Colors from '../../constants/Colors'
 
 class OrderDetail extends Component {
+    
     render() {
         const data = this.props.route.params.order;
+        console.log('data...', data)
         return (
             <View style={styles.container}>
 
-                <ScrollView showsVerticalScroll={false}>
-                    <View style={styles.padding}>
-                        <Text style={sharedStyles.txt}>Order Id: <Text style={styles.bold}>{data.id}</Text></Text>
-                        <Text style={sharedStyles.txt}>Shipping Status: <Text style={styles.bold}>{data.orderStatus}</Text></Text>
-                        <Text style={sharedStyles.txt}>Order Time: <Text style={styles.bold}>{moment(data.dateCreated).format('YYYY/MM/DD')}</Text></Text>
-                    </View>
-                    <View style={[sharedStyles.section, styles.section]}>
-                        <Text style={sharedStyles.subTitle}>Products</Text>
-                        <View style={styles.divider} />
-                        {
-                            data.orderItems.map((orderItem, i) => 
-                                <View style={styles.card} key={i}>
-                                    <Image source={{uri: orderItem.productImageUrl}} style={styles.img} />
-                                    <View style={{flex: 1}}>
-                                        <Text style={sharedStyles.txt}>{orderItem.productName}</Text>
-                                        <Text style={sharedStyles.txt}>Quantity: <Text style={styles.bold}>{orderItem.count}</Text></Text>
-                                        <Text style={sharedStyles.txt}>Price: <Text style={styles.bold}>{vars.currency + orderItem.productPrice.toFixed(2)} </Text></Text>
-                                        
-                                    </View>
+                <View style={styles.header}>
+                    <BackIcon
+                        onPress={() => this.props.navigation.goBack()} />
+                    <Text style={styles.headerTitle}>{'Order Details'}</Text>
+                </View>
+                <View style={styles.seperateLine} />
 
+                <Text style={{ ...styles.title, marginTop: hp(2), alignSelf: 'center', color: Colors.gray }}>{`Order Number`}</Text>
+                <Text style={{ ...styles.subTitle, marginTop: hp(0.5), alignSelf: 'center', color: Colors.black, fontWeight: 'bold' }}>{data.id}</Text>
+
+                <Text style={{ ...styles.title, marginTop: hp(2), alignSelf: 'center', color: Colors.gray }}>{`Deliver From / Pick Up From `}</Text>
+                <Text style={{ ...styles.subTitle, marginTop: hp(0.5), textAlign: 'center', color: Colors.black, fontWeight: 'bold' }}>{data.storeName}</Text>
+
+                <Text style={{ ...styles.title, marginTop: hp(2), alignSelf: 'center', color: Colors.gray }}>{`Delivered To`}</Text>
+                <Text style={{ ...styles.subTitle, marginHorizontal: wp(8), marginTop: hp(0.5), textAlign: 'center', color: Colors.black, fontWeight: 'bold' }}>{'Broadway Road, 137, SW19 1QW'}</Text>
+
+                <Text style={{ ...styles.title, marginTop: hp(3), marginBottom: hp(1), marginLeft: wp(5), color: Colors.black, fontWeight: 'bold' }}>{'Items'}</Text>
+                <View style={styles.seperateLine} />
+
+                <ScrollView style={{ marginBottom: hp(17) }}>
+                    {
+                        data.orderItems.map((orderItem, i) =>
+                            <View key={i}>
+                                <View style={styles.orderItemView}>
+                                    <Text numberOfLines={1}
+                                        style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`${orderItem.count}  x  ${orderItem.productName}`}</Text>
+                                    <Text numberOfLines={1}
+                                        style={{ ...styles.subTitle, color: Colors.black, }}>{`£ ${((orderItem.productPrice * orderItem.count) / 100).toFixed(2)}`}</Text>
                                 </View>
-                            )
-                        }
-                        <Text style={[sharedStyles.txt, {margin: 5, marginLeft: 10}]}>Total Price: {data.totalAmount.toFixed(2)}</Text>
-                    </View>
+                                <View style={styles.seperateLine} />
+                            </View>
+                        )}
                 </ScrollView>
 
-                <Button 
-                    title={'Report a Problem'} 
-                    onPress={() => this.props.navigation.navigate('Support', {order: data})} />
-
+                <View style={styles.bottomContainer}>
+                    <View style={styles.seperateLine} />
+                    <View style={styles.bottomChildContainer}>
+                        <Text style={{ ...styles.title, color: Colors.black, fontWeight: 'bold' }}>{'Total'}</Text>
+                        <Text style={{ ...styles.subTitle, color: Colors.black }}>{`£ ${(data.totalAmount / 100).toFixed(2)}`}</Text>
+                    </View>
+                    <View style={styles.seperateLine} />
+                    <Button
+                        onPress={() => this.props.navigation.navigate('Support', { order: data })}
+                        title={'Report Problem'}
+                        style={styles.btn} />
+                </View>
             </View>
         )
-
     }
 }
 
