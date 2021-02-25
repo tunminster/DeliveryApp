@@ -1,41 +1,58 @@
-import vars from '../../utils/vars';
-
+import { wp, hp, normalize, } from '../../helper/responsiveScreen';
+import Colors from '../../constants/Colors'
 export default {
     container: {
         flex: 1,
-        backgroundColor: vars.bgColor,
+        backgroundColor: Colors.white,
+        paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
     },
-    card: {
-        borderBottomWidth: 1,
-        borderColor: 'rgba(0,0,0,0.2)',
-        padding: 10,
+    header: {
         flexDirection: 'row',
-        marginBottom: 5
+        paddingHorizontal: wp(3),
+        height: hp(7)
     },
-    img: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        resizeMode: 'cover',
-        marginRight: 15
-    },
-    section: {
-        marginTop: 10
-    },
-    divider: {
-        height: 1,
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        marginTop: 5
-    },
-    bold: {
+    headerTitle: {
+        fontSize: normalize(20),
+        fontFamily: 'Roboto-Regular',
+        color: Colors.black,
+        marginLeft: wp(5),
+        alignSelf: 'center',
         fontWeight: 'bold'
     },
-    padding: {
-        padding: 15
+    seperateLine: {
+        backgroundColor: Colors.border,
+        height: wp(0.2),
     },
-    btnContainer: {
-        transform: [{scale: 0.7}],
-        flex: 1,
-        alignItems: 'flex-end'
-    }
+    title: {
+        fontSize: normalize(18),
+        fontFamily: 'Roboto-Regular',
+    },
+    subTitle: {
+        fontSize: normalize(16),
+        fontFamily: 'Roboto-Regular',
+    },
+    orderItemView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: wp(5),
+        marginVertical: hp(1.5)
+    },
+    btn: {
+        height: hp(7),
+        backgroundColor: Colors.tabIconSelected,
+        marginTop: hp(4)
+    },
+    bottomContainer: {
+        position: 'absolute',
+        bottom: 0,
+        height: hp(17),
+        width: '100%'
+    },
+    bottomChildContainer: {
+        flexDirection: 'row',
+        height: hp(6),
+        marginHorizontal: wp(5),
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
 }

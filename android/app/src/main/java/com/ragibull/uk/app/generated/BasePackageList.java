@@ -1,4 +1,4 @@
-package com.deliveryapp.app.generated;
+package com.ragibull.uk.app.generated;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,6 @@ public class BasePackageList {
         new expo.modules.application.ApplicationPackage(),
         new expo.modules.constants.ConstantsPackage(),
         new expo.modules.errorrecovery.ErrorRecoveryPackage(),
-        new expo.modules.facebook.FacebookPackage(),
         new expo.modules.filesystem.FileSystemPackage(),
         new expo.modules.font.FontLoaderPackage(),
         new expo.modules.imageloader.ImageLoaderPackage(),

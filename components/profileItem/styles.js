@@ -15,20 +15,19 @@ export default {
     height: wp(6),
     alignSelf: 'center',
     marginRight: wp(3),
-    tintColor: Colors.gray
+    tintColor: Colors.tabIconSelected
   },
   title:{
-    fontSize: normalize(20),
+    fontSize: normalize(18),
     fontFamily: 'Roboto-Regular',
-    color: Colors.gray,
-    fontWeight: '500',
+    color: Colors.black,
     alignItems: 'center',
   },
   rightIcon: {
     width: wp(4),
     height: wp(4),
     alignSelf: 'center',
-    
+    tintColor: Colors.tabIconSelected,
     marginLeft:wp(1)
   }
 }

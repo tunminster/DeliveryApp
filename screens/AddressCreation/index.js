@@ -305,7 +305,7 @@ class AddressCreation extends Component {
                             <Button
                                 onPress={() => this.setState({ isAddress: true, isMap: true })}
                                 title={'Set address'}
-                                style={{ marginVertical: hp(2), }}
+                                style={{ marginVertical: hp(2), backgroundColor: Colors.tabIconSelected}}
                             />
                         </View>
                     }
@@ -387,7 +387,7 @@ class AddressCreation extends Component {
                             <Button
                                 onPress={() => { this.submit() }}
                                 title={'Submit'}
-                                style={{ marginTop: hp(3) }}
+                                style={{ marginTop: hp(3), backgroundColor: Colors.tabIconSelected }}
                             />
                         </View>}
 

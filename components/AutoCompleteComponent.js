@@ -3,7 +3,7 @@ import vars from '../utils/vars';
 
 export async function AutoCompleteComponent(body)
 {
-  let response = await fetch(`${vars.locationBaseUrl}?input=${body.location}&key=${vars.google_key}`, {
+  let response = await fetch(`${vars.locationBaseUrl}?input=${body.location}&components=country:uk&key=${vars.google_key}`, {
       method: 'GET',
       headers: new Headers({
         'content-type': 'application/json',

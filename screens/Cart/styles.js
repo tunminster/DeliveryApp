@@ -10,7 +10,8 @@ export default {
     },
     header: {
         flexDirection: 'row',
-        padding: wp(3)
+        padding: wp(3),
+        justifyContent: 'space-between'
     },
     restaurantTitle: {
         fontSize: normalize(20),
@@ -53,7 +54,8 @@ export default {
     btn: {
         height: hp(7),
         marginHorizontal: wp(5),
-        marginVertical: hp(1.5)
+        marginVertical: hp(1.5),
+        backgroundColor: Colors.tabIconSelected
     },
     bottomContainer: {
         position: 'absolute',
@@ -67,5 +69,10 @@ export default {
         marginHorizontal: wp(3),
         justifyContent: 'space-between',
         alignItems: 'center'
+    },
+    editIcon:{
+        width: wp(6),
+        height: wp(6),
+        tintColor: Colors.tabIconSelected
     }
 }

@@ -30,7 +30,8 @@ export default {
     },
     header: {
         flexDirection: 'row',
-        padding: wp(3)
+        paddingHorizontal: wp(3),
+        height: hp(7)
     },
     headerTitle: {
         fontSize: normalize(20),
@@ -74,7 +75,7 @@ export default {
         width: wp(90),
         position: 'absolute',
         zIndex: 2,
-        marginTop: isX ? hp(14.5) : hp(15.6),
+        marginTop: isX ? hp(14.5) : hp(14.2),
         backgroundColor: Colors.white,
         marginHorizontal: wp(5),
         borderBottomLeftRadius: wp(2),
@@ -99,4 +100,16 @@ export default {
         width: wp(89),
         alignSelf: 'center'
     },
+    btnCreditCard: {
+        margin: 15,
+        marginBottom: 0,
+        borderRadius: 5,
+        backgroundColor: Colors.tabIconSelected
+    },
+    btnPay: {
+        margin: 15,
+        marginBottom: 10,
+        backgroundColor: Colors.black,
+        borderRadius: 5
+    }
 }

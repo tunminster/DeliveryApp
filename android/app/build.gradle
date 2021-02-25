@@ -132,11 +132,11 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.deliveryapp.app'
+        applicationId 'com.ragibull.uk.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 2
+        versionName "1.0.1"
         multiDexEnabled true
         manifestPlaceholders = [appAuthRedirectScheme: 'com.redirectScheme.comm']
     }
@@ -201,7 +201,7 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'com.facebook.android:facebook-android-sdk:7.1.0'
 
     implementation(project(':react-native-maps')){
         exclude group: 'com.google.android.gms', module: 'play-services-base'

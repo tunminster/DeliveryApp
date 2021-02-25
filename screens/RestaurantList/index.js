@@ -30,8 +30,8 @@ class RestaurantList extends Component {
             storeType: '',
             restaurantData: [],
             page: 1,
+            onEndReachedCalledDuringMomentum: true,
             isRestaurantLoading: false,
-            isSearching: false,
             fottorLoading: false,
             isMenuLoading: false,
             menuModelVisible: false,
@@ -54,7 +54,7 @@ class RestaurantList extends Component {
         const { latitude, longitude, page, storeType } = this.state
         console.log('location', latitude, longitude)
         if (page == 1) {
-            this.setState({ isRestaurantLoading: true })
+            this.setState({ isRestaurantLoading: true, fottorLoading: false })
         }
 
         retrieveData(STORAGE_KEY)
@@ -63,21 +63,20 @@ class RestaurantList extends Component {
                     headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
                 };
 
-                const value = 'searchQuery=&filters=&storetypes=' + storeType + '&latitude=' + latitude +
+                const value = 'storetype=' + storeType + '&latitude=' + latitude +
                     '&longitude=' + longitude + '&page=' + page + '&pagesize=' + 20
 
                 console.log('value', value)
 
-                Api.get('/V1/Store/Stores-Search?' + value, config).then(res => {
+                Api.get('/V1/Store/Stores-Search-By-Store-Type?' + value, config).then(res => {
                     console.log('restaurant res...', res);
                     if (res.length != 0) {
                         this.setState({
                             restaurantData: [...this.state.restaurantData, ...res],
-                            isSearching: true,
                             isRestaurantLoading: false
                         })
                     } else {
-                        this.setState({ isSearching: false, fottorLoading: false, isRestaurantLoading: false })
+                        this.setState({ fottorLoading: false, isRestaurantLoading: false, onEndReachedCalledDuringMomentum: true })
                     }
                 }).catch(err => {
                     this.setState({ isRestaurantLoading: false })
@@ -207,8 +206,8 @@ class RestaurantList extends Component {
     }
 
     render() {
-        const { page, storeType, isRestaurantLoading, restaurantData, fottorLoading, isSearching,
-            menuData, isMenuLoading, menuModelVisible, newOrderModelVisible, newStoreName,
+        const { page, storeType, isRestaurantLoading, restaurantData, onEndReachedCalledDuringMomentum,
+            fottorLoading, menuData, isMenuLoading, menuModelVisible, newOrderModelVisible, newStoreName,
             menuDetaildata, menuDetailVisible, menuDetailCount } = this.state
         return (
             <View style={styles.container}>
@@ -243,11 +242,11 @@ class RestaurantList extends Component {
                             !fottorLoading ?
                                 <Text style={styles.txtNoResult}>{'No results found'}</Text> : null
                         }
-
+                        onMomentumScrollBegin={() => this.setState({ onEndReachedCalledDuringMomentum: false })}
                         onEndReached={() => {
-                            console.log("response onEndReached")
-                            if (isSearching) {
-                                this.setState({ page: page + 1, fottorLoading: true }, () => {
+                            if (!onEndReachedCalledDuringMomentum) {
+                                console.log("response onEndReached")
+                                this.setState({ page: page + 1, fottorLoading: true, onEndReachedCalledDuringMomentum: false }, () => {
                                     this.getRestaurant();
                                 })
                             }
@@ -284,13 +283,13 @@ class RestaurantList extends Component {
 
                 }
 
-{Store.cart.length != 0 &&
-              <BasketView
-                onPress={() => this.onBasketViewPress()}
-                style={{ marginBottom: hp(3) }}
-                count={Store.cart.length}
-                amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
-            }
+                {Store.cart.length != 0 &&
+                    <BasketView
+                        onPress={() => this.onBasketViewPress()}
+                        style={{ marginBottom: hp(3) }}
+                        count={Store.cart.length}
+                        amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+                }
             </View>
         )
     }

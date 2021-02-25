@@ -14,8 +14,6 @@ export default {
     backgroundColor: Colors.white,
     height: hp(90),
     width: wp(90),
-    // paddingBottom: hp(2.5),
-    // borderRadius: wp(5)
   },
   modelHeaderView: {
     flexDirection: 'row',
@@ -43,8 +41,9 @@ export default {
     marginVertical:wp(2)
   },
   btnClear: {
-    marginHorizontal: wp(5),
+    marginHorizontal: wp(3),
     height: hp(4.5),
+    backgroundColor: Colors.tabIconSelected
   },
   modelSeperateLine: {
     backgroundColor: Colors.border,
@@ -63,6 +62,17 @@ export default {
   btn: {
     height: hp(6),
     marginHorizontal: wp(5),
-    marginBottom: hp(1)
+    marginBottom: hp(1),
+    backgroundColor: Colors.tabIconSelected
   },
+  closeIcon: {
+    width: wp(8),
+    height: wp(8),
+  },
+  closeView: {
+    position: 'absolute',
+    left: wp(-4.5),
+    top: wp(-4.5),
+    padding: wp(2)
+  }
 }

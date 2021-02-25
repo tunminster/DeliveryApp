@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, Text } from 'react-native';
+import { View, ScrollView, Image, Text, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import Button from '../../components/button';
 import Store from '../../config/store/index';
@@ -14,28 +14,46 @@ import BackIcon from '../../components/backIcon';
 @observer
 class Cart extends Component {
 
+    constructor(props) {
+        super(props)
+        this.state = {
+            isEdit: false,
+        }
+    }
+
     checkout() {
         if (Store.cart.length != 0) {
             this.props.navigation.navigate('PaymentType', {
                 deliverAddress: this.props.route.params.deliverAddress
-              });
+            });
         } else {
             alert("Please add item")
         }
     }
 
     render() {
-        console.log('restaurantData', Store.restaurantData)
+        const { isEdit } = this.state;
         return (
             <View style={styles.container}>
 
                 <View style={styles.header}>
-                    <BackIcon
-                        onPress={() => {
-                            this.props.navigation.goBack()
-                            this.props.route.params.onGoBack()
-                        }} />
-                    <Text style={{ ...styles.restaurantTitle, color: Colors.black, marginLeft: wp(5), alignSelf: 'center', fontWeight: 'bold' }}>{'Basket'}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <BackIcon
+                            onPress={() => {
+                                if(isEdit) {
+                                    this.setState({isEdit: false})
+                                } else{
+                                this.props.navigation.goBack()
+                                this.props.route.params.onGoBack()
+                                }
+                            }} />
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.black, marginLeft: wp(5), alignSelf: 'center', fontWeight: 'bold' }}>{'Basket'}</Text>
+                    </View>
+                    <TouchableOpacity style={{ paddingHorizontal: wp(2), paddingVertical: wp(1), alignSelf: 'center' }}
+                    onPress = {() => this.setState({isEdit: !isEdit})}>
+                        <Image source={require('../../assets/images/edit.png')} resizeMode='contain' style={styles.editIcon} />
+                        {/* <Text style={{ ...styles.restaurantTitle, color: Colors.black, fontWeight: 'bold' }}>{'Edit'}</Text> */}
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.seperateLine} />
 
@@ -54,6 +72,7 @@ class Cart extends Component {
                     {Store.cart.map((item, i) =>
                         <CartItem
                             onPress={() => this.forceUpdate()}
+                            isEdit ={this.state.isEdit}
                             data={item} key={i} index={i} navigation={this.props.navigation} />)}
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{'Subtotal'}</Text>

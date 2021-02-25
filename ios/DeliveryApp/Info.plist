@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>DeliveryApp</string>
+	<string>RagiBull UK</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,22 +26,22 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb410282153495193</string>
-				<string>com.deliveryapp</string>
+				<string>com.ragibull.uk.app</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9</string>
+				<string>com.googleusercontent.apps.775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
 	<string>410282153495193</string>
 	<key>FacebookDisplayName</key>
-	<string>DeliveryApp</string>
+	<string>RagiBull UK</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

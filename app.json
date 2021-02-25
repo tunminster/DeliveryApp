@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "DeliveryApp",
-    "slug": "DeliveryApp",
+    "name": "RagiBull UK",
+    "slug": "RagiBull UK",
     "platforms": [
       "ios",
       "android",
@@ -25,20 +25,20 @@
     "ios": {
       "buildNumber": "2",
       "supportsTablet": true,
-      "bundleIdentifier": "com.deliveryapp",
+      "bundleIdentifier": "com.ragibull.uk.app",
       "config": {
         "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9"
+          "reservedClientId": "com.googleusercontent.apps.775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk"
         }
       }
     },
     "description": "",
     "android": {
-      "package": "com.deliveryapp.app",
+      "package": "com.ragibull.uk.app",
       "config":{
         "googleSignIn":{
-          "apiKey":"AIzaSyA6OXx8HA3xlKM-ORCeLRyNfigpoAKEoh0",
-          "certificateHash":"E228B3152CD05A65CB9E0CEADFD2CAB93DEF8546"
+          "apiKey":"AIzaSyCCJLGPVEi1w8v10MU5wXu8_uND6Qqpk_Q",
+          "certificateHash":"b3d2a9628c472c306c1e10fbb6bf173b71614d13"
         }
       }
 

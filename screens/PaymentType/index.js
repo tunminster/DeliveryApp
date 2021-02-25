@@ -95,13 +95,14 @@ class PaymentType extends Component {
 
     createPaymentIntent(type) {
         try {
-            const { selectedAddress } = this.state;
-            if (selectedAddress) {
+            const { selectedAddress, dropdownValue } = this.state;
+            // if (selectedAddress) {
                 const data = {
                     customerId: AuthStore.user.id,
                     orderItems: [],
                     shippingAddressId: selectedAddress,
-                    discount: 0
+                    discount: 0,
+                    orderType: dropdownValue == 'Pick up order at' ? 1 : 2
                 }
 
                 Store.cart.map(product => {
@@ -137,9 +138,9 @@ class PaymentType extends Component {
                     console.error(err);
                 });
 
-            } else {
-                Alert.alert('Warning', 'Choose address', [{ text: 'OK' }]);
-            }
+            // } else {
+            //     Alert.alert('Warning', 'Choose address', [{ text: 'OK' }]);
+            // }
 
         } catch (error) {
             console.error(error.message);
@@ -305,16 +306,16 @@ class PaymentType extends Component {
                     <View style={styles.seperateLine} />
                     <View style={{ flexDirection: 'row', paddingVertical: hp(1.5) }}>
                         <View style={{ width: wp(15), alignItems: 'center', justifyContent: 'center' }}>
-                            <Ionicons
+                        <Ionicons
                                 name={'home'}
                                 size={wp(8)}
-                                color={vars.baseColor} />
+                                color={Colors.tabIconSelected} />
                         </View>
                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             {dropdownValue == 'Pick up order at' &&
                                 <Text style={{ ...styles.title, color: Colors.gray, fontWeight: 'bold', alignSelf: 'flex-start' }}>{Store.restaurantData.storeName}</Text>
                             }
-                            <Text style={{ ...styles.title, color: Colors.gray, width:wp(80) }}>{
+                            <Text style={{ ...styles.title, color: Colors.gray, width: wp(80) }}>{
                                 dropdownValue == 'Pick up order at' ? `${Store.restaurantData.addressLine1}, ${Store.restaurantData.postalCode}`
                                     : `${deliverAddress.addressLine}, ${deliverAddress.postCode}`}</Text>
                         </View>
@@ -328,21 +329,19 @@ class PaymentType extends Component {
                     <Button
                         title={'Credit Card'}
                         onPress={() => this.createPaymentIntent('card')}
-                        style={{ margin: 15, marginBottom: 0, borderRadius: 5 }}
+                        style={styles.btnCreditCard}
                     />
 
                     <Button
                         title={'Pay'}
                         onPress={() => this.createPaymentIntent('pay')}
                         image={vars.isIos ? require('../../assets/images/apple.png') : require('../../assets/images/google.png')}
-                        style={{ margin: 15, marginBottom: 10, backgroundColor: vars.blackColor, borderRadius: 5 }}
+                        style={styles.btnPay}
                     />
                 </View>
 
-                {/* {loading ? <Loading /> : null} */}
                 <FullScreenLoader
                     loading={loading} />
-                {/* </ScrollView> */}
             </View>
         )
     }
