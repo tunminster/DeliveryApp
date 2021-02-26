@@ -8,6 +8,7 @@ import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Store from '../../config/store';
 import BasketView from '../../components/basketView';
 import Colors from '../../constants/Colors'
+import moment from 'moment';
 
 class MenuView extends Component {
     constructor(props) {

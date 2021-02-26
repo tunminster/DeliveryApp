@@ -337,13 +337,7 @@ const PageScreen = () => (
       component={PaymentSuccess}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Payment Success',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: 'Back'
+          headerShown: false
         }
       )}
     />

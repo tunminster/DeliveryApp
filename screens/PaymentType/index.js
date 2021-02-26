@@ -18,6 +18,8 @@ import { wp, hp, normalize, isX } from '../../helper/responsiveScreen';
 import Colors from '../../constants/Colors'
 import MapView from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
+import { GetLocationComponent } from '../../components/GetLocationComponent'
+import { storeData, retrieveData, storeUser } from '../../components/AuthKeyStorageComponent';
 
 const dropDownList = [
     {
@@ -41,13 +43,20 @@ class PaymentType extends Component {
         lngDelta: 0.1,
         dropdownVisible: false,
         dropdownValue: 'Pick up order at',
-        deliverAddress: this.props.route.params.deliverAddress
+        deliverAddress: this.props.route.params.deliverAddress,
+        storeId: '',
+        addresssId: 0
     };
 
     async componentDidMount() {
-        console.log('store...', this.state.deliverAddress)
+        if (parseInt(this.state.deliverAddress.id) == 0) {
+            this.sortAddress()
+        }
         if (this.state.dropdownValue == 'Pick up order at') {
-            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude })
+            this.setState({
+                lat: Store.restaurantData.location.latitude,
+                lng: Store.restaurantData.location.longitude, storeId: Store.restaurantData.storeId
+            })
         }
         try {
             await Stripe.setOptionsAsync({
@@ -57,6 +66,69 @@ class PaymentType extends Component {
             });
         } catch (error) {
             console.log('error', error)
+        }
+    }
+
+    sortAddress = async () => {
+        const { deliverAddress } = this.state;
+
+        try {
+            GetLocationComponent(null, deliverAddress.lat, deliverAddress.lng)
+                .then((res) => {
+                    const location = res && res.results && res.results.length ? res.results[0] : {};
+                    const address_components = location.address_components;
+
+                    console.log("address_components", JSON.stringify(address_components))
+
+
+                    const city = address_components.filter(ele => ele.types.indexOf("locality") !== -1);
+                    const zipCode = address_components.filter(ele => ele.types.indexOf("postal_code") !== -1);
+                    const country = address_components.filter(ele => ele.types.indexOf("country") !== -1);
+                    const city1 = address_components.filter(ele => ele.types.indexOf("postal_town") !== -1);
+
+                    let address = location && location.formatted_address ? location.formatted_address : ""
+                    const lat = location && location.geometry && location.geometry.location && location.geometry.location.lat ? location.geometry.location.lat : null
+                    const lng = location && location.geometry && location.geometry.location && location.geometry.location.lng ? location.geometry.location.lng : null
+
+                    const data = {
+                        customerId: AuthStore.user.id,
+                        addressLine: address.split(",").slice(0, -2).join(","),
+                        description: '',
+                        city: city && city.length ? city[0].long_name : city1 && city1.length ? city1[0].long_name : "",
+                        postCode: zipCode && zipCode.length ? zipCode[0].long_name : "",
+                        lat: lat,
+                        lng: lng,
+                        country: country && country.length ? country[0].long_name : "",
+                        disabled: false
+                    }
+
+                    let existData = AuthStore.user.addresses.find(x => x.lat == lat);
+                    console.log('existData', existData)
+
+                    if(existData) {
+                        this.setState({addresssId : existData.id})
+                    } else {
+                        post('/address/create', data, res => {
+                            console.log('create address res', res);
+                            var STORAGE_KEY = 'id_token';
+                            retrieveData(STORAGE_KEY)
+                                .then((responseData) => {
+                                    storeUser(responseData).then((data) => {
+                                        console.log("user stored... " + data);
+                                        this.sortAddress()
+                                    });
+                                });
+                        }, err => {
+                            console.log('err', err)
+                        });
+                    }                   
+
+                }).catch((error) => {
+                    console.log('error', error)
+                });
+
+        } catch (error) {
+            console.log("error ===> ", error);
         }
     }
 
@@ -95,14 +167,15 @@ class PaymentType extends Component {
 
     createPaymentIntent(type) {
         try {
-            const { selectedAddress, dropdownValue } = this.state;
+            const { selectedAddress, dropdownValue, storeId } = this.state;
             // if (selectedAddress) {
                 const data = {
                     customerId: AuthStore.user.id,
                     orderItems: [],
                     shippingAddressId: selectedAddress,
                     discount: 0,
-                    orderType: dropdownValue == 'Pick up order at' ? 1 : 2
+                    orderType: dropdownValue == 'Pick up order at' ? 1 : 2,
+                    storeId: storeId
                 }
 
                 Store.cart.map(product => {
@@ -220,7 +293,7 @@ class PaymentType extends Component {
                     console.log('CapturePayment response', res);
                     (async () => {
                         await Stripe.completeNativePayRequestAsync();
-                        this.props.navigation.navigate('PaymentSuccess');
+                        this.props.navigation.navigate('PaymentSuccess', { orderId: res.orderId });
                     })();
                 }, err => {
                     console.log('err', err)
@@ -232,17 +305,17 @@ class PaymentType extends Component {
     }
 
     onDropdownPress = (item) => {
-        const { deliverAddress, dropdownVisible } = this.state;
+        const { deliverAddress, dropdownVisible, addresssId } = this.state;
         this.setState({ dropdownVisible: !dropdownVisible, dropdownValue: item.title })
         if (item.title == 'Pick up order at') {
             this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: 0 })
         } else {
-            this.setState({ lat: deliverAddress.lat, lng: deliverAddress.lng, selectedAddress: deliverAddress.id })
+            this.setState({ lat: deliverAddress.lat, lng: deliverAddress.lng, selectedAddress: deliverAddress.id == 0 ? addresssId : deliverAddress.id })
         }
     }
 
     render() {
-        const { selectedAddress, loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue,
+        const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue,
             deliverAddress } = this.state;
         return (
             <View style={styles.container}>
