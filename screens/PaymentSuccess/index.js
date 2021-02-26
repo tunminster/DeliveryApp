@@ -1,14 +1,30 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Animated, TouchableWithoutFeedback } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import vars from '../../utils/vars';
 import Store from '../../config/store';
 import { wp, hp, normalize, } from '../../helper/responsiveScreen';
+import { retrieveData } from '../../components/AuthKeyStorageComponent';
 import Colors from '../../constants/Colors'
-import Slider from '@react-native-community/slider';
+import Api from '../../config/api';
+
+var uuid = require('react-native-uuid');
 
 class PaymentSuccess extends Component {
+    // constructor(props) {
+    //     super(props)
+    //     this.state = {
+    //         progressStatus: 0,
+    //         isAddress: false,
+    //         loading: false
+    //     }
+    // }
+
+    // anim = new Animated.Value(0);
+
     componentDidMount() {
+        // this.onAnimate();
+        // this.getOrderDetails()
         Store.setCart([]);
         Store.resetCartCount();
         AsyncStorage.multiRemove(['@cart', '@cartCount']);
@@ -17,17 +33,86 @@ class PaymentSuccess extends Component {
         }, 5000);
     }
 
+    getOrderDetails = () => {
+        var STORAGE_KEY = vars.idToken;
+
+        this.setState({ loading: true })
+
+        retrieveData(STORAGE_KEY)
+            .then((data) => {
+                let guid = uuid.v1();
+                const config = {
+                    headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
+                };
+                console.log('config', config)
+                const value = 'orderId=' + 'da-833704898' + '&timeZone=3'
+                console.log('value', value)
+
+                Api.get('/Order/GetOrderDetails?' + value, config).then(res => {
+                    console.log('GetOrderDetails res', JSON.stringify(res));
+
+                }).catch((error) => {
+                    console.error(error);
+                    this.setState({ loading: false })
+                });
+            }).catch(err => {
+                console.log('err', err)
+                this.setState({ loading: false })
+            });
+    }
+
+    // onAnimate = () => {
+    //     this.anim.addListener(({ value }) => {
+    //         this.setState({ progressStatus: parseInt(value, 10) });
+    //     });
+    //     Animated.timing(this.anim, {
+    //         toValue: 100,
+    //         duration: 180000,
+    //     }).start();
+    // }
+
     render() {
+        // const { progressStatus, isAddress } = this.state;
         return (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: vars.bgColor}}>
                 <Text style={{color: 'green', fontSize: 28}}>Payment Successful</Text>
                 <Image source={require('../../assets/images/success-icon.png')} style={{width: 45, height: 45, marginTop: 25}} />
             </View>
             // <View style={styles.container}>
-            //     <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.closeView} >
+            //     <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')} style={styles.closeView} >
             //         <Image source={require('../../assets/images/close_fill_icon.png')}
             //             style={styles.closeIcon} />
             //     </TouchableOpacity>
+
+            //     <View style={{
+            //         marginHorizontal: wp(4), marginBottom: hp(3), borderWidth: wp(0.2),
+            //         borderColor: Colors.gray, paddingVertical: hp(1.5), paddingHorizontal: wp(3)
+            //     }}>
+            //         <Text style={{ ...styles.subTitle, color: Colors.gray }}>{`Estimated arrival`}</Text>
+            //         <Text style={{ ...styles.title, marginTop: hp(1) }}>{'12:50 - 13:05'}</Text>
+            //         <View style={styles.progressContainer}>
+            //             <Animated.View
+            //                 style={[
+            //                     styles.inner, { width: progressStatus + "%" },
+            //                 ]} />
+            //         </View>
+
+            //         <TouchableWithoutFeedback
+            //             onPress={() => this.setState({ isAddress: !isAddress })}>
+            //             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            //                 <Text numberOfLines={1} style={{ ...styles.title, width: wp(80) }}>
+            //                     {'Mai Thai is preparing your order'}</Text>
+            //                 <Image source={isAddress ?
+            //                     require('../../assets/images/down_arrow.png') :
+            //                     require('../../assets/images/right_arrow.png')} style={styles.rightIcon} />
+            //             </View>
+            //         </TouchableWithoutFeedback>
+
+            //         {isAddress &&
+            //             <Text style={{ ...styles.subTitle, color: Colors.gray, marginVertical: hp(1) }}>{`75 Broadway, London, SW19 1QE`}</Text>
+            //         }
+
+            //     </View>
 
             //     <View style={styles.seperateLine} />
             //     <Text style={{ ...styles.title, marginVertical: hp(1.5), marginLeft: wp(5), }}>{'Deliver to :'}</Text>
@@ -65,23 +150,6 @@ class PaymentSuccess extends Component {
             //             </View>
             //             <View style={styles.seperateLine} />
             //         </View>
-
-            //         {/* <Slider
-            //             style={{ width: 200, height: 50, }}
-            //             minimumValue={0}
-            //             maximumValue={10}
-            //             minimumTrackTintColor='red'
-            //             maximumTrackTintColor='green'
-            //             value={7}
-            //             disabled
-            //             thumbImage
-                        
-                       
-            //             // onValueChange={(value)=> this.setState({ slideValue: value}) }
-            //             // thumbStyle={styles.thumb}
-            //             // trackStyle={styles.track}
-            //             step={1}
-            //         /> */}
             //     </ScrollView>
 
             //     <View style={styles.bottomContainer}>
@@ -116,14 +184,13 @@ const styles = StyleSheet.create({
         height: wp(0.2),
     },
     title: {
-        fontSize: normalize(19),
+        fontSize: normalize(18),
         fontFamily: 'Roboto-Regular',
         color: Colors.black,
-
         fontWeight: 'bold'
     },
     subTitle: {
-        fontSize: normalize(17),
+        fontSize: normalize(16),
         fontFamily: 'Roboto-Regular',
     },
     childContainer: {
@@ -171,17 +238,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: hp(7)
     },
-    track: {
-        height: 18,
-        borderRadius: 1,
-        backgroundColor: '#d5d8e8',
-      },
-      thumb: {
-        width: 20,
-        height: 30,
-        borderRadius: 1,
-        backgroundColor: '#838486',
-      }
+    progressContainer: {
+        height: hp(1),
+        borderRadius: 10,
+        justifyContent: "center",
+        backgroundColor: Colors.gray,
+        marginTop: hp(1),
+        marginBottom: hp(2)
+    },
+    inner: {
+        width: "100%",
+        height: hp(1),
+        borderRadius: 10,
+        backgroundColor: Colors.tabIconSelected,
+    },
+    rightIcon: {
+        width: wp(4),
+        height: wp(4),
+        alignSelf: 'center',
+    },
 });
 
 export default PaymentSuccess;
