@@ -34,7 +34,7 @@ const dropDownList = [
 @observer
 class PaymentType extends Component {
     state = {
-        selectedAddress: 0,
+        selectedAddress: null,
         details: {},
         stripePaymentIntentId: '',
         loading: false,
@@ -46,7 +46,7 @@ class PaymentType extends Component {
         dropdownValue: 'Pick up order at',
         deliverAddress: this.props.route.params.deliverAddress,
         storeId: '',
-        addresssId: 0
+        addresssId: null
     };
 
     async componentDidMount() {
@@ -57,7 +57,9 @@ class PaymentType extends Component {
         if (this.state.dropdownValue == 'Pick up order at') {
             this.setState({
                 lat: Store.restaurantData.location.latitude,
-                lng: Store.restaurantData.location.longitude, storeId: Store.restaurantData.storeId
+                lng: Store.restaurantData.location.longitude, 
+                storeId: Store.restaurantData.storeId,
+                selectedAddress: this.state.deliverAddress.id == 0 ? null : this.state.deliverAddress.id
             })
         }
         try {
@@ -118,7 +120,9 @@ class PaymentType extends Component {
                                 .then((responseData) => {
                                     storeUser(responseData).then((data) => {
                                         console.log("user stored... " + data);
-                                        this.sortAddress()
+                                        setTimeout(() => {
+                                            this.sortAddress()
+                                          }, 1000);
                                     });
                                 });
                         }, err => {
@@ -200,7 +204,7 @@ class PaymentType extends Component {
                         this.paymentWithBalance(cartData);
                         break;
                     case 'card':
-                        this.props.navigation.navigate('Payment', { viaCart: cartData });
+                        this.props.navigation.navigate('Payment', { viaCart: cartData, orderType: dropdownValue == 'Pick up order at' ? 1 : 2 } );
                         break;
                     case 'pay':
                         this.makePayment()
@@ -296,7 +300,7 @@ class PaymentType extends Component {
                     console.log('CapturePayment response', res);
                     (async () => {
                         await Stripe.completeNativePayRequestAsync();
-                        this.props.navigation.navigate('PaymentSuccess', { orderId: res.orderId });
+                        this.props.navigation.navigate('PaymentSuccess', { orderId: res.orderId, orderType: this.state.dropdownValue == 'Pick up order at' ? 1 : 2 });
                     })();
                 }, err => {
                     console.log('err', err)
@@ -311,7 +315,7 @@ class PaymentType extends Component {
         const { deliverAddress, dropdownVisible, addresssId } = this.state;
         this.setState({ dropdownVisible: !dropdownVisible, dropdownValue: item.title })
         if (item.title == 'Pick up order at') {
-            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: 0 })
+            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: deliverAddress.id == 0 ? null : deliverAddress.id })
         } else {
             this.setState({ lat: deliverAddress.lat, lng: deliverAddress.lng, selectedAddress: deliverAddress.id == 0 ? addresssId : deliverAddress.id })
         }

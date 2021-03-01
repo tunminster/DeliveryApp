@@ -28,7 +28,7 @@ class OrderDetail extends Component {
                 <Text style={{ ...styles.subTitle, marginTop: hp(0.5), textAlign: 'center', color: Colors.black, fontWeight: 'bold' }}>{data.storeName}</Text>
 
                 <Text style={{ ...styles.title, marginTop: hp(2), alignSelf: 'center', color: Colors.gray }}>{`Delivered To`}</Text>
-                <Text style={{ ...styles.subTitle, marginHorizontal: wp(8), marginTop: hp(0.5), textAlign: 'center', color: Colors.black, fontWeight: 'bold' }}>{'Broadway Road, 137, SW19 1QW'}</Text>
+                <Text style={{ ...styles.subTitle, marginHorizontal: wp(8), marginTop: hp(0.5), textAlign: 'center', color: Colors.black, fontWeight: 'bold' }}>{data.deliveryAddress}</Text>
 
                 <Text style={{ ...styles.title, marginTop: hp(3), marginBottom: hp(1), marginLeft: wp(5), color: Colors.black, fontWeight: 'bold' }}>{'Items'}</Text>
                 <View style={styles.seperateLine} />

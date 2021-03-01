@@ -144,6 +144,7 @@ export default function App(props) {
         //Alert.alert("received call");
         if (data.login_failure) {
           Alert.alert(data.login_failure[0]);
+          setUserToken(null);
         } else {
           const result = JSON.parse(data);
           setUserToken(result.auth_token);

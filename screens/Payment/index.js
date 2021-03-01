@@ -18,6 +18,7 @@ class Payment extends Component {
         viaCart: this.props.route.params.viaCart,
         orderDto: {},
         loading: false,
+        orderType: this.props.route.params.orderType
     };
 
     componentDidMount() {
@@ -64,7 +65,7 @@ class Payment extends Component {
                 post('/v1/Stripe/Payment/CapturePayment', data, res => {
                     console.log('CapturePayment res', res, ".......", res.orderId);
                     this.setState({ loading: false })
-                    this.props.navigation.navigate('PaymentSuccess', { orderId: res.orderId });
+                    this.props.navigation.navigate('PaymentSuccess', { orderId: res.orderId, orderType: this.state.orderType });
                 }, err => {
                     console.log('err..', err)
                     this.setState({ loading: false })

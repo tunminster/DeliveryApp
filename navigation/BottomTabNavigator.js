@@ -6,6 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import MoreScreen from '../screens/MoreScreen'
 import TabBarText from '../components/TabBarText';
+import Orders from '../screens/Orders'
 
 
 const BottomTab = createBottomTabNavigator();
@@ -37,10 +38,10 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Order"
-        component={LinksScreen}
+        component={Orders}
         options={{
           tabBarLabel:({ focused }) => <TabBarText focused={focused} name="Orders" />,
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ellipsis-horizontal-circle" />,
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="list-circle-outline" />,
         }}
       />
       <BottomTab.Screen
@@ -54,15 +55,4 @@ export default function BottomTabNavigator() {
     </BottomTab.Navigator>
 
   );
-}
-
-function getHeaderTitle(route) {
-  const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
-
-  switch (routeName) {
-    case 'Home':
-      return 'Restaurant test';
-    case 'Search':
-      return 'Links to learn more';
-  }
 }
