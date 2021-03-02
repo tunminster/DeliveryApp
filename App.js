@@ -402,13 +402,7 @@ const PageScreen = () => (
     <PageStack.Screen name="Support" component={Support}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Report Problem',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: ''
+          headerShown: false
         }
       )}
     />

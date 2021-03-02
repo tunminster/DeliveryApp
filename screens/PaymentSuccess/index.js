@@ -162,7 +162,7 @@ class PaymentSuccess extends Component {
 
                             <View style={styles.childContainer}>
                                 <Image source={require('../../assets/images/location.png')} resizeMode='contain' style={styles.icon} />
-                                <Text numberOfLines={1} style={{ ...styles.subTitle, marginLeft: wp(3), width: wp(80), color: Colors.gray, alignSelf: 'center' }}>{orderType == 1 ? orderDetails.storeAddress : orderDetails.deliveryAddress}</Text>
+                                <Text style={{ ...styles.subTitle, marginLeft: wp(3), width: wp(80), color: Colors.gray, alignSelf: 'center' }}>{orderType == 1 ? orderDetails.storeAddress : orderDetails.deliveryAddress}</Text>
                             </View>
                             <View style={styles.seperateLine} />
 
@@ -182,7 +182,8 @@ class PaymentSuccess extends Component {
                             </View>
                             <View style={styles.seperateLine} />
 
-                            <ScrollView style={{ marginBottom: hp(7) }}>
+                            <ScrollView style={{ marginBottom: hp(7) }}
+                            showsVerticalScrollIndicator={false}>
                                 {orderDetails.orderItems && orderDetails.orderItems.map((item, index) =>
                                     <View key={index}>
                                         <View style={styles.orderItemView}>
@@ -244,6 +245,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: wp(5),
         marginVertical: hp(1.5),
+        alignItems:'center'
     },
     icon: {
         width: wp(6),

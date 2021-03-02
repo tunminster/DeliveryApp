@@ -146,14 +146,18 @@ class Orders extends Component {
                                 </View>
                             }
                             ListHeaderComponent={
-                                preparingData.length > 0 &&
+
                                 <View>
-                                    <Text style={styles.title}>{`Preparing (${preparingData.length})`}</Text>
-                                    <FlatList
-                                        data={preparingData}
-                                        renderItem={({ item, index }) => this.renderItem(item, index)}
-                                        keyExtractor={(item, index) => index.toString()}
-                                    />
+                                    {preparingData.length > 0 &&
+                                        <View>
+                                            <Text style={styles.title}>{`Preparing (${preparingData.length})`}</Text>
+                                            <FlatList
+                                                data={preparingData}
+                                                renderItem={({ item, index }) => this.renderItem(item, index)}
+                                                keyExtractor={(item, index) => index.toString()}
+                                            />
+                                        </View>
+                                    }
                                     {completeData.length != 0 &&
                                         <Text style={styles.title}>{`Completed (${completeData.length})`}</Text>
                                     }

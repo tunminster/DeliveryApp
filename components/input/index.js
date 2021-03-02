@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {View,TextInput,Animated} from 'react-native';
 import vars from '../../utils/vars';
+import { wp, hp, normalize, } from '../../helper/responsiveScreen';
+
 
 export default class Input extends Component {
     state = {
@@ -40,13 +42,13 @@ export default class Input extends Component {
         }),
       };
       return (
-        <View style={{ paddingTop: 18 }}>
+        <View style={{ paddingTop: hp(1) }}>
           <Animated.Text style={labelStyle}>
             {label}
           </Animated.Text>
           <TextInput
             {...props}
-            style={{ height: 26, fontSize: 18, color: '#000', borderBottomWidth: 1, borderBottomColor: '#555' }}
+            style={{ height: hp(7), fontSize: normalize(16), color: '#000', borderBottomWidth: 1, borderBottomColor: '#555' }}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             blurOnSubmit
