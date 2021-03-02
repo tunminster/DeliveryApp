@@ -35,9 +35,7 @@ class MenuView extends Component {
         const { expandeIndex, isStoreOpeningHours } = this.state;
         const { menuModelVisible, onCancelPress, menuData, onMenuPress, onBasketViewPress, getTotalPrice,
             newOrderModelVisible, newStoreName, newOrderCancel, onConfirmPress, storeOpeningHours } = this.props;
-        let storeOpeningData = null
-        if (storeOpeningHours)
-            storeOpeningData = storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday())
+        console.log('storeOpeningHours', storeOpeningHours)
 
         return (
             <Modal
@@ -46,8 +44,6 @@ class MenuView extends Component {
                 visible={menuModelVisible} >
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
-
-
                         <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
                             <View style={{ paddingHorizontal: wp(4), marginTop: hp(0.7) }}>
                                 <ImageBackground
@@ -73,21 +69,25 @@ class MenuView extends Component {
                                     <Text style={{ ...styles.restaurantSubTitle, color: Colors.orange }}>{menuData.storeType}</Text>
                                 }
                                 <Text style={{ ...styles.restaurantTitle, marginTop: hp(0.5) }}>{menuData.storeName}</Text>
-                                <TouchableWithoutFeedback onPress={() => storeOpeningData && this.setState({ isStoreOpeningHours: !isStoreOpeningHours })}>
+                                <TouchableWithoutFeedback onPress={() => storeOpeningHours && this.setState({ isStoreOpeningHours: !isStoreOpeningHours })}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                         <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, }}>{menuData.addressLine1}</Text>
-                                        {storeOpeningData && <Image source={isStoreOpeningHours ? require('../../assets/images/down_arrow.png') : require('../../assets/images/right_arrow.png')} style={styles.modelIcon} />}
+                                        {storeOpeningHours && <Image source={isStoreOpeningHours ? require('../../assets/images/down_arrow.png') : require('../../assets/images/right_arrow.png')} style={styles.modelIcon} />}
                                     </View>
                                 </TouchableWithoutFeedback>
 
                                 {isStoreOpeningHours &&
                                     <View>
                                         <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`Date : ${moment().format('DD/MM/YYYY')}`}</Text>
-                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`Opening Time : ${storeOpeningData.open}`}</Text>
-                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`Closing Time : ${storeOpeningData.close}`}</Text>
+                                        <Text style={{ ...styles.restaurantSubTitle, color: Colors.black }}>{`Opening Hours`}</Text>
+                                        {storeOpeningHours && storeOpeningHours.map((item, index) =>
+                                            <View key={index} style={{ flexDirection: 'row' }}>
+                                                <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, width: wp(10) }}>{`${moment().day(parseInt(item.dayOfWeek)).format("ddd")}`}</Text>
+                                                <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{`:   ${item.open == '00:00' ? 'Closed' : item.open + ' - ' + item.close}`}</Text>
+                                            </View>
+                                        )}
                                     </View>
                                 }
-
 
                                 {menuData.storeCategoriesList && menuData.storeCategoriesList.map((item, index) =>
                                     <View key={index}>

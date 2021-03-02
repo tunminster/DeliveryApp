@@ -22,6 +22,7 @@ import FullScreenLoader from "../components/fullScreenLoader"
 import MenuDetailView from "../components/menuDetailView"
 import FilterView from "../components/filterView"
 import LocationView from "../components/locationView"
+import moment from 'moment';
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
@@ -250,7 +251,6 @@ class HomeScreen extends Component {
     this.setState({ isModalVisible: true });
     setTimeout(() => {
       this.forceUpdate()
-      this.setState({ isModalVisible: true });
       console.log('refresh...', 1)
     }, 1000)
   }
@@ -287,17 +287,33 @@ class HomeScreen extends Component {
   }
 
   renderRestaurant = (item, index) => {
+    let isClosed;
+    if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+      isClosed = true
+    } else {
+      isClosed = false
+    }
+
     return (
       <TouchableOpacity
         style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
         onPress={() => {
-          this.getMenu(item.item.storeId)
+          isClosed ? null :
+            this.getMenu(item.item.storeId)
           this.setState({ storeOpeningHours: item.item.storeOpeningHours })
+
         }}>
-        <Image
+        <ImageBackground
           source={{ uri: item.item.imageUri }}
           resizeMode='cover'
-          style={styles.restaurantImage} />
+          imageStyle={{ borderRadius: wp(2) }}
+          style={styles.restaurantImage} >
+          {isClosed &&
+            <View style={styles.restaurantImageView}>
+              <Text style={{ ...styles.restaurantTitle, color: Colors.white }}>{'Closed'}</Text>
+            </View>
+          }
+        </ImageBackground>
         <Text style={{ ...styles.restaurantTitle, marginTop: hp(1.5) }}>{item.item.storeName}</Text>
         {item.item.storeType != null &&
           <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.item.storeType}</Text>
@@ -732,6 +748,14 @@ const styles = StyleSheet.create({
     paddingBottom: hp(1),
     borderBottomRightRadius: wp(2),
     borderBottomLeftRadius: wp(2)
+  },
+  restaurantImageView: {
+    width: '100%',
+    height: '100%',
+    borderRadius: wp(2),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#00000080',
   }
 });
 

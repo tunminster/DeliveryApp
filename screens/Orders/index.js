@@ -24,7 +24,16 @@ class Orders extends Component {
     };
 
     componentDidMount() {
-        this.getOrder()
+        this.focusListener = this.props.navigation.addListener("focus", () => {
+            this.setState({ completeData: [], preparingData: [], loading: false, page: 1, fottorLoading: false },
+                () => {
+                    this.getOrder()
+                })
+        })
+    }
+
+    componentWillUnmount() {
+        this.focusListener();
     }
 
     getOrder = () => {
@@ -47,7 +56,7 @@ class Orders extends Component {
                 Api.get('/order/getByUserId/' + AuthStore.user.id + '?page=' + page + '&pagesize=' + 10, config).then(res => {
                     console.log('order res', JSON.stringify(res));
                     let preparingData = res.filter(element => {
-                        let data = element.orderStatus == 'InProgress';
+                        let data = element.orderStatus == 'Preparing';
                         return data;
                     });
 
@@ -79,7 +88,7 @@ class Orders extends Component {
         let status = '';
         if (item.orderStatus == 'succeeded') {
             status = 'Delivered'
-        } else if (item.orderStatus == 'InProgress') {
+        } else if (item.orderStatus == 'Preparing') {
             status = 'Preparing'
         }
         return (
@@ -120,7 +129,7 @@ class Orders extends Component {
                 </View>
                 <View style={styles.seperateLine} />
 
-                {this.state.loading ?
+                {loading ?
                     <Loading /> :
                     preparingData.length > 0 || completeData.length > 0 ?
                         <FlatList
@@ -137,15 +146,20 @@ class Orders extends Component {
                                 </View>
                             }
                             ListHeaderComponent={
-                                preparingData.length > 0 &&
                                 <View>
-                                    <Text style={styles.title}>{`Preparing (${preparingData.length})`}</Text>
-                                    <FlatList
-                                        data={preparingData}
-                                        renderItem={({ item, index }) => this.renderItem(item, index)}
-                                        keyExtractor={(item, index) => index.toString()}
-                                    />
-                                    <Text style={styles.title}>{`Completed (${completeData.length})`}</Text>
+                                    {preparingData.length > 0 &&
+                                        <View>
+                                            <Text style={styles.title}>{`Preparing (${preparingData.length})`}</Text>
+                                            <FlatList
+                                                data={preparingData}
+                                                renderItem={({ item, index }) => this.renderItem(item, index)}
+                                                keyExtractor={(item, index) => index.toString()}
+                                            />
+                                        </View>
+                                    }
+                                    {completeData.length != 0 &&
+                                        <Text style={styles.title}>{`Completed (${completeData.length})`}</Text>
+                                    }
                                 </View>
 
                             }

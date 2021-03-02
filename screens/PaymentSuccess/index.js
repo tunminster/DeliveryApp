@@ -7,30 +7,33 @@ import { wp, hp, normalize, } from '../../helper/responsiveScreen';
 import { retrieveData } from '../../components/AuthKeyStorageComponent';
 import Colors from '../../constants/Colors'
 import Api from '../../config/api';
+import Loading from '../../components/loading';
+import moment from 'moment';
 
 var uuid = require('react-native-uuid');
 
 class PaymentSuccess extends Component {
-    // constructor(props) {
-    //     super(props)
-    //     this.state = {
-    //         progressStatus: 0,
-    //         isAddress: false,
-    //         loading: false
-    //     }
-    // }
+    constructor(props) {
+        super(props)
+        this.state = {
+            progressStatus: 0,
+            isAddress: false,
+            loading: false,
+            orderDetails: null,
+            orderType: this.props.route.params.orderType
+        }
+    }
 
-    // anim = new Animated.Value(0);
+    anim = new Animated.Value(0);
 
     componentDidMount() {
-        // this.onAnimate();
-        // this.getOrderDetails()
+        this.getOrderDetails()
         Store.setCart([]);
         Store.resetCartCount();
         AsyncStorage.multiRemove(['@cart', '@cartCount']);
-        setTimeout(() => {
-            this.props.navigation.navigate('Home');
-        }, 5000);
+        // setTimeout(() => {
+        //     this.props.navigation.navigate('Home');
+        // }, 5000);
     }
 
     getOrderDetails = () => {
@@ -44,14 +47,47 @@ class PaymentSuccess extends Component {
                 const config = {
                     headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
                 };
+
                 console.log('config', config)
-                const value = 'orderId=' + 'da-833704898' + '&timeZone=3'
+                const storeOpeningHoursData = Store.restaurantData.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday())
+                console.log('storeOpeningHoursData', storeOpeningHoursData, storeOpeningHoursData.timeZone.charAt(0))
+                let timeZone
+                if (storeOpeningHoursData.timeZone == null) {
+                    timeZone = 7
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'E') {
+                    timeZone = 1
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'C') {
+                    timeZone = 2
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'M') {
+                    timeZone = 3
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'P') {
+                    timeZone = 4
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'A') {
+                    timeZone = 5
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'H') {
+                    timeZone = 6
+                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'G') {
+                    timeZone = 7
+                }
+                const value = 'orderId=' + this.props.route.params.orderId + '&timeZone=' + timeZone
+                // const value = 'orderId=' + 'da-148263851' + '&timeZone=' + 7
                 console.log('value', value)
 
                 Api.get('/Order/GetOrderDetails?' + value, config).then(res => {
-                    console.log('GetOrderDetails res', JSON.stringify(res));
+                    console.log('GetOrderDetails res', res);
+                    this.setState({ orderDetails: res, loading: false })
+
+                    var estimatedCookingTime = res.estimatedCookingTime
+                    var startTime = moment(estimatedCookingTime.split(' - ')[0], "HH:mm");
+                    var endTime = moment(estimatedCookingTime.split(' - ')[1], "HH:mm");
+                    var duration = moment.duration(endTime.diff(startTime));
+                    this.onAnimate(parseInt(duration.asMilliseconds()) % 3600000);
+                    console.log('value', parseInt(duration.asMilliseconds()) % 3600000)
+
+                    Store.restaurantData = null
 
                 }).catch((error) => {
+                    alert('Something went wrong!')
                     console.error(error);
                     this.setState({ loading: false })
                 });
@@ -61,104 +97,116 @@ class PaymentSuccess extends Component {
             });
     }
 
-    // onAnimate = () => {
-    //     this.anim.addListener(({ value }) => {
-    //         this.setState({ progressStatus: parseInt(value, 10) });
-    //     });
-    //     Animated.timing(this.anim, {
-    //         toValue: 100,
-    //         duration: 180000,
-    //     }).start();
-    // }
+    onAnimate = (duration) => {
+        this.anim.addListener(({ value }) => {
+            this.setState({ progressStatus: parseInt(value, 10) });
+        });
+        Animated.timing(this.anim, {
+            toValue: 100,
+            duration: duration,
+        }).start();
+    }
 
     render() {
-        // const { progressStatus, isAddress } = this.state;
+        const { progressStatus, isAddress, orderDetails, loading, orderType } = this.state;
+
         return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: vars.bgColor}}>
-                <Text style={{color: 'green', fontSize: 28}}>Payment Successful</Text>
-                <Image source={require('../../assets/images/success-icon.png')} style={{width: 45, height: 45, marginTop: 25}} />
-            </View>
-            // <View style={styles.container}>
-            //     <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')} style={styles.closeView} >
-            //         <Image source={require('../../assets/images/close_fill_icon.png')}
-            //             style={styles.closeIcon} />
-            //     </TouchableOpacity>
-
-            //     <View style={{
-            //         marginHorizontal: wp(4), marginBottom: hp(3), borderWidth: wp(0.2),
-            //         borderColor: Colors.gray, paddingVertical: hp(1.5), paddingHorizontal: wp(3)
-            //     }}>
-            //         <Text style={{ ...styles.subTitle, color: Colors.gray }}>{`Estimated arrival`}</Text>
-            //         <Text style={{ ...styles.title, marginTop: hp(1) }}>{'12:50 - 13:05'}</Text>
-            //         <View style={styles.progressContainer}>
-            //             <Animated.View
-            //                 style={[
-            //                     styles.inner, { width: progressStatus + "%" },
-            //                 ]} />
-            //         </View>
-
-            //         <TouchableWithoutFeedback
-            //             onPress={() => this.setState({ isAddress: !isAddress })}>
-            //             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            //                 <Text numberOfLines={1} style={{ ...styles.title, width: wp(80) }}>
-            //                     {'Mai Thai is preparing your order'}</Text>
-            //                 <Image source={isAddress ?
-            //                     require('../../assets/images/down_arrow.png') :
-            //                     require('../../assets/images/right_arrow.png')} style={styles.rightIcon} />
-            //             </View>
-            //         </TouchableWithoutFeedback>
-
-            //         {isAddress &&
-            //             <Text style={{ ...styles.subTitle, color: Colors.gray, marginVertical: hp(1) }}>{`75 Broadway, London, SW19 1QE`}</Text>
-            //         }
-
-            //     </View>
-
-            //     <View style={styles.seperateLine} />
-            //     <Text style={{ ...styles.title, marginVertical: hp(1.5), marginLeft: wp(5), }}>{'Deliver to :'}</Text>
-            //     <View style={styles.seperateLine} />
-
-            //     <View style={styles.childContainer}>
-            //         <Image source={require('../../assets/images/location.png')} resizeMode='contain' style={styles.icon} />
-            //         <Text numberOfLines={1} style={{ ...styles.subTitle, marginLeft: wp(3), width: wp(80), color: Colors.gray, alignSelf: 'center' }}>{'Queen Road 137B SW19 1QW'}</Text>
-            //     </View>
-            //     <View style={styles.seperateLine} />
-
-            //     <Text style={{ ...styles.title, marginLeft: wp(5), marginTop: hp(3), marginBottom: hp(1.5) }}>{'Order details'}</Text>
-            //     <View style={styles.seperateLine} />
-            //     <View style={styles.orderDetailsContainer}>
-            //         <Image
-            //             source={''}
-            //             resizeMode='cover'
-            //             style={styles.image} />
-
-            //         <View style={styles.orderDetailsChildContainer}>
-            //             <Text numberOfLines={1}
-            //                 style={{ ...styles.subTitle, color: Colors.black, fontWeight: 'bold' }}>{'Mai Thai'}</Text>
-            //             <Text style={{ ...styles.subTitle, color: Colors.gray, marginTop: hp(0.5) }}>{`Order #4093`}</Text>
-            //         </View>
-            //     </View>
-            //     <View style={styles.seperateLine} />
-
-            //     <ScrollView style={{ marginBottom: hp(7) }}>
-            //         <View>
-            //             <View style={styles.orderItemView}>
-            //                 <Text numberOfLines={1}
-            //                     style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`1 x Prawn Cracker`}</Text>
-            //                 <Text numberOfLines={1}
-            //                     style={{ ...styles.subTitle, color: Colors.black, }}>{`£ 3.50`}</Text>
-            //             </View>
-            //             <View style={styles.seperateLine} />
-            //         </View>
-            //     </ScrollView>
-
-            //     <View style={styles.bottomContainer}>
-            //         <View style={styles.seperateLine} />
-            //         <View style={styles.bottomChildContainer}>
-            //             <Text style={{ ...styles.title, }}>{`Total - £ 3.50`}</Text>
-            //         </View>
-            //     </View>
+            // <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: vars.bgColor}}>
+            //     <Text style={{color: 'green', fontSize: 28}}>Payment Successful</Text>
+            //     <Image source={require('../../assets/images/success-icon.png')} style={{width: 45, height: 45, marginTop: 25}} />
             // </View>
+            loading ?
+                <Loading /> :
+                <View style={styles.container}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')} style={styles.closeView} >
+                        <Image source={require('../../assets/images/close_fill_icon.png')}
+                            style={styles.closeIcon} />
+                    </TouchableOpacity>
+
+                    {orderDetails &&
+                        <View style={{ flex: 1 }}>
+
+                            <View style={{
+                                marginHorizontal: wp(4), marginBottom: hp(3), borderWidth: wp(0.2),
+                                borderColor: Colors.gray, paddingVertical: hp(1.5), paddingHorizontal: wp(3)
+                            }}>
+                                <Text style={{ ...styles.subTitle, color: Colors.gray }}>{orderType == 1 ? 'Estimated ready to pick up' : 'Estimated arrival'}</Text>
+                                <Text style={{ ...styles.title, marginTop: hp(1) }}>{orderDetails.estimatedCookingTime}</Text>
+                                <View style={styles.progressContainer}>
+                                    <Animated.View
+                                        style={[
+                                            styles.inner, { width: progressStatus + "%" },
+                                        ]} />
+                                </View>
+
+                                <TouchableWithoutFeedback
+                                    onPress={() => this.setState({ isAddress: !isAddress })}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <Text style={{ ...styles.title, width: wp(80) }}>
+                                            {`${orderDetails.storeName} is preparing your order`}</Text>
+                                        <Image source={isAddress ?
+                                            require('../../assets/images/down_arrow.png') :
+                                            require('../../assets/images/right_arrow.png')} style={styles.rightIcon} />
+                                    </View>
+                                </TouchableWithoutFeedback>
+
+                                {isAddress &&
+                                    <Text style={{ ...styles.subTitle, color: Colors.gray, marginVertical: hp(1) }}>{orderDetails.storeAddress}</Text>
+                                }
+
+                            </View>
+
+                            <View style={styles.seperateLine} />
+                            <Text style={{ ...styles.title, marginVertical: hp(1.5), marginLeft: wp(5), }}>{orderType == 1 ? 'Pick up location:' : 'Deliver to :'}</Text>
+                            <View style={styles.seperateLine} />
+
+                            <View style={styles.childContainer}>
+                                <Image source={require('../../assets/images/location.png')} resizeMode='contain' style={styles.icon} />
+                                <Text style={{ ...styles.subTitle, marginLeft: wp(3), width: wp(80), color: Colors.gray, alignSelf: 'center' }}>{orderType == 1 ? orderDetails.storeAddress : orderDetails.deliveryAddress}</Text>
+                            </View>
+                            <View style={styles.seperateLine} />
+
+                            <Text style={{ ...styles.title, marginLeft: wp(5), marginTop: hp(3), marginBottom: hp(1.5) }}>{'Order details'}</Text>
+                            <View style={styles.seperateLine} />
+                            <View style={styles.orderDetailsContainer}>
+                                <Image
+                                    source={{ uri: orderDetails.imageUri }}
+                                    resizeMode='cover'
+                                    style={styles.image} />
+
+                                <View style={styles.orderDetailsChildContainer}>
+                                    <Text numberOfLines={1}
+                                        style={{ ...styles.subTitle, color: Colors.black, fontWeight: 'bold' }}>{orderDetails.storeName}</Text>
+                                    <Text style={{ ...styles.subTitle, color: Colors.gray, marginTop: hp(0.5) }}>{`Order #${orderDetails.orderId}`}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.seperateLine} />
+
+                            <ScrollView style={{ marginBottom: hp(7) }} 
+                            showsVerticalScrollIndicator={false}>
+                                {orderDetails.orderItems && orderDetails.orderItems.map((item, index) =>
+                                    <View key={index}>
+                                        <View style={styles.orderItemView}>
+                                            <Text numberOfLines={1}
+                                                style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`${item.count}  x  ${item.productName}`}</Text>
+                                            <Text numberOfLines={1}
+                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`£ ${((item.productPrice * item.count) / 100).toFixed(2)}`}</Text>
+                                        </View>
+                                        <View style={styles.seperateLine} />
+                                    </View>
+                                )}
+
+                            </ScrollView>
+
+                            <View style={styles.bottomContainer}>
+                                <View style={styles.seperateLine} />
+                                <View style={styles.bottomChildContainer}>
+                                    <Text style={{ ...styles.title, }}>{`Total - £ ${(orderDetails.totalAmount / 100).toFixed(2)}`}</Text>
+                                </View>
+                            </View>
+                        </View>
+                    }
+                </View>
 
         );
     }
@@ -197,6 +245,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: wp(5),
         marginVertical: hp(1.5),
+        alignItems:'center'
     },
     icon: {
         width: wp(6),

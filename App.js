@@ -145,6 +145,7 @@ export default function App(props) {
         //Alert.alert("received call");
         if (data.login_failure) {
           Alert.alert(data.login_failure[0]);
+           setUserToken(null);
         } else {
           const result = JSON.parse(data);
           setUserToken(result.auth_token);
@@ -395,13 +396,7 @@ const PageScreen = () => (
     <PageStack.Screen name="Support" component={Support}
       options={({ navigation }) => (
         {
-          headerMode: 'screen',
-          title: 'Report Problem',
-          headerStyle: {
-            backgroundColor: '#f4511e'
-          },
-          headerTintColor: '#fff',
-          headerBackTitle: ''
+          headerShown: false
         }
       )}
     />
