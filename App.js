@@ -32,6 +32,7 @@ import Orders from './screens/Orders';
 import OrderDetail from './screens/OrderDetail';
 import Support from './screens/Support';
 import RestaurantList from './screens/RestaurantList';
+import MyDetails from './screens/MyDetails';
 
 const Stack = createStackNavigator();
 state = {
@@ -145,7 +146,7 @@ export default function App(props) {
         //Alert.alert("received call");
         if (data.login_failure) {
           Alert.alert(data.login_failure[0]);
-           setUserToken(null);
+          setUserToken(null);
         } else {
           const result = JSON.parse(data);
           setUserToken(result.auth_token);
@@ -171,7 +172,7 @@ export default function App(props) {
 
       }).catch((error) => {
         console.log('error.', error)
-        if(error == 'TypeError: Network request failed') {
+        if (error == 'TypeError: Network request failed') {
           alert('Please check your internet connection and try again.');
         }
         setIsLoading(false);
@@ -205,7 +206,7 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-        if(error == 'TypeError: Network request failed') {
+        if (error == 'TypeError: Network request failed') {
           alert('Please check your internet connection and try again.');
         }
         setIsLoading(false);
@@ -237,7 +238,7 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
-        if(error == 'TypeError: Network request failed') {
+        if (error == 'TypeError: Network request failed') {
           alert('Please check your internet connection and try again.');
         }
         setIsLoading(false);
@@ -394,6 +395,14 @@ const PageScreen = () => (
     />
 
     <PageStack.Screen name="Support" component={Support}
+      options={({ navigation }) => (
+        {
+          headerShown: false
+        }
+      )}
+    />
+
+    <PageStack.Screen name="MyDetails" component={MyDetails}
       options={({ navigation }) => (
         {
           headerShown: false

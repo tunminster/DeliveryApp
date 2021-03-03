@@ -15,6 +15,10 @@ export function logout() {
     AsyncStorage.removeItem('facebook credential');
     AsyncStorage.removeItem('google credential');
     AsyncStorage.removeItem('token');
+    Store.setCart([]);
+    Store.resetCartCount();
+    AsyncStorage.multiRemove(['@cart', '@cartCount']);
+    Store.restaurantData = null
 }
 
 export function post(url, data, success, error) {

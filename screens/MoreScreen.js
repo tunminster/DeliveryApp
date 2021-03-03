@@ -107,7 +107,7 @@ class MoreScreen extends Component {
           <ProfileItem
             title={'My Details'}
             image={require('../assets/images/user.png')}
-            onPress={() => console.log('press')}
+            onPress={() => navigation.navigate('MyDetails')}
           />
           <View style={styles.seperateLine} />
 
