@@ -107,7 +107,7 @@ class MoreScreen extends Component {
           <ProfileItem
             title={'My Details'}
             image={require('../assets/images/user.png')}
-            onPress={() => console.log('press')}
+            onPress={() => navigation.navigate('MyDetails')}
           />
           <View style={styles.seperateLine} />
 
@@ -121,11 +121,7 @@ class MoreScreen extends Component {
           <ProfileItem
             title={'Saved addresses'}
             image={require('../assets/images/location.png')}
-            onPress={() =>
-              // console.log('press')
-              // navigation.navigate('PaymentSuccess')
-              this.setState({ isModalVisible: true })
-            }
+            onPress={() =>this.setState({ isModalVisible: true })}
           />
           <View style={styles.seperateLine} />
 
