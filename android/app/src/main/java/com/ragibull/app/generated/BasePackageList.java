@@ -1,4 +1,4 @@
-package com.ragibull.uk.app.generated;
+package com.ragibull.app.generated;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.ragibull.uk.app;
+package com.ragibull.app;
 
 import android.os.Bundle;
 

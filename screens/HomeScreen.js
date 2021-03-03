@@ -23,6 +23,7 @@ import MenuDetailView from "../components/menuDetailView"
 import FilterView from "../components/filterView"
 import LocationView from "../components/locationView"
 import moment from 'moment';
+import vars from '../utils/vars';
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
@@ -590,7 +591,7 @@ class HomeScreen extends Component {
                 onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
-                amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+                amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
             }
 
             <FilterView

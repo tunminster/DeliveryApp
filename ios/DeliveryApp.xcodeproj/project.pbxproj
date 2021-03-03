@@ -314,7 +314,7 @@
 				CODE_SIGN_ENTITLEMENTS = DeliveryApp/deliveryapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 57N9JSSC2L;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -330,7 +330,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ragibull.uk.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ragibull.app;
 				PRODUCT_NAME = deliveryapp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "DeliveryApp-Bridging-Header.h";
@@ -350,7 +350,7 @@
 				CODE_SIGN_ENTITLEMENTS = DeliveryApp/deliveryapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 57N9JSSC2L;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = DeliveryApp/Info.plist;
@@ -361,7 +361,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ragibull.uk.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ragibull.app;
 				PRODUCT_NAME = app;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "DeliveryApp-Bridging-Header.h";

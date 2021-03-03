@@ -1,49 +1,49 @@
 {
   "project_info": {
-    "project_number": "775223385264",
-    "project_id": "ragibull-uk",
-    "storage_bucket": "ragibull-uk.appspot.com"
+    "project_number": "337543803569",
+    "project_id": "ragibull",
+    "storage_bucket": "ragibull.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:775223385264:android:4d238392e4643fa5cb2f75",
+        "mobilesdk_app_id": "1:337543803569:android:b308faf24c7c9455a2a890",
         "android_client_info": {
-          "package_name": "com.ragibull.uk.app"
+          "package_name": "com.ragibull.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "775223385264-8lc6m276sq401m1t7pim4q55kurvsfn8.apps.googleusercontent.com",
+          "client_id": "337543803569-c62n5n2ir03eith97u10p5o1lvo1mjos.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ragibull.uk.app",
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "6ba68fdd09116f7c48572e8c337235f0c119877f"
+          }
+        },
+        {
+          "client_id": "337543803569-h2bnhn6thlpuq7haq2m5oqrhps4latni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
             "certificate_hash": "b3d2a9628c472c306c1e10fbb6bf173b71614d13"
           }
         },
         {
-          "client_id": "775223385264-a46ea19a6rtm8lm7fk14i23sbu2ve9tn.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ragibull.uk.app",
-            "certificate_hash": "2cc5adcd693fb6458656c5f16f14af323e1f62ff"
-          }
-        },
-        {
-          "client_id": "775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com",
+          "client_id": "337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCCJLGPVEi1w8v10MU5wXu8_uND6Qqpk_Q"
+          "current_key": "AIzaSyDDVwWntgqfOKnp5AwLFN83zlYB8XvzwEc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com",
+              "client_id": "337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

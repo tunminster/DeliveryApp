@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RagiBull UK",
-    "slug": "RagiBull UK",
+    "name": "RagiBull",
+    "slug": "RagiBull",
     "platforms": [
       "ios",
       "android",
@@ -25,20 +25,20 @@
     "ios": {
       "buildNumber": "2",
       "supportsTablet": true,
-      "bundleIdentifier": "com.ragibull.uk.app",
+      "bundleIdentifier": "com.ragibull.app",
       "config": {
         "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk"
+          "reservedClientId": "com.googleusercontent.apps.337543803569-ka132imsm02isjpjfcd6mdjam8o0agam"
         }
       }
     },
     "description": "",
     "android": {
-      "package": "com.ragibull.uk.app",
+      "package": "com.ragibull.app",
       "config":{
         "googleSignIn":{
-          "apiKey":"AIzaSyCCJLGPVEi1w8v10MU5wXu8_uND6Qqpk_Q",
-          "certificateHash":"b3d2a9628c472c306c1e10fbb6bf173b71614d13"
+          "apiKey":"AIzaSyDDVwWntgqfOKnp5AwLFN83zlYB8XvzwEc",
+          "certificateHash":"6ba68fdd09116f7c48572e8c337235f0c119877f"
         }
       }
 

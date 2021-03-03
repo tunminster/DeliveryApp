@@ -9,6 +9,8 @@ import Store from '../../config/store';
 import BasketView from '../../components/basketView';
 import Colors from '../../constants/Colors'
 import moment from 'moment';
+import vars from '../../utils/vars';
+
 
 class MenuView extends Component {
     constructor(props) {
@@ -108,7 +110,7 @@ class MenuView extends Component {
                                                         <View style={{ flexDirection: 'column', flex: 0.7 }}>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
-                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`£ ${(item.unitPrice / 100).toFixed(2)}`}</Text>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`${vars.currency} ${(item.unitPrice / 100).toFixed(2)}`}</Text>
                                                         </View>
 
                                                         <Image
@@ -132,7 +134,7 @@ class MenuView extends Component {
                                 onPress={() => onBasketViewPress()}
                                 style={{ marginBottom: hp(1) }}
                                 count={Store.cart.length}
-                                amount={`£ ${(getTotalPrice / 100).toFixed(2)}`} />
+                                amount={`${vars.currency} ${(getTotalPrice / 100).toFixed(2)}`} />
                         }
 
                         <Modal

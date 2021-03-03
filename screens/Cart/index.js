@@ -9,7 +9,7 @@ import { getTotalPrice } from '../../utils/helpers';
 import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Colors from '../../constants/Colors'
 import BackIcon from '../../components/backIcon';
-
+import vars from '../../utils/vars';
 
 @observer
 class Cart extends Component {
@@ -76,7 +76,7 @@ class Cart extends Component {
                             data={item} key={i} index={i} navigation={this.props.navigation} />)}
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{'Subtotal'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`£ ${(getTotalPrice() / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`}</Text>
                     </View>
                 </ScrollView>
 
@@ -84,7 +84,7 @@ class Cart extends Component {
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{'Order Total'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`£ ${(getTotalPrice() / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
                     <Button

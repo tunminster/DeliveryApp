@@ -7,6 +7,7 @@ import Store from '../../config/store';
 import Api from '../../config/api';
 import {fixImgPath, getDiscountPrice, renderStar} from '../../utils/helpers';
 var uuid = require('react-native-uuid');
+import vars from '../../utils/vars';
 
 class ProductDetail extends Component {
     static navigationOptions = ({navigation}) => ({
@@ -62,7 +63,7 @@ class ProductDetail extends Component {
                             <View style={styles.cardFooter}>
                                 <View style={{flex:1}}>
                                     <Text style={styles.title}>{productName}</Text>
-                                    <Text style={[styles.title, {marginTop: 5}]}>£{unitPrice}</Text>
+                                    <Text style={[styles.title, {marginTop: 5}]}>{`${vars.currency} ${unitPrice}`}</Text>
                                 </View>
 
                                 <View style={{width: 65}}>

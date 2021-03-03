@@ -132,11 +132,11 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.ragibull.uk.app'
+        applicationId 'com.ragibull.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 1
+        versionName "1.0.0"
         multiDexEnabled true
         manifestPlaceholders = [appAuthRedirectScheme: 'com.redirectScheme.comm']
     }

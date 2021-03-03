@@ -3,8 +3,7 @@ import { Text, TouchableOpacity, Image, View, Button } from 'react-native';
 import styles from './styles';
 import sharedStyles from '../../utils/sharedStyles';
 import Store from '../../config/store';
-//import sharedStyles from "../../utils/sharedStyles";
-//import {fixImgPath} from '../../utils/helpers';
+import vars from '../../utils/vars';
 
 class ProductCard extends Component {
     render() {
@@ -22,7 +21,7 @@ class ProductCard extends Component {
                 <Text style={styles.itemDesc} numberOfLines={5}>{description}</Text>
                 <Text style={[styles.itemName, { marginTop: 10, fontWeight: '800' }]}>
                     <Text>
-                        <Text>£{(unitPrice / 100).toFixed(2)}</Text>
+                        <Text>{`${vars.currency} ${(unitPrice / 100).toFixed(2)}`}</Text>
                     </Text>
                 </Text>
 

@@ -71,6 +71,6 @@
     "react-test-renderer": "~16.13.1"
   },
   "private": true,
-  "name": "RagiBull UK",
+  "name": "RagiBull",
   "version": "1.0.0"
 }

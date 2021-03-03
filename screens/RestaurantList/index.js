@@ -15,6 +15,7 @@ import BasketView from '../../components/basketView';
 import MenuView from '../../components/menuView'
 import FullScreenLoader from "../../components/fullScreenLoader"
 import MenuDetailView from "../../components/menuDetailView"
+import vars from '../../utils/vars';
 
 var STORAGE_KEY = 'id_token';
 var uuid = require('react-native-uuid');
@@ -288,7 +289,7 @@ class RestaurantList extends Component {
                         onPress={() => this.onBasketViewPress()}
                         style={{ marginBottom: hp(3) }}
                         count={Store.cart.length}
-                        amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+                        amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
                 }
             </View>
         )

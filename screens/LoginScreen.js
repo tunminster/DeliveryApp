@@ -55,8 +55,8 @@ export const SignIn = ({ navigation }) => {
   const signInWithGoogle = async () => {
     try {
       GoogleSignin.configure({
-        webClientId: '775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com',
-        iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
+        webClientId: '337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com',
+        iosClientId: '337543803569-ka132imsm02isjpjfcd6mdjam8o0agam.apps.googleusercontent.com',
         offlineAccess: false,
       })
 
@@ -200,8 +200,8 @@ export const CreateAccount = ({ navigation }) => {
   const signInWithGoogle = async () => {
     try {
       GoogleSignin.configure({
-        webClientId: '775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com',
-        iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
+        webClientId: '337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com',
+        iosClientId: '337543803569-ka132imsm02isjpjfcd6mdjam8o0agam.apps.googleusercontent.com',
         offlineAccess: false,
       })
 
