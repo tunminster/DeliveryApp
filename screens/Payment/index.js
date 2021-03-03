@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Alert, AsyncStorage, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Alert, AsyncStorage, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { CreditCardInput } from 'react-native-credit-card-input';
 import Button from '../../components/button';
 import BackIcon from '../../components/backIcon';
@@ -18,6 +18,7 @@ class Payment extends Component {
         viaCart: this.props.route.params.viaCart,
         orderDto: {},
         loading: false,
+        orderType: this.props.route.params.orderType
     };
 
     componentDidMount() {
@@ -62,9 +63,9 @@ class Payment extends Component {
                 }
 
                 post('/v1/Stripe/Payment/CapturePayment', data, res => {
-                    console.log('CapturePayment res', res);
+                    console.log('CapturePayment res', res, ".......", res.orderId);
                     this.setState({ loading: false })
-                    this.props.navigation.navigate('PaymentSuccess');
+                    this.props.navigation.navigate('PaymentSuccess', { orderId: res.orderId, orderType: this.state.orderType });
                 }, err => {
                     console.log('err..', err)
                     this.setState({ loading: false })
@@ -88,15 +89,17 @@ class Payment extends Component {
 
                 {this.state.loading ?
                     <Loading /> :
-                    <View style={styles.childContainer}>
-                        <CreditCardInput onChange={cardData => this.setState({ cardData })} />
-                        <Button
-                            onPress={() => this.sendRequest()}
-                            title={'Confirm'}
-                            style={styles.btn}
-                        />
-                    </View>
-
+                    <TouchableWithoutFeedback
+                        onPress={() => Keyboard.dismiss()}>
+                        <View style={styles.childContainer}>
+                            <CreditCardInput onChange={cardData => this.setState({ cardData })} />
+                            <Button
+                                onPress={() => this.sendRequest()}
+                                title={'Confirm'}
+                                style={styles.btn}
+                            />
+                        </View>
+                    </TouchableWithoutFeedback>
                 }
             </View>
         )
@@ -133,7 +136,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         margin: wp(6),
-        backgroundColor: Colors.btnColor
+        backgroundColor: Colors.tabIconSelected
     }
 });
 

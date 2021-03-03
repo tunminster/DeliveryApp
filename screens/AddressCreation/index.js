@@ -139,13 +139,9 @@ class AddressCreation extends Component {
                     const address_components = location.address_components;
 
                     console.log("address_components", JSON.stringify(address_components))
-
-                    const streetNumber = address_components.filter(ele => ele.types.indexOf("street_number") !== -1);
-                    const streetAddress = address_components.filter(ele => ele.types.indexOf("route") !== -1);
-                    const state = address_components.filter(ele => ele.types.indexOf("administrative_area_level_1") !== -1);
+                   
                     const city = address_components.filter(ele => ele.types.indexOf("locality") !== -1);
                     const zipCode = address_components.filter(ele => ele.types.indexOf("postal_code") !== -1);
-                    const area = address_components.filter(ele => ele.types.indexOf("neighborhood") !== -1);
                     const country = address_components.filter(ele => ele.types.indexOf("country") !== -1);
                     const city1 = address_components.filter(ele => ele.types.indexOf("postal_town") !== -1);
 
@@ -305,7 +301,7 @@ class AddressCreation extends Component {
                             <Button
                                 onPress={() => this.setState({ isAddress: true, isMap: true })}
                                 title={'Set address'}
-                                style={{ marginVertical: hp(2), }}
+                                style={{ marginVertical: hp(2),backgroundColor: Colors.tabIconSelected }}
                             />
                         </View>
                     }
@@ -387,7 +383,7 @@ class AddressCreation extends Component {
                             <Button
                                 onPress={() => { this.submit() }}
                                 title={'Submit'}
-                                style={{ marginTop: hp(3) }}
+                                style={{ marginTop: hp(3), backgroundColor: Colors.tabIconSelected }}
                             />
                         </View>}
 

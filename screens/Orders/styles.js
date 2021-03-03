@@ -51,7 +51,7 @@ export default {
         height: wp(5),
         alignSelf: 'center',
         marginLeft: wp(1),
-        tintColor: Colors.btnColor
+        tintColor: Colors.tabIconSelected
     },
     image: {
         width: wp(16),

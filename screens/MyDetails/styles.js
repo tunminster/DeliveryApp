@@ -9,7 +9,8 @@ export default {
     header: {
         flexDirection: 'row',
         paddingHorizontal: wp(3),
-        height: hp(7)
+        height: hp(7),
+        justifyContent: 'space-between'
     },
     headerTitle: {
         fontSize: normalize(20),
@@ -26,33 +27,16 @@ export default {
     title: {
         fontSize: normalize(18),
         fontFamily: 'Roboto-Regular',
+        alignSelf: 'center',
+        fontWeight: 'bold'
     },
-    subTitle: {
-        fontSize: normalize(16),
-        fontFamily: 'Roboto-Regular',
-    },
-    orderItemView: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: wp(5),
-        marginVertical: hp(1.5)
-    },
-    btn: {
-        height: hp(7),
-        backgroundColor: Colors.tabIconSelected,
-        marginTop: hp(4)
-    },
-    bottomContainer: {
-        position: 'absolute',
-        bottom: 0,
-        height: hp(17),
-        width: '100%'
-    },
-    bottomChildContainer: {
-        flexDirection: 'row',
-        height: hp(6),
+    scrollView: {
         marginHorizontal: wp(5),
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        marginTop: hp(2),
     },
+    editView: {
+        paddingHorizontal: wp(2),
+        paddingVertical: wp(1),
+        alignSelf: 'center'
+    }
 }

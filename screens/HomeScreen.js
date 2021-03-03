@@ -22,6 +22,7 @@ import FullScreenLoader from "../components/fullScreenLoader"
 import MenuDetailView from "../components/menuDetailView"
 import FilterView from "../components/filterView"
 import LocationView from "../components/locationView"
+import moment from 'moment';
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
@@ -63,7 +64,8 @@ class HomeScreen extends Component {
       newAddressModelVisible: false,
       deliverAddress: null,
       tempAddress: null,
-      onEndReachedCalledDuringMomentum: true
+      onEndReachedCalledDuringMomentum: true,
+      storeOpeningHours: null
     }
   }
 
@@ -120,7 +122,7 @@ class HomeScreen extends Component {
     const { latitude, longitude, page, search, storeType, filterValue } = this.state
     console.log('location', latitude, longitude)
     if (page == 1) {
-      this.setState({ isRestaurantLoading: true, fottorLoading:false })
+      this.setState({ isRestaurantLoading: true, fottorLoading: false })
     }
 
     retrieveData(STORAGE_KEY)
@@ -249,7 +251,6 @@ class HomeScreen extends Component {
     this.setState({ isModalVisible: true });
     setTimeout(() => {
       this.forceUpdate()
-      this.setState({ isModalVisible: true });
       console.log('refresh...', 1)
     }, 1000)
   }
@@ -286,14 +287,33 @@ class HomeScreen extends Component {
   }
 
   renderRestaurant = (item, index) => {
+    let isClosed;
+    if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+      isClosed = true
+    } else {
+      isClosed = false
+    }
+
     return (
       <TouchableOpacity
         style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
-        onPress={() => this.getMenu(item.item.storeId)}>
-        <Image
+        onPress={() => {
+          isClosed ? null :
+            this.getMenu(item.item.storeId)
+          this.setState({ storeOpeningHours: item.item.storeOpeningHours })
+
+        }}>
+        <ImageBackground
           source={{ uri: item.item.imageUri }}
           resizeMode='cover'
-          style={styles.restaurantImage} />
+          imageStyle={{ borderRadius: wp(2) }}
+          style={styles.restaurantImage} >
+          {isClosed &&
+            <View style={styles.restaurantImageView}>
+              <Text style={{ ...styles.restaurantTitle, color: Colors.white }}>{'Closed'}</Text>
+            </View>
+          }
+        </ImageBackground>
         <Text style={{ ...styles.restaurantTitle, marginTop: hp(1.5) }}>{item.item.storeName}</Text>
         {item.item.storeType != null &&
           <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.item.storeType}</Text>
@@ -467,8 +487,10 @@ class HomeScreen extends Component {
   render() {
     const { headerTitle, isModalVisible, addressesId, search, categoriesData, restaurantData,
       onEndReachedCalledDuringMomentum, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
-      filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
-      menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible } = this.state
+      filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata,
+      menuDetailVisible, menuDetailCount, newOrderModelVisible, newStoreName, page, storeType,
+      newAddressModelVisible, storeOpeningHours } = this.state
+
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -591,6 +613,7 @@ class HomeScreen extends Component {
               menuModelVisible={menuModelVisible}
               onCancelPress={() => this.setState({ menuModelVisible: false })}
               menuData={menuData}
+              storeOpeningHours={storeOpeningHours}
               onMenuPress={(item) => this.onMenuPress(item)}
               onBasketViewPress={() => this.onBasketViewPress()}
               getTotalPrice={getTotalPrice()}
@@ -685,16 +708,12 @@ const styles = StyleSheet.create({
     borderRadius: wp(2),
   },
   categoriesTitle: {
-    fontSize: Platform.OS == 'ios' ? normalize(15) : normalize(17),
+    fontSize: normalize(14),
     fontFamily: 'Roboto-Bold',
     color: Colors.white,
     fontWeight: 'bold',
     alignSelf: 'center',
     textAlign: 'center',
-    // position: 'absolute',
-    // bottom: 0,
-    // marginBottom: hp(1),
-    // marginTop: Platform.OS == 'ios' ? hp(12) : hp(14),
     marginHorizontal: wp(2),
 
   },
@@ -732,6 +751,14 @@ const styles = StyleSheet.create({
     paddingBottom: hp(1),
     borderBottomRightRadius: wp(2),
     borderBottomLeftRadius: wp(2)
+  },
+  restaurantImageView: {
+    width: '100%',
+    height: '100%',
+    borderRadius: wp(2),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#00000080',
   }
 });
 

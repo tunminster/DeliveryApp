@@ -15,7 +15,7 @@ export default {
     height: wp(6),
     alignSelf: 'center',
     marginRight: wp(3),
-    tintColor: Colors.btnColor
+    tintColor: Colors.tabIconSelected
   },
   title:{
     fontSize: normalize(18),
@@ -27,7 +27,7 @@ export default {
     width: wp(4),
     height: wp(4),
     alignSelf: 'center',
-    tintColor: Colors.btnColor,
+    tintColor: Colors.tabIconSelected,
     marginLeft:wp(1)
   }
 }

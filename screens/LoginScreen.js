@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, AsyncStorage } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
-import { wp, hp, normalize } from '../helper/responsiveScreen';
+import { wp, hp, normalize, isX } from '../helper/responsiveScreen';
 import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
@@ -10,7 +10,7 @@ import { GoogleSignin } from '@react-native-community/google-signin'
 import { LoginManager, AccessToken } from 'react-native-fbsdk'
 import Loading from '../components/loading';
 import Colors from '../constants/Colors'
-
+import SmartScrollView from '../components/SmartScrollView'
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -18,18 +18,6 @@ export const SignIn = ({ navigation }) => {
   const { facebookSignIn } = React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [isLoading, setLoading] = React.useState({ loading: false });
-
-  //--------------facebook---------------//
-  const [isLoggedin, setLoggedinStatus] = React.useState(false);
-  const [userData, setUserData] = React.useState(null);
-  const [isImageLoading, setImageLoadStatus] = React.useState(false);
-
-  //---------------google----------------//
-  const [signedIn, setsignedInStatus] = React.useState(false);
-  const [name, setName] = React.useState(null);
-  const [photoUrl, setphotoUrl] = React.useState(false);
 
   const facebookLogIn = async () => {
 
@@ -102,16 +90,16 @@ export const SignIn = ({ navigation }) => {
   }
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => Keyboard.dismiss()}>
-      <View style={loginstyles.container}>
-        <View style={{ marginTop: hp(8), justifyContent: 'center', alignItems: 'center' }}>
+      <SmartScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={loginstyles.container}
+        applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+        disabled={false}
+        alwaysBounceVertical={false} >
+        <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
           <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
         </View>
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
-
-          <Text style={loginstyles.header}>Welcome</Text>
-          <Text style={loginstyles.txt}>Enter Your Email address for Sign In. Enjoy your food</Text>
+        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
 
           <Custominput
             placeholder="Email Address"
@@ -164,9 +152,8 @@ export const SignIn = ({ navigation }) => {
           </View>
         </View>
 
-        <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
-      </View>
-    </TouchableWithoutFeedback>
+        <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
+      </SmartScrollView>
   );
 };
 
@@ -177,19 +164,6 @@ export const CreateAccount = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [emailError, setEmailError] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState("");
-
-  //--------------facebook---------------//
-  const [isLoggedin, setLoggedinStatus] = React.useState(false);
-  const [userData, setUserData] = React.useState(null);
-  const [isImageLoading, setImageLoadStatus] = React.useState(false);
-
-  //---------------google----------------//
-  const [signedIn, setsignedInStatus] = React.useState(false);
-  const [name, setName] = React.useState(null);
-  const [photoUrl, setphotoUrl] = React.useState(false);
-
 
   const facebookLogIn = async () => {
     try {
@@ -268,16 +242,17 @@ export const CreateAccount = ({ navigation }) => {
   }
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => Keyboard.dismiss()}>
-      <View style={loginstyles.container}>
-        <View style={{ marginTop: hp(11), justifyContent: 'center', alignItems: 'center' }}>
+    <SmartScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={loginstyles.container}
+        applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+        disabled={false}
+        alwaysBounceVertical={false} >
+        <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
           <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
         </View>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: hp(-12) }}>
-          <Text style={loginstyles.header}>Create Account</Text>
-          <Text style={loginstyles.txt}>Enter your Email Address and Password for Sign up.</Text>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
           <Custominput
             style
@@ -338,10 +313,9 @@ export const CreateAccount = ({ navigation }) => {
           </View>
         </View>
 
-        <Image source={require('../assets/images/Background.png')} style={loginstyles.backgroundimg} />
+        <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
 
-      </View>
-    </TouchableWithoutFeedback>
+      </SmartScrollView>
   );
 };
 
@@ -392,9 +366,10 @@ const loginstyles = StyleSheet.create({
     height: wp(30)
   },
   container: {
-    // flex:1,
-    justifyContent: 'center',
-    backgroundColor: vars.whiteColor,
+    flex: 1,
+    backgroundColor: Colors.white,
+    paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
+    minHeight:  Dimensions.get('window').height - hp(4)
   },
   header: {
     fontSize: normalize(29),
@@ -417,7 +392,7 @@ const loginstyles = StyleSheet.create({
     color: '#FE595E',
     alignSelf: 'flex-end',
     marginRight: wp(5),
-    marginTop: hp(-3),
+    marginTop: hp(-2),
     marginBottom: hp(3)
   },
   account: {
@@ -433,7 +408,6 @@ const loginstyles = StyleSheet.create({
     top: 3,
   },
   imagecontainer: {
-    flexGrow: 1,
     flexDirection: 'row',
     marginBottom: hp(2),
     justifyContent: 'space-evenly',
@@ -448,9 +422,14 @@ const loginstyles = StyleSheet.create({
     height: hp(5),
   },
   backgroundimg: {
-    resizeMode: 'stretch',
     width: wp(100),
-    height: (183)
+    height: hp(22),
+  },
+  backgroundimg1: {
+    width: wp(100),
+    height:  hp(22),
+    position: 'absolute',
+    bottom: 0
   },
   view: {
     backgroundColor: vars.whiteColor,
