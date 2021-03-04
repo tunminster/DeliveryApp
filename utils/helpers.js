@@ -19,6 +19,7 @@ export function logout() {
     Store.resetCartCount();
     AsyncStorage.multiRemove(['@cart', '@cartCount']);
     Store.restaurantData = null
+    Store.deliverAddress = null
 }
 
 export function post(url, data, success, error) {

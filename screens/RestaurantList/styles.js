@@ -74,4 +74,12 @@ export default {
         alignSelf: 'center',
         color: '#777777',
       },
+      restaurantImageView: {
+        width: '100%',
+        height: '100%',
+        borderRadius: wp(2),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#00000080',
+      }
 }
