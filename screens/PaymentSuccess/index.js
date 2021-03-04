@@ -190,7 +190,7 @@ class PaymentSuccess extends Component {
                                             <Text numberOfLines={1}
                                                 style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`${item.count}  x  ${item.productName}`}</Text>
                                             <Text numberOfLines={1}
-                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`£ ${((item.productPrice * item.count) / 100).toFixed(2)}`}</Text>
+                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`${vars.currency} ${((item.productPrice * item.count) / 100).toFixed(2)}`}</Text>
                                         </View>
                                         <View style={styles.seperateLine} />
                                     </View>
@@ -201,7 +201,7 @@ class PaymentSuccess extends Component {
                             <View style={styles.bottomContainer}>
                                 <View style={styles.seperateLine} />
                                 <View style={styles.bottomChildContainer}>
-                                    <Text style={{ ...styles.title, }}>{`Total - £ ${(orderDetails.totalAmount / 100).toFixed(2)}`}</Text>
+                                    <Text style={{ ...styles.title, }}>{`Total - ${vars.currency} ${(orderDetails.totalAmount / 100).toFixed(2)}`}</Text>
                                 </View>
                             </View>
                         </View>

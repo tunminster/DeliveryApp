@@ -9,6 +9,7 @@ import Store from '../../config/store';
 import BasketView from '../../components/basketView';
 import Colors from '../../constants/Colors'
 import moment from 'moment';
+import vars from '../../utils/vars';
 
 class MenuView extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class MenuView extends Component {
                 visible={menuModelVisible} >
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
-                        <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
+                        <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.7) : hp(0) }} showsVerticalScrollIndicator={false}>
                             <View style={{ paddingHorizontal: wp(4), marginTop: hp(0.7) }}>
                                 <ImageBackground
                                     source={{ uri: menuData.imageUri }}
@@ -52,7 +53,13 @@ class MenuView extends Component {
                                     style={styles.modalRestaurantImage}
                                     imageStyle={{ borderRadius: wp(2) }} >
 
-                                    <TouchableOpacity onPress={() => onCancelPress()}
+                                    <TouchableOpacity onPress={() => {
+                                        onCancelPress()
+                                        this.setState({
+                                            expandeIndex: -1,
+                                            isStoreOpeningHours: false
+                                        })
+                                    }}
                                         style={styles.modalCancelView} >
                                         <Image source={require('../../assets/images/close_fill_icon.png')}
                                             style={{
@@ -108,7 +115,7 @@ class MenuView extends Component {
                                                         <View style={{ flexDirection: 'column', flex: 0.7 }}>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
-                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`£ ${(item.unitPrice / 100).toFixed(2)}`}</Text>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`${vars.currency} ${(item.unitPrice / 100).toFixed(2)}`}</Text>
                                                         </View>
 
                                                         <Image
@@ -132,7 +139,7 @@ class MenuView extends Component {
                                 onPress={() => onBasketViewPress()}
                                 style={{ marginBottom: hp(1) }}
                                 count={Store.cart.length}
-                                amount={`£ ${(getTotalPrice / 100).toFixed(2)}`} />
+                                amount={`${vars.currency} ${(getTotalPrice / 100).toFixed(2)}`} />
                         }
 
                         <Modal

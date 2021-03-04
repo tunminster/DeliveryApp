@@ -105,7 +105,7 @@ class OrderDetail extends Component {
                                             <Text numberOfLines={1}
                                                 style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`${orderItem.count}  x  ${orderItem.productName}`}</Text>
                                             <Text numberOfLines={1}
-                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`£ ${((orderItem.productPrice * orderItem.count) / 100).toFixed(2)}`}</Text>
+                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`${vars.currency} ${((orderItem.productPrice * orderItem.count) / 100).toFixed(2)}`}</Text>
                                         </View>
                                         <View style={styles.seperateLine} />
                                     </View>
@@ -116,7 +116,7 @@ class OrderDetail extends Component {
                             <View style={styles.seperateLine} />
                             <View style={styles.bottomChildContainer}>
                                 <Text style={{ ...styles.title, color: Colors.black, fontWeight: 'bold' }}>{'Total'}</Text>
-                                <Text style={{ ...styles.subTitle, color: Colors.black }}>{`£ ${(data.totalAmount / 100).toFixed(2)}`}</Text>
+                                <Text style={{ ...styles.subTitle, color: Colors.black }}>{`${vars.currency} ${(data.totalAmount / 100).toFixed(2)}`}</Text>
                             </View>
                             <View style={styles.seperateLine} />
                             <Button
