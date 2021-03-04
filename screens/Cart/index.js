@@ -23,9 +23,7 @@ class Cart extends Component {
 
     checkout() {
         if (Store.cart.length != 0) {
-            this.props.navigation.navigate('PaymentType', {
-                deliverAddress: this.props.route.params.deliverAddress
-            });
+            this.props.navigation.navigate('PaymentType');
         } else {
             alert("Please add item")
         }

@@ -46,7 +46,7 @@ class MenuView extends Component {
                 visible={menuModelVisible} >
                 <View style={styles.modelContainer}>
                     <View style={styles.modelChildContainer}>
-                        <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.5) : hp(0) }} showsVerticalScrollIndicator={false}>
+                        <ScrollView style={{ flex: 1, marginBottom: Store.cart.length != 0 ? hp(8.7) : hp(0) }} showsVerticalScrollIndicator={false}>
                             <View style={{ paddingHorizontal: wp(4), marginTop: hp(0.7) }}>
                                 <ImageBackground
                                     source={{ uri: menuData.imageUri }}
@@ -54,7 +54,13 @@ class MenuView extends Component {
                                     style={styles.modalRestaurantImage}
                                     imageStyle={{ borderRadius: wp(2) }} >
 
-                                    <TouchableOpacity onPress={() => onCancelPress()}
+                                    <TouchableOpacity onPress={() => {
+                                        onCancelPress()
+                                        this.setState({
+                                            expandeIndex: -1,
+                                            isStoreOpeningHours: false
+                                        })
+                                    }}
                                         style={styles.modalCancelView} >
                                         <Image source={require('../../assets/images/close_fill_icon.png')}
                                             style={{
