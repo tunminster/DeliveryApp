@@ -219,6 +219,7 @@ export default function App(props) {
     setIsLoading(true);
     AuthRequestFBLogin(token)
       .then((data) => {
+        console.log('facebook response', data)
         const result = JSON.parse(data);
         setUserToken(result.auth_token);
 
@@ -226,7 +227,6 @@ export default function App(props) {
         storeData(STORAGE_KEY, result.auth_token)
           .then((data) => {
             const result = JSON.stringify(data);
-
           });
 
         storeUser(result.auth_token).then((data) => {
