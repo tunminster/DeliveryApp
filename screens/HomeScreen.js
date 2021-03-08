@@ -23,6 +23,7 @@ import MenuDetailView from "../components/menuDetailView"
 import FilterView from "../components/filterView"
 import LocationView from "../components/locationView"
 import moment from 'moment';
+import vars from '../utils/vars';
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
@@ -62,7 +63,6 @@ class HomeScreen extends Component {
       newOrderModelVisible: false,
       newStoreName: '',
       newAddressModelVisible: false,
-      deliverAddress: null,
       tempAddress: null,
       onEndReachedCalledDuringMomentum: true,
       storeOpeningHours: null
@@ -236,9 +236,10 @@ class HomeScreen extends Component {
         } else {
           this.setState({
             headerTitle: userLocation.formatted_address, restaurantData: [], page: 1,
-            isLoading: false, deliverAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
+            isLoading: false
           },
             () => { this.getRestaurant() })
+          Store.deliverAddress = { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
         }
         this.forceUpdate()
       }).catch((error) => {
@@ -411,7 +412,7 @@ class HomeScreen extends Component {
   onBasketViewPress = () => {
     this.setState({ menuModelVisible: false })
     // this.props.navigation.navigate('Cart')
-    this.props.navigation.navigate('Cart', { onGoBack: () => this.basketRefresh(), deliverAddress: this.state.deliverAddress });
+    this.props.navigation.navigate('Cart', { onGoBack: () => this.basketRefresh() });
   }
 
   onNewAddressPressHandler = () => {
@@ -446,7 +447,8 @@ class HomeScreen extends Component {
       if (this.state.headerTitle != item.addressLine) {
         this.setState({ newAddressModelVisible: true, tempAddress: item })
       } else {
-        this.setState({ isModalVisible: false, deliverAddress: item })
+        this.setState({ isModalVisible: false })
+        Store.deliverAddress = item
       }
     } else {
       this.setState({
@@ -456,11 +458,11 @@ class HomeScreen extends Component {
         isModalVisible: false,
         addressesId: item.id,
         restaurantData: [],
-        page: 1,
-        deliverAddress: item,
+        page: 1
       }, () => {
         this.getRestaurant()
       })
+      Store.deliverAddress = item
     }
   }
 
@@ -474,11 +476,11 @@ class HomeScreen extends Component {
       addressesId: tempAddress.id,
       restaurantData: [],
       page: 1,
-      newAddressModelVisible: false,
-      deliverAddress: tempAddress
+      newAddressModelVisible: false
     }, () => {
       this.getRestaurant()
     })
+    Store.deliverAddress = tempAddress
     // this.setState({ newAddressModelVisible: false })
     Store.setCart([]);
     Store.resetCartCount();
@@ -592,7 +594,7 @@ class HomeScreen extends Component {
                 onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
-                amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+                amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
             }
 
             <FilterView

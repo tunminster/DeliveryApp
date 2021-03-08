@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, Text, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Image, Text, ActivityIndicator, FlatList, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from './styles';
 import Button from '../../components/button';
 import Store from '../../config/store/index';
@@ -15,6 +15,8 @@ import BasketView from '../../components/basketView';
 import MenuView from '../../components/menuView'
 import FullScreenLoader from "../../components/fullScreenLoader"
 import MenuDetailView from "../../components/menuDetailView"
+import moment from 'moment';
+import vars from '../../utils/vars';
 
 var STORAGE_KEY = 'id_token';
 var uuid = require('react-native-uuid');
@@ -42,6 +44,7 @@ class RestaurantList extends Component {
             menuDetaildata: null,
             menuDetailIndex: -1,
             menuDetailCount: 0,
+            storeOpeningHours: null
         }
     }
 
@@ -54,7 +57,7 @@ class RestaurantList extends Component {
         const { latitude, longitude, page, storeType } = this.state
         console.log('location', latitude, longitude)
         if (page == 1) {
-            this.setState({ isRestaurantLoading: true, fottorLoading:true })
+            this.setState({ isRestaurantLoading: true, fottorLoading: false })
         }
 
         retrieveData(STORAGE_KEY)
@@ -110,14 +113,33 @@ class RestaurantList extends Component {
     }
 
     renderRestaurant = (item, index) => {
+        let isClosed;
+        if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+            isClosed = true
+        } else {
+            isClosed = false
+        }
+
         return (
             <TouchableOpacity
                 style={styles.restaurantContainer}
-                onPress={() => this.getMenu(item.item.storeId)}>
-                <Image
+                onPress={() => {
+                    isClosed ? null :
+                        this.getMenu(item.item.storeId)
+                    this.setState({ storeOpeningHours: item.item.storeOpeningHours })
+
+                }}>
+                <ImageBackground
                     source={{ uri: item.item.imageUri }}
                     resizeMode='cover'
-                    style={styles.restaurantImage} />
+                    imageStyle={{ borderRadius: wp(2) }}
+                    style={styles.restaurantImage} >
+                    {isClosed &&
+                        <View style={styles.restaurantImageView}>
+                            <Text style={{ ...styles.restaurantTitle, color: Colors.white }}>{'Closed'}</Text>
+                        </View>
+                    }
+                </ImageBackground>
                 <Text style={styles.restaurantTitle}>{item.item.storeName}</Text>
                 {item.item.storeType != null &&
                     <Text style={styles.restaurantSubTitle}>{item.item.storeType}</Text>
@@ -208,7 +230,7 @@ class RestaurantList extends Component {
     render() {
         const { page, storeType, isRestaurantLoading, restaurantData, onEndReachedCalledDuringMomentum,
             fottorLoading, menuData, isMenuLoading, menuModelVisible, newOrderModelVisible, newStoreName,
-            menuDetaildata, menuDetailVisible, menuDetailCount } = this.state
+            menuDetaildata, menuDetailVisible, menuDetailCount, storeOpeningHours } = this.state
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -262,6 +284,7 @@ class RestaurantList extends Component {
                     menuModelVisible={menuModelVisible}
                     onCancelPress={() => this.setState({ menuModelVisible: false })}
                     menuData={menuData}
+                    storeOpeningHours={storeOpeningHours}
                     onMenuPress={(item) => this.onMenuPress(item)}
                     onBasketViewPress={() => this.onBasketViewPress()}
                     getTotalPrice={getTotalPrice()}
@@ -288,7 +311,7 @@ class RestaurantList extends Component {
                         onPress={() => this.onBasketViewPress()}
                         style={{ marginBottom: hp(3) }}
                         count={Store.cart.length}
-                        amount={`£ ${(getTotalPrice() / 100).toFixed(2)}`} />
+                        amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
                 }
             </View>
         )

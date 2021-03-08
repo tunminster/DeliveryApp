@@ -44,22 +44,21 @@ class PaymentType extends Component {
         lngDelta: 0.1,
         dropdownVisible: false,
         dropdownValue: 'Pick up order at',
-        deliverAddress: this.props.route.params.deliverAddress,
         storeId: '',
         addresssId: null
     };
 
     async componentDidMount() {
-        console.log('store...', this.state.deliverAddress, "........", Store.restaurantData)
-        if (parseInt(this.state.deliverAddress.id) == 0) {
+        console.log('store...', Store.deliverAddress, "........", Store.restaurantData)
+        if (parseInt(Store.deliverAddress.id) == 0) {
             this.sortAddress()
         }
-        if (this.state.dropdownValue == 'Pick up order at') {
+        if (this.state.dropdownValue == 'Pick up order at' && Store.restaurantData) {
             this.setState({
                 lat: Store.restaurantData.location.latitude,
                 lng: Store.restaurantData.location.longitude, 
                 storeId: Store.restaurantData.storeId,
-                selectedAddress: this.state.deliverAddress.id == 0 ? null : this.state.deliverAddress.id
+                selectedAddress: Store.deliverAddress ? Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id : null
             })
         }
         try {
@@ -74,11 +73,10 @@ class PaymentType extends Component {
     }
 
     sortAddress = async () => {
-        const { deliverAddress } = this.state;
 
         try {
             // this.setState({ isLoading: true });
-            GetLocationComponent(null, deliverAddress.lat, deliverAddress.lng)
+            GetLocationComponent(null, Store.deliverAddress.lat, Store.deliverAddress.lng)
                 .then((res) => {
                     const location = res && res.results && res.results.length ? res.results[0] : {};
                     const address_components = location.address_components;
@@ -312,18 +310,17 @@ class PaymentType extends Component {
     }
 
     onDropdownPress = (item) => {
-        const { deliverAddress, dropdownVisible, addresssId } = this.state;
+        const { dropdownVisible, addresssId } = this.state;
         this.setState({ dropdownVisible: !dropdownVisible, dropdownValue: item.title })
         if (item.title == 'Pick up order at') {
-            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: deliverAddress.id == 0 ? null : deliverAddress.id })
+            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id })
         } else {
-            this.setState({ lat: deliverAddress.lat, lng: deliverAddress.lng, selectedAddress: deliverAddress.id == 0 ? addresssId : deliverAddress.id })
+            this.setState({ lat: Store.deliverAddress.lat, lng: Store.deliverAddress.lng, selectedAddress: Store.deliverAddress.id == 0 ? addresssId : Store.deliverAddress.id })
         }
     }
 
     render() {
-        const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue,
-            deliverAddress } = this.state;
+        const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue } = this.state;
         return (
             <View style={styles.container}>
 
@@ -397,7 +394,7 @@ class PaymentType extends Component {
                             }
                             <Text style={{ ...styles.title, color: Colors.gray, width: wp(80) }}>{
                                 dropdownValue == 'Pick up order at' ? `${Store.restaurantData.addressLine1}, ${Store.restaurantData.postalCode}`
-                                    : `${deliverAddress.addressLine}, ${deliverAddress.postCode}`}</Text>
+                                    : `${Store.deliverAddress.addressLine}, ${Store.deliverAddress.postCode}`}</Text>
                         </View>
 
                     </View>

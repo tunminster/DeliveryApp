@@ -4,6 +4,7 @@ import * as React from 'react';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
+import SearchScreen from '../screens/SearchScreen'
 import MoreScreen from '../screens/MoreScreen'
 import TabBarText from '../components/TabBarText';
 import Orders from '../screens/Orders'
@@ -30,7 +31,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Search"
-        component={LinksScreen}
+        component={SearchScreen}
         options={{
           tabBarLabel:({ focused }) => <TabBarText focused={focused} name="Search" />,
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="search" />,
