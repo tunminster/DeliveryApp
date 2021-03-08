@@ -50,7 +50,6 @@ class PaymentSuccess extends Component {
 
                 console.log('config', config)
                 const storeOpeningHoursData = Store.restaurantData.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday())
-                console.log('storeOpeningHoursData', storeOpeningHoursData, storeOpeningHoursData.timeZone.charAt(0))
                 let timeZone
                 if (storeOpeningHoursData.timeZone == null) {
                     timeZone = 7

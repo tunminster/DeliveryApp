@@ -164,7 +164,7 @@ class HomeScreen extends Component {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };
 
-        console.log('config', config)
+        console.log('config', config, storeId)
         Api.get('V1/Store/Store-Details?storeId=' + storeId, config).then(res => {
           console.log('Store details res', JSON.stringify(res));
           this.setState({ isMenuLoading: false, menuModelVisible: true, menuData: res })

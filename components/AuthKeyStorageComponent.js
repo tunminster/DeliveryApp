@@ -43,9 +43,12 @@ export async function storeUser(token)
       const config = {
           headers: { Authorization: 'Bearer ' + token , 'Request-Id': guid}
       };  
+      console.log('config!', config)
       Api.get('/customer/getcustomer', config).then(res => {
           console.log("api result is " + res);
           AuthStore.setUser(res);
+      }).catch((error) => {
+        console.error('error..', error);
       });
       return true;
     }
