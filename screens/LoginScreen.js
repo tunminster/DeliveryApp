@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
-import { wp, hp, normalize, isX } from '../helper/responsiveScreen';
+import { wp, hp, normalize, isX, isIOS } from '../helper/responsiveScreen';
 import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
@@ -11,6 +11,7 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk'
 import Loading from '../components/loading';
 import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -67,6 +68,30 @@ export const SignIn = ({ navigation }) => {
     }
   }
 
+  const onAppleButtonPress = async () => {
+    try {
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      });
+
+      console.log('appleAuthRequestResponse', appleAuthRequestResponse, "!!!!!!", appleAuthRequestResponse.user)
+      // get current authentication state for user
+      // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+      const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
+
+      // use credentialState response to ensure the user is authenticated
+      // if (credentialState === appleAuth.State.AUTHORIZED) {
+      //   // user is authenticated
+      // }
+      console.log('credentialState', credentialState, "!!!!!!!!", appleAuth.State.AUTHORIZED)
+
+
+    } catch (e) {
+      console.log("error", e);
+    }
+  }
+
   const dologin = () => {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
 
@@ -90,70 +115,78 @@ export const SignIn = ({ navigation }) => {
   }
 
   return (
-      <SmartScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={loginstyles.container}
-        applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
-        disabled={false}
-        alwaysBounceVertical={false} >
-        <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
-          <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
-        </View>
-        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+    <SmartScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={loginstyles.container}
+      applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+      disabled={false}
+      alwaysBounceVertical={false} >
+      <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
+        <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
+      </View>
+      <View style={{ justifyContent: 'center', alignItems: 'center', }}>
 
-          <Custominput
-            placeholder="Email Address"
-            placeholderTextColor="rgba(0,0,0,0.32)"
-            style
-            icon={require('../assets/images/mail.png')}
-            onChangeText={text => setEmail({ email: text })}
-            autoCorrect={false}
-          />
+        <Custominput
+          placeholder="Email Address"
+          placeholderTextColor="rgba(0,0,0,0.32)"
+          style
+          icon={require('../assets/images/mail.png')}
+          onChangeText={text => setEmail({ email: text })}
+          autoCorrect={false}
+        />
 
-          <Custominput
-            password
-            placeholder="Password"
-            placeholderTextColor="rgba(0,0,0,0.32)"
-            style
-            icon={require('../assets/images/lock.png')}
-            onChangeText={text => setPassword({ password: text })}
-            autoCorrect={false}
-          />
+        <Custominput
+          password
+          placeholder="Password"
+          placeholderTextColor="rgba(0,0,0,0.32)"
+          style
+          icon={require('../assets/images/lock.png')}
+          onChangeText={text => setPassword({ password: text })}
+          autoCorrect={false}
+        />
 
-          <Text style={loginstyles.forgot}>Forgot Password?</Text>
+        <Text style={loginstyles.forgot}>Forgot Password?</Text>
 
-          <CustomButton
-            onPress={() => dologin()}
-            title={'Sign In'}
-          />
+        <CustomButton
+          onPress={() => dologin()}
+          title={'Sign In'}
+        />
 
-          <Text style={loginstyles.account}>Don't have an account?
+        <Text style={loginstyles.account}>Don't have an account?
             <TouchableOpacity onPress={() => navigation.push("CreateAccount")}>
 
-              <Text style={loginstyles.signup}> Sign Up</Text>
-            </TouchableOpacity>
-          </Text>
+            <Text style={loginstyles.signup}> Sign Up</Text>
+          </TouchableOpacity>
+        </Text>
 
-          <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+        <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+      </View>
+
+      <View style={loginstyles.imagecontainer}>
+
+        <View style={loginstyles.view}>
+          <TouchableOpacity onPress={() => signInWithGoogle()}>
+            <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
+          </TouchableOpacity>
         </View>
 
-        <View style={loginstyles.imagecontainer}>
-
-          <View style={loginstyles.view}>
-            <TouchableOpacity onPress={() => signInWithGoogle()}>
-              <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={loginstyles.view}>
-            <TouchableOpacity onPress={() => facebookLogIn()}>
-              <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
-            </TouchableOpacity>
-          </View>
+        <View style={loginstyles.view}>
+          <TouchableOpacity onPress={() => facebookLogIn()}>
+            <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
+          </TouchableOpacity>
         </View>
 
-        <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
-      </SmartScrollView>
+        {isIOS &&
+          <View style={loginstyles.view}>
+            <TouchableOpacity onPress={() => onAppleButtonPress()}>
+              <Image source={require('../assets/images/apple.png')} resizeMode='contain' style={loginstyles.signinImage} />
+            </TouchableOpacity>
+          </View>
+        }
+      </View>
+
+      <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
+    </SmartScrollView>
   );
 };
 
@@ -213,6 +246,29 @@ export const CreateAccount = ({ navigation }) => {
     }
   }
 
+  const onAppleButtonPress = async () => {
+    try {
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      });
+
+      console.log('appleAuthRequestResponse', appleAuthRequestResponse, "!!!!!!", appleAuthRequestResponse.user)
+      // get current authentication state for user
+      // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+      const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
+
+      // use credentialState response to ensure the user is authenticated
+      // if (credentialState === appleAuth.State.AUTHORIZED) {
+      //   // user is authenticated
+      // }
+      console.log('credentialState', credentialState, "!!!!!!!!", appleAuth.State.AUTHORIZED)
+
+    } catch (e) {
+      console.log("error", e);
+    }
+  }
+
   const register = () => {
     var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
 
@@ -243,79 +299,87 @@ export const CreateAccount = ({ navigation }) => {
 
   return (
     <SmartScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={loginstyles.container}
-        applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
-        disabled={false}
-        alwaysBounceVertical={false} >
-        <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
-          <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
-        </View>
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={loginstyles.container}
+      applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+      disabled={false}
+      alwaysBounceVertical={false} >
+      <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
+        <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
+      </View>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
-          <Custominput
-            style
-            placeholder="Email Address"
-            placeholderTextColor="rgba(0,0,0,0.32)"
-            icon={require('../assets/images/mail.png')}
-            onChangeText={text => setEmail({ email: text })}
-            autoCorrect={false}
-          />
+        <Custominput
+          style
+          placeholder="Email Address"
+          placeholderTextColor="rgba(0,0,0,0.32)"
+          icon={require('../assets/images/mail.png')}
+          onChangeText={text => setEmail({ email: text })}
+          autoCorrect={false}
+        />
 
-          <Custominput
-            password
-            placeholder="Password"
-            placeholderTextColor="rgba(0,0,0,0.32)"
-            style
-            icon={require('../assets/images/lock.png')}
-            onChangeText={text => setPassword({ password: text })}
-            autoCorrect={false}
-          />
+        <Custominput
+          password
+          placeholder="Password"
+          placeholderTextColor="rgba(0,0,0,0.32)"
+          style
+          icon={require('../assets/images/lock.png')}
+          onChangeText={text => setPassword({ password: text })}
+          autoCorrect={false}
+        />
 
-          <Custominput
-            password
-            placeholder="Confirm Password"
-            placeholderTextColor="rgba(0,0,0,0.32)"
-            style
-            icon={require('../assets/images/lock.png')}
-            onChangeText={text => setConfirmPassword({ confirmpassword: text })}
-            autoCorrect={false}
-          />
+        <Custominput
+          password
+          placeholder="Confirm Password"
+          placeholderTextColor="rgba(0,0,0,0.32)"
+          style
+          icon={require('../assets/images/lock.png')}
+          onChangeText={text => setConfirmPassword({ confirmpassword: text })}
+          autoCorrect={false}
+        />
 
-          <CustomButton
-            onPress={() => register()}
-            title={'Sign Up'}
-          />
+        <CustomButton
+          onPress={() => register()}
+          title={'Sign Up'}
+        />
 
-          <Text style={loginstyles.account}>Already have an Account?
+        <Text style={loginstyles.account}>Already have an Account?
             <TouchableOpacity onPress={() => navigation.push("SignIn")}>
 
-              <Text style={loginstyles.signup}> Sign In</Text>
-            </TouchableOpacity>
-          </Text>
+            <Text style={loginstyles.signup}> Sign In</Text>
+          </TouchableOpacity>
+        </Text>
 
-          <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+        <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+      </View>
+
+      <View style={loginstyles.imagecontainer}>
+
+        <View style={loginstyles.view}>
+          <TouchableOpacity onPress={() => signInWithGoogle()}>
+            <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
+          </TouchableOpacity>
         </View>
 
-        <View style={loginstyles.imagecontainer}>
-
-          <View style={loginstyles.view}>
-            <TouchableOpacity onPress={() => signInWithGoogle()}>
-              <Image source={require('../assets/images/google.png')} style={loginstyles.signinImage} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={loginstyles.view}>
-            <TouchableOpacity onPress={() => facebookLogIn()}>
-              <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
-            </TouchableOpacity>
-          </View>
+        <View style={loginstyles.view}>
+          <TouchableOpacity onPress={() => facebookLogIn()}>
+            <Image source={require('../assets/images/facebook.png')} style={loginstyles.signinImage} />
+          </TouchableOpacity>
         </View>
 
-        <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
+        {isIOS &&
+          <View style={loginstyles.view}>
+            <TouchableOpacity onPress={() => onAppleButtonPress()}>
+              <Image source={require('../assets/images/apple.png')} resizeMode='contain' style={loginstyles.signinImage} />
+            </TouchableOpacity>
+          </View>
+        }
+      </View>
 
-      </SmartScrollView>
+      <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
+
+    </SmartScrollView>
   );
 };
 
@@ -369,7 +433,7 @@ const loginstyles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
     paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
-    minHeight:  Dimensions.get('window').height - hp(4)
+    minHeight: Dimensions.get('window').height - hp(4)
   },
   header: {
     fontSize: normalize(29),
@@ -427,7 +491,7 @@ const loginstyles = StyleSheet.create({
   },
   backgroundimg1: {
     width: wp(100),
-    height:  hp(22),
+    height: hp(22),
     position: 'absolute',
     bottom: 0
   },
