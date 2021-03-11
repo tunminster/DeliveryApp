@@ -21,4 +21,5 @@ export default {
     locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json",
     google_key: "AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8",
     geoCodeBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
+    appleIdMessage: 'You must share your email address to login with the apple Id'
 }

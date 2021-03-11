@@ -12,7 +12,7 @@ import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
 
 import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
-import { AuthRequestLogin, AuthRequestGoogleLogin, AuthRequestFBLogin } from './components/AuthLoginComponent';
+import { AuthRequestLogin, AuthRequestGoogleLogin, AuthRequestFBLogin, AuthRequestAppleLogin } from './components/AuthLoginComponent';
 
 import { CreateAccountComponent } from './components/CreateAccountComponent';
 import { AuthContext } from './constants/Context';
@@ -83,6 +83,9 @@ export default function App(props) {
       facebookSignIn: (token) => {
         facebookSignInRequest(token);
       },
+      appleSignIn: (data) => {
+        appleSignInRequest(data);
+      },
     }
   }, []);
 
@@ -109,6 +112,7 @@ export default function App(props) {
         let loginCredential = await AsyncStorage.getItem('login credential');
         let facebookCredential = await AsyncStorage.getItem('facebook credential');
         let googleCredential = await AsyncStorage.getItem('google credential');
+        let appleCredential = await AsyncStorage.getItem('apple credential');
         console.log('google credential', googleCredential)
         if (loginCredential != null) {
           let parsed = JSON.parse(loginCredential);
@@ -117,6 +121,9 @@ export default function App(props) {
           facebookSignInRequest(facebookCredential);
         } else if (googleCredential != null) {
           googleSignInRequest(googleCredential);
+        } else if (appleCredential != null) {
+          let parsed = JSON.parse(appleCredential);
+          appleSignInRequest(parsed);
         } else {
           setIsLoading(false)
         }
@@ -238,6 +245,39 @@ export default function App(props) {
         setIsLoading(false);
 
       }).catch((error) => {
+        if (error == 'TypeError: Network request failed') {
+          alert('Please check your internet connection and try again.');
+        }
+        setIsLoading(false);
+        setUserToken(null);
+      });
+  };
+
+  function appleSignInRequest(dataObject) {
+    var STORAGE_KEY = 'id_token';
+    setIsLoading(true);
+    AuthRequestAppleLogin(dataObject)
+      .then((data) => {
+        const result = JSON.parse(data);
+        setUserToken(result.auth_token);
+
+        //store token
+        storeData(STORAGE_KEY, result.auth_token)
+          .then((data) => {
+            const result = JSON.stringify(data);
+
+          });
+
+        storeUser(result.auth_token).then((data) => {
+          console.log("user stored " + data);
+        });
+
+        AsyncStorage.setItem('apple credential', JSON.stringify(dataObject));
+
+        setIsLoading(false);
+
+      }).catch((error) => {
+        console.log('error', error)
         if (error == 'TypeError: Network request failed') {
           alert('Please check your internet connection and try again.');
         }
@@ -466,22 +506,22 @@ const RootStackScreen = ({ userToken }) => (
         // )}
         />
       ) : (
-          <RootStack.Screen name="Auth" component={AuthStackScreen}
-            options={({ navigation }) => ({ headerShown: false }
-              // {
-              //   title: 'Restaurant Name',
-              //   headerStyle: {
-              //   backgroundColor: '#f4511e',
-              //   },
-              //   headerTintColor: '#fff',
-              //   headerTitleStyle: {
-              //     fontWeight: 'bold',
-              //   },
+        <RootStack.Screen name="Auth" component={AuthStackScreen}
+          options={({ navigation }) => ({ headerShown: false }
+            // {
+            //   title: 'Restaurant Name',
+            //   headerStyle: {
+            //   backgroundColor: '#f4511e',
+            //   },
+            //   headerTintColor: '#fff',
+            //   headerTitleStyle: {
+            //     fontWeight: 'bold',
+            //   },
 
-              // }
-            )}
-          />
-        )
+            // }
+          )}
+        />
+      )
     }
 
 
