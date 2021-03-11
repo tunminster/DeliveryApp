@@ -15,6 +15,7 @@ export function logout() {
     AsyncStorage.removeItem('facebook credential');
     AsyncStorage.removeItem('google credential');
     AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('apple credential');
     Store.setCart([]);
     Store.resetCartCount();
     AsyncStorage.multiRemove(['@cart', '@cartCount']);

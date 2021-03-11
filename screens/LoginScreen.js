@@ -12,11 +12,13 @@ import Loading from '../components/loading';
 import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
+import jwt_decode from 'jwt-decode';
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
   const { googleSignIn } = React.useContext(AuthContext);
   const { facebookSignIn } = React.useContext(AuthContext);
+  const { appleSignIn } = React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -78,8 +80,27 @@ export const SignIn = ({ navigation }) => {
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
 
-      console.log('appleAuthRequestResponse', appleAuthRequestResponse)
+      const { email } = jwt_decode(appleAuthRequestResponse.identityToken)
 
+      const data = {
+        authorizationCode: appleAuthRequestResponse.authorizationCode,
+        email: appleAuthRequestResponse.email != null ? appleAuthRequestResponse.email : email != null ? email : '',
+        familyName: appleAuthRequestResponse.fullName.familyName != null ? appleAuthRequestResponse.fullName.familyName : '',
+        givenName: appleAuthRequestResponse.fullName.givenName != null ? appleAuthRequestResponse.fullName.givenName : '',
+        middleName: appleAuthRequestResponse.fullName.middleName != null ? appleAuthRequestResponse.fullName.middleName : '',
+        identityToken: appleAuthRequestResponse.identityToken,
+        nonce: appleAuthRequestResponse.nonce,
+        realUserStatus: appleAuthRequestResponse.realUserStatus == 1 ? true : false,
+        state: appleAuthRequestResponse.state != null ? appleAuthRequestResponse.state : '',
+        user: appleAuthRequestResponse.user
+      }
+
+      console.log('data', data)
+      if (data.email.includes('@privaterelay.appleid.com')) {
+        alert(vars.appleIdMessage)
+      } else {
+        appleSignIn(data)
+      }
 
     } catch (e) {
       console.log("error", e);
@@ -188,6 +209,7 @@ export const CreateAccount = ({ navigation }) => {
   const { signUp } = React.useContext(AuthContext);
   const { googleSignIn } = React.useContext(AuthContext);
   const { facebookSignIn } = React.useContext(AuthContext);
+  const { appleSignIn } = React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -245,8 +267,27 @@ export const CreateAccount = ({ navigation }) => {
         requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
       });
 
-      console.log('appleAuthRequestResponse', appleAuthRequestResponse)
+      const { email } = jwt_decode(appleAuthRequestResponse.identityToken)
 
+      const data = {
+        authorizationCode: appleAuthRequestResponse.authorizationCode,
+        email: appleAuthRequestResponse.email != null ? appleAuthRequestResponse.email : email != null ? email : '',
+        familyName: appleAuthRequestResponse.fullName.familyName != null ? appleAuthRequestResponse.fullName.familyName : '',
+        givenName: appleAuthRequestResponse.fullName.givenName != null ? appleAuthRequestResponse.fullName.givenName : '',
+        middleName: appleAuthRequestResponse.fullName.middleName != null ? appleAuthRequestResponse.fullName.middleName : '',
+        identityToken: appleAuthRequestResponse.identityToken,
+        nonce: appleAuthRequestResponse.nonce,
+        realUserStatus: appleAuthRequestResponse.realUserStatus == 1 ? true : false,
+        state: appleAuthRequestResponse.state != null ? appleAuthRequestResponse.state : '',
+        user: appleAuthRequestResponse.user
+      }
+
+      console.log('data', data)
+      if (data.email.includes('@privaterelay.appleid.com')) {
+        alert(vars.appleIdMessage)
+      } else {
+        appleSignIn(data)
+      }
 
     } catch (e) {
       console.log("error", e);
