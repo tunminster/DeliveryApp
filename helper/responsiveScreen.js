@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions, Platform, PixelRatio } from 'react-native';
 
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 
-const isIOS = (Platform.OS === 'ios');
+export const isIOS = (Platform.OS === 'ios');
 const d = Dimensions.get("window")
 
 export const isiPAD = ((viewportHeight / viewportWidth) < 1.6)

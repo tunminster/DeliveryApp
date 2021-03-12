@@ -37,7 +37,7 @@ export async function AuthRequestLogin(email, password){
         headers:{
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-Shard': 'Da',
+          'X-Shard': vars.xShard,
         'Request-Id': guid, 
         },
         body: JSON.stringify({
@@ -57,7 +57,7 @@ export async function AuthRequestLogin(email, password){
         headers:{
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-Shard': 'Da',
+          'X-Shard': vars.xShard,
         'Request-Id': guid, 
         },
         body: JSON.stringify({
