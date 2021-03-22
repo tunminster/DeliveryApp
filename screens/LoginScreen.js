@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
-import { wp, hp, normalize, isX, isIOS } from '../helper/responsiveScreen';
+import { wp, hp, normalize, isX, isIOS, isiPAD} from '../helper/responsiveScreen';
 import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
@@ -133,7 +133,7 @@ export const SignIn = ({ navigation }) => {
       applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
       disabled={false}
       alwaysBounceVertical={false} >
-      <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
+      <View style={{ marginVertical: isiPAD ? hp(3) :  hp(4), alignItems: 'center' }}>
         <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center', }}>
@@ -171,7 +171,7 @@ export const SignIn = ({ navigation }) => {
           </TouchableOpacity>
         </Text>
 
-        <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+        <Text style={{ marginVertical: isiPAD ? hp(1) :  hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
       </View>
 
       <View style={loginstyles.imagecontainer}>
@@ -197,7 +197,7 @@ export const SignIn = ({ navigation }) => {
         }
       </View>
 
-      <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
+      <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? isiPAD ? loginstyles.backgroundimg : loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
     </SmartScrollView>
   );
 };
@@ -328,7 +328,7 @@ export const CreateAccount = ({ navigation }) => {
       applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
       disabled={false}
       alwaysBounceVertical={false} >
-      <View style={{ marginVertical: hp(4), alignItems: 'center' }}>
+      <View style={{ marginVertical: isiPAD ? hp(3) : hp(4), alignItems: 'center' }}>
         <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
       </View>
 
@@ -375,7 +375,7 @@ export const CreateAccount = ({ navigation }) => {
           </TouchableOpacity>
         </Text>
 
-        <Text style={{ marginVertical: hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+        <Text style={{ marginVertical: isiPAD ? hp(1) :  hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
       </View>
 
       <View style={loginstyles.imagecontainer}>
@@ -401,7 +401,7 @@ export const CreateAccount = ({ navigation }) => {
         }
       </View>
 
-      <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
+      <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? isiPAD ? loginstyles.backgroundimg : loginstyles.backgroundimg1 : loginstyles.backgroundimg} />
 
     </SmartScrollView>
   );
@@ -456,7 +456,7 @@ const loginstyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0),
+    paddingTop: isX ? isiPAD ? hp(0) :  hp(4) : hp(0),
     minHeight: Dimensions.get('window').height - hp(4)
   },
   header: {
@@ -521,7 +521,7 @@ const loginstyles = StyleSheet.create({
   },
   view: {
     backgroundColor: vars.whiteColor,
-    paddingVertical: hp(1),
+    paddingVertical: isiPAD ? hp(1.3) : hp(1),
     borderRadius: normalize(50),
     shadowColor: vars.blackColor,
     shadowOffset: { width: 0, height: 3 },
