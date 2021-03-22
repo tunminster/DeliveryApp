@@ -69,3 +69,22 @@ export async function AuthRequestLogin(email, password){
       let result= await response.json();
       return (result);
   };  
+
+
+  export async function AuthRequestAppleLogin(data){
+    let guid = uuid.v1();
+    let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/apple", {
+        method: 'POST',
+        headers:{
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Shard': vars.xShard,
+        'Request-Id': guid, 
+        },
+        body: JSON.stringify(data)
+    });
+
+      let result= await response.json();
+      console.log('apple result', result)
+      return (result);
+  };
