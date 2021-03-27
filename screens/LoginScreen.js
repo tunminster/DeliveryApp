@@ -93,11 +93,11 @@ export const SignIn = ({ navigation }) => {
       }
 
       console.log('data', data)
-      if (data.email.includes('@privaterelay.appleid.com')) {
-        alert(vars.appleIdMessage)
-      } else {
+      // if (data.email.includes('@privaterelay.appleid.com')) {
+      //   alert(vars.appleIdMessage)
+      // } else {
         appleSignIn(data)
-      }
+      // }
 
     } catch (e) {
       console.log("error", e);
@@ -282,11 +282,11 @@ export const CreateAccount = ({ navigation }) => {
       }
 
       console.log('data', data)
-      if (data.email.includes('@privaterelay.appleid.com')) {
-        alert(vars.appleIdMessage)
-      } else {
+      // if (data.email.includes('@privaterelay.appleid.com')) {
+      //   alert(vars.appleIdMessage)
+      // } else {
         appleSignIn(data)
-      }
+      // }
 
     } catch (e) {
       console.log("error", e);
