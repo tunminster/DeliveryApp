@@ -1,3 +1,4 @@
+//this is surround you
 import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View, Button, Alert, TouchableOpacity, Image, AsyncStorage } from 'react-native';
 // import { SplashScreen } from 'expo';
