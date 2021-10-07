@@ -5,9 +5,9 @@ import {wp,hp,normalize} from '../../helper/responsiveScreen'
 
 export default class CustomButton extends Component{
     render(){
-        const {onPress,title}=this.props;
+        const {onPress,title, isDisable = false}=this.props;
         return(
-            <TouchableOpacity onPress={onPress} style={styles.btn}>
+            <TouchableOpacity disabled={isDisable} onPress={onPress} style={[styles.btn,isDisable && {opacity:0.5}]}>
                 <Text style={styles.loginText}>{title}</Text>
             </TouchableOpacity>
         )

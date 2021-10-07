@@ -356,6 +356,7 @@ class PaymentType extends Component {
                     <View style={styles.mapContainer}>
                         <MapView
                             ref={r => this.mapRef = r}
+                            //provider={'google'}
                             style={styles.mapView}
                             region={{
                                 latitude: lat,
@@ -370,7 +371,7 @@ class PaymentType extends Component {
                                     latitude: lat,
                                     longitude: lng,
                                 }}
-                                draggable
+                                // draggable
                                 draggable={true}
                             />
                         </MapView>

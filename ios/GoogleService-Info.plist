@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>516028708004-pfsjqpjlse4vo0cpidvmrkb5s13mt8ar.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.516028708004-pfsjqpjlse4vo0cpidvmrkb5s13mt8ar</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>516028708004-3e65s6pnd8b1ds56r7e926tcsd2bcc3o.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDhTBiwxXMc8G3v5QqpXL6QKoJJd-cR4ug</string>
+	<key>GCM_SENDER_ID</key>
+	<string>516028708004</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ragibull.uk.app</string>
+	<key>PROJECT_ID</key>
+	<string>deliveryapp-298211</string>
+	<key>STORAGE_BUCKET</key>
+	<string>deliveryapp-298211.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:516028708004:ios:454b354e9a25ccd886e231</string>
+</dict>
+</plist>

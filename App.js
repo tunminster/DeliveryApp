@@ -12,6 +12,9 @@ import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
 
 import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import OtpVerificationScreen from './screens/OtpVerificationScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import { AuthRequestLogin, AuthRequestGoogleLogin, AuthRequestFBLogin, AuthRequestAppleLogin } from './components/AuthLoginComponent';
 
 import { CreateAccountComponent } from './components/CreateAccountComponent';
@@ -33,7 +36,7 @@ import OrderDetail from './screens/OrderDetail';
 import Support from './screens/Support';
 import RestaurantList from './screens/RestaurantList';
 import MyDetails from './screens/MyDetails';
-
+import messaging from '@react-native-firebase/messaging';
 const Stack = createStackNavigator();
 state = {
   email: "",
@@ -92,6 +95,14 @@ export default function App(props) {
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
+      messaging().onMessage(async (remoteMessage) => {
+          console.log("[Notification]", remoteMessage);
+          //store.dispatch(callSetOrderShow(0));
+      });
+      messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+          console.log("[Notification]", remoteMessage);
+          //store.dispatch(callSetOrderShow(0));
+      });
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();
@@ -324,6 +335,9 @@ const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
   <AuthStack.Navigator headerMode="none">
     <AuthStack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
+    <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: "Forgot Password" }} />
+    <AuthStack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: "Forgot Password" }} />
+    <AuthStack.Screen name="OtpVerification" component={OtpVerificationScreen} options={{ title: "OTP Verification" }} />
     <AuthStack.Screen name="CreateAccount" component={CreateAccount}
       options={{ title: "Create Account" }} />
   </AuthStack.Navigator>
@@ -453,6 +467,9 @@ const PageScreen = () => (
     <PageStack.Screen name="SignIn" component={SignIn}
       options={{ headerShown: false }}
     />
+      <PageStack.Screen name="ForgotPassword" component={ForgotPasswordScreen}  options={{ title: "Forgot Password",headerShown: false }} />
+      <PageStack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: "Forgot Password",headerShown: false }} />
+      <PageStack.Screen name="OtpVerification" component={OtpVerificationScreen} options={{ title: "OTP Verification",headerShown: false }} />
 
     <PageStack.Screen name="CreateAccount" component={CreateAccount}
       options={{ headerShown: false }} />

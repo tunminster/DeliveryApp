@@ -37,7 +37,7 @@ class Account extends Component {
                             <Text style={sharedStyles.txt}>Orders</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={sharedStyles.li} onPress={() => {
-                            logout(),
+                            logout();
                              this.props.navigation.dispatch(
                                 CommonActions.reset({
                                     index: 0,

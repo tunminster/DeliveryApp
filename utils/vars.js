@@ -21,5 +21,11 @@ export default {
     locationBaseUrl: "https://maps.googleapis.com/maps/api/place/autocomplete/json",
     google_key: "AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8",
     geoCodeBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
-    appleIdMessage: 'You must share your email address to login with the apple Id'
+    appleIdMessage: 'You must share your email address to login with the apple Id',
+    forgotScreenTitle: 'Forgot Password',
+    forgotScreenCaption: 'Please enter your Information below in order to login to you Account',
+    otpScreenCaption: 'Enter the 4 digit code sent to your registered Email address.',
+    otpScreenTitle: 'OTP Verification',
+    resetPasswordScreenCaption: 'Enter your new password atleast 6 digit long.',
+    resetPasswordScreenTitle: 'Reset Password',
 }

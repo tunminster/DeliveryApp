@@ -23,12 +23,13 @@ import MenuDetailView from "../components/menuDetailView"
 import FilterView from "../components/filterView"
 import LocationView from "../components/locationView"
 import moment from 'moment';
+import momentTimezone from 'moment-timezone';
 import vars from '../utils/vars';
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
 var STORAGE_KEY = 'id_token';
-
+import messaging from '@react-native-firebase/messaging';
 class HomeScreen extends Component {
 
   constructor(props) {
@@ -70,6 +71,7 @@ class HomeScreen extends Component {
   }
 
   componentDidMount = async () => {
+    this.requestUserPermission();
     this.focusListener = this.props.navigation.addListener("focus", () => {
       this.forceUpdate()
     })
@@ -89,6 +91,35 @@ class HomeScreen extends Component {
     } else {
       if (this.state.latitude == '') {
         this.callLocation(false)
+      }
+    }
+  }
+
+  async requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log("Authorization status:", authStatus);
+      this.getToken();
+    }
+  }
+
+
+  async getToken() {
+    // let fcmToken = await AsyncStorage.getItem("fcmToken");
+    let fcmToken = undefined;
+    console.log("fcmToken from AsyncStorage: ", fcmToken);
+    // Clipboard.setString(fcmToken);
+    if (!fcmToken) {
+      try {
+        const token = await messaging().getToken();
+        // Clipboard.setString(token);
+        console.log("FCM token: " + token);
+        // AsyncStorage.setItem("fcmToken", token);
+      } catch (e) {
+        console.error("token registration failed?", e);
       }
     }
   }
@@ -286,9 +317,47 @@ class HomeScreen extends Component {
     )
   }
 
+  // isOpenRestaurant = (openTime, closeTime, timezone) => {
+  //   // handle special case
+  //   if (openTime === "24HR") {
+  //     return "open";
+  //   }
+  //
+  //   // get the current date and time in the given time zone
+  //   const now = momentTimezone.tz(timezone);
+  //   // Get the exact open and close times on that date in the given time zone
+  //   // See https://github.com/moment/moment-timezone/issues/119
+  //   const date = now.format("YYYY-MM-DD");
+  //   const storeOpenTime = momentTimezone.tz(date + ' ' + openTime, "YYYY-MM-DD h:mm", timezone);
+  //   const storeCloseTime = momentTimezone.tz(date + ' ' + closeTime, "YYYY-MM-DD h:mm", timezone);
+  //
+  //   let check;
+  //   if (storeCloseTime.isBefore(storeOpenTime)) {
+  //     // Handle ranges that span over midnight
+  //     check = now.isAfter(storeOpenTime) || now.isBefore(storeCloseTime);
+  //   } else {
+  //     // Normal range check using an inclusive start time and exclusive end time
+  //     check = now.isBetween(storeOpenTime, storeCloseTime, null, '[)');
+  //   }
+  //   console.log('time',check)
+  //   return check;
+  //
+  // }
+
+  isOpenRestaurant = (openTime, closeTime, timezone) => {
+    let format = 'hh:mm'
+    let time = moment(new Date(), format);
+        let beforeTime = moment(openTime, format);
+        let afterTime = moment(closeTime, format);
+    return time.isBetween(beforeTime, afterTime)
+
+  }
+
+
   renderRestaurant = (item, index) => {
     let isClosed;
-    if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+    let currentTimeRestaurant = item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday());
+    if (currentTimeRestaurant && (currentTimeRestaurant?.open == "00:00" || !this.isOpenRestaurant(currentTimeRestaurant.open,currentTimeRestaurant.close,currentTimeRestaurant.timeZone))) {
       isClosed = true
     } else {
       isClosed = false
@@ -297,6 +366,7 @@ class HomeScreen extends Component {
     return (
       <TouchableOpacity
         style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
+        disabled={isClosed}
         onPress={() => {
           isClosed ? null :
             this.getMenu(item.item.storeId)
@@ -491,6 +561,16 @@ class HomeScreen extends Component {
       filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
       menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible,
       storeOpeningHours } = this.state
+    // restaurantData?.length > 0 && restaurantData.map((i,index)=>{
+    //   if(index == 0){
+    //     i.storeOpeningHours.map((j,index1)=>{
+    //       if(index1 == 3) {
+    //         j.close = '17:24'
+    //       }
+    //     })
+    //   }
+    // })
+    //console.log(moment(new Date()).format("hh:mm"),'[restaurantData]',restaurantData)
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :

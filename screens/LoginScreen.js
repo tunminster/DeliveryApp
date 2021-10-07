@@ -160,7 +160,8 @@ export const SignIn = ({ navigation }) => {
           autoCorrect={false}
         />
 
-        <Text style={loginstyles.forgot}>Forgot Password?</Text>
+          <Text onPress={() => navigation.push("ForgotPassword")} style={loginstyles.forgot}>Forgot Password?</Text>
+
 
         <CustomButton
           onPress={() => dologin()}
