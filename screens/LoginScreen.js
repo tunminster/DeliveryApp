@@ -159,8 +159,11 @@ export const SignIn = ({ navigation }) => {
           onChangeText={text => setPassword({ password: text })}
           autoCorrect={false}
         />
+            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push("ForgotPassword")}>
+              <Text style={loginstyles.forgot}>Forgot Password?</Text>
+            </TouchableOpacity>
 
-          <Text onPress={() => navigation.push("ForgotPassword")} style={loginstyles.forgot}>Forgot Password?</Text>
+
 
 
         <CustomButton
@@ -480,6 +483,8 @@ const loginstyles = StyleSheet.create({
     fontSize: normalize(14),
     fontFamily: 'Roboto-Regular',
     color: '#FE595E',
+  },
+  forgotLink:{
     alignSelf: 'flex-end',
     marginRight: wp(5),
     marginTop: hp(-2),

@@ -24,6 +24,7 @@ import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
+import CustomBackHeader from "../components/header/customBackHeader";
 
 export const ForgotPasswordScreen = ({ navigation }) => {
 
@@ -40,7 +41,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
         else if (!pattern.test(email)) {
             alert("Enter a valid email.")
         } else {
-            //navigation.navigate('OtpVerification')
+            navigation.navigate('OtpVerification')
         }
 
     }
@@ -52,6 +53,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
             applyKeyboardCheck={Platform.OS === 'ios'}
             disabled={false}
             alwaysBounceVertical={false} >
+            <CustomBackHeader navigation={navigation}/>
             <View style={{ marginVertical: isiPAD ? hp(3) : hp(4), alignItems: 'center' }}>
                 <Image source={require('../assets/images/logo.png')} style={styles.logo} />
             </View>
@@ -71,12 +73,12 @@ export const ForgotPasswordScreen = ({ navigation }) => {
                     onPress={clickOnSendOTP}
                     title={'Send OTP'}
                 />
-                <Text style={styles.account}>Already have an Account?
-                    <TouchableOpacity onPress={() => navigation.push("SignIn")}>
+                {/*<Text style={styles.account}>Already have an Account?*/}
+                {/*    <TouchableOpacity onPress={() => navigation.push("SignIn")}>*/}
 
-                        <Text style={styles.signup}> Sign In</Text>
-                    </TouchableOpacity>
-                </Text>
+                {/*        <Text style={styles.signup}> Sign In</Text>*/}
+                {/*    </TouchableOpacity>*/}
+                {/*</Text>*/}
 
             </View>
             <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? isiPAD ? styles.backgroundimg : styles.backgroundimg1 : styles.backgroundimg} />
