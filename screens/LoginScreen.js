@@ -372,6 +372,10 @@ export const CreateAccount = ({ navigation }) => {
           onPress={() => register()}
           title={'Sign Up'}
         />
+        <CustomButton
+            onPress={() => navigation.navigate('OtpVerification',{isRegister:true})}
+            title={'Sign Up 2'}
+        />
 
         <Text style={loginstyles.account}>Already have an Account?
             <TouchableOpacity onPress={() => navigation.push("SignIn")}>

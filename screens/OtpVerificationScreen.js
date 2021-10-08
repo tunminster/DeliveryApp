@@ -27,7 +27,7 @@ import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
 import CustomBackHeader from "../components/header/customBackHeader";
 
-export const OtpVerificationScreen = ({ navigation }) => {
+export const OtpVerificationScreen = ({ navigation,route = {} }) => {
 
     const [OTPCode, setOTPCode] = React.useState("");
 
@@ -40,7 +40,12 @@ export const OtpVerificationScreen = ({ navigation }) => {
         } else if (OTPCode.length !== 6) {
             alert("Enter a valid email.")
         } else {
-            navigation.navigate('ResetPassword')
+            if(route?.params?.isRegister){
+                navigation.navigate('SignIn')
+            } else {
+                navigation.navigate('ResetPassword')
+            }
+
         }
 
     }
