@@ -210,13 +210,14 @@ export const SignIn = ({ navigation }) => {
 };
 
 export const CreateAccount = ({ navigation }) => {
-  const { signUp } = React.useContext(AuthContext);
+  const { RequestEmailOTP } = React.useContext(AuthContext);
   const { googleSignIn } = React.useContext(AuthContext);
   const { facebookSignIn } = React.useContext(AuthContext);
   const { appleSignIn } = React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [isLoading, setLoading] = React.useState(false);
 
   const facebookLogIn = async () => {
     try {
@@ -322,7 +323,26 @@ export const CreateAccount = ({ navigation }) => {
     }
 
     else if (email.email != null && password.password != null) {
-      signUp(email.email, password.password, confirmPassword.confirmpassword);
+      setLoading(true);
+      RequestEmailOTP(email.email).then((res)=>{
+        setLoading(false);
+        if(res?.userEmailAddress !== ""){
+          navigation.navigate('OtpVerification',{isRegister:true,registerData:{
+              email: email.email,
+              password: password.password,
+              confirmPassword:confirmPassword.confirmpassword,
+            }})
+        }
+      }).catch(()=>{
+        alert('something went wrong please try again.')
+        setLoading(false);
+      })
+      // signUp(email.email, password.password, confirmPassword.confirmpassword).then((result)=>{
+      //   debugger
+      //   if (result.toUpperCase() == '"Account created"'.toUpperCase()) {
+      //     navigation.navigate('OtpVerification',{isRegister:true})
+      //   }
+      // });
     }
   }
 
@@ -371,11 +391,10 @@ export const CreateAccount = ({ navigation }) => {
         <CustomButton
           onPress={() => register()}
           title={'Sign Up'}
+          isDisable={isLoading}
+          isLoading={isLoading}
         />
-        <CustomButton
-            onPress={() => navigation.navigate('OtpVerification',{isRegister:true})}
-            title={'Sign Up 2'}
-        />
+
 
         <Text style={loginstyles.account}>Already have an Account?
             <TouchableOpacity onPress={() => navigation.push("SignIn")}>

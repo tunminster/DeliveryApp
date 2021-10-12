@@ -18,6 +18,8 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import { AuthRequestLogin, AuthRequestGoogleLogin, AuthRequestFBLogin, AuthRequestAppleLogin } from './components/AuthLoginComponent';
 
 import { CreateAccountComponent } from './components/CreateAccountComponent';
+import { RequestPasswordOTP } from './components/RequestPasswordOTP';
+import { VerifyOTP } from './components/VerifyOTPPassoword';
 import { AuthContext } from './constants/Context';
 import { storeData, retrieveData, storeUser } from './components/AuthKeyStorageComponent';
 import Store from './config/store';
@@ -37,6 +39,8 @@ import Support from './screens/Support';
 import RestaurantList from './screens/RestaurantList';
 import MyDetails from './screens/MyDetails';
 import messaging from '@react-native-firebase/messaging';
+import {RequestEmailOTP} from "./components/RequestEmailOTP";
+import {VerifyEmailOTP} from "./components/VerifyEmailOTP";
 const Stack = createStackNavigator();
 state = {
   email: "",
@@ -63,7 +67,6 @@ export default function App(props) {
           .then((data) => {
             const result = JSON.stringify(data);
             if (result.toUpperCase() == '"Account created"'.toUpperCase()) {
-
               loginRequest(email, password);
 
             }
@@ -77,6 +80,54 @@ export default function App(props) {
           });
 
       },
+        ForgotPasswordOTP:(email) => {
+            return new Promise((resolve,reject)=>{
+                RequestPasswordOTP(email)
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
+        RequestEmailOTP:(email) => {
+            return new Promise((resolve,reject)=>{
+                RequestEmailOTP(email )
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
+        VerifyOTPResetPassword:(data = {}) => {
+            return new Promise((resolve,reject)=>{
+                VerifyOTP(data)
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
+        VerifyEmailOTP:(data = {}) => {
+            return new Promise((resolve,reject)=>{
+                VerifyEmailOTP(data)
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
       signOut: () => {
         setUserToken(null);
       },

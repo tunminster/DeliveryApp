@@ -28,8 +28,9 @@ import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
 
-export const ResetPasswordScreen = ({ navigation }) => {
-
+export const ResetPasswordScreen = ({ navigation,route }) => {
+    const { VerifyOTPResetPassword } = React.useContext(AuthContext);
+    const [isLoading, setLoading] = React.useState(false);
     const [password, setPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
 
@@ -49,13 +50,37 @@ export const ResetPasswordScreen = ({ navigation }) => {
             alert("Password mismatch.");
         }
         else if ( password != null && confirmPassword !== null ) {
-            alert('Successfully password changed')
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "SignIn" }],
-                })
-            );
+            const body= {
+                "email": route?.params?.email,
+                "code": route?.params?.otpCode,
+                "password": password,
+                "confirmPassword": confirmPassword
+            }
+            debugger
+            setLoading(true);
+            VerifyOTPResetPassword(body).then((res)=>{
+                setLoading(false);
+                debugger
+                if(res?.status === 'approved' ){
+                    alert('Successfully password changed')
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: "SignIn" }],
+                        })
+                    );
+                }
+                else if(res?.errors[0].message !==''){
+                    alert(res.errors[0].message)
+                } else  {
+                    alert('OTP verification failed')
+                }
+            }).catch((error)=>{
+                alert('OTP verification failed')
+                setLoading(false)
+            })
+
+
         }
     }
 
@@ -95,6 +120,8 @@ export const ResetPasswordScreen = ({ navigation }) => {
                 <CustomButton
                     onPress={onClickResetPassword}
                     title={'Reset Password'}
+                    isDisable={isLoading}
+                    isLoading={isLoading}
                 />
 
             </View>

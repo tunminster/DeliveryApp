@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
-import {StyleSheet,TouchableOpacity,Text} from 'react-native';
+import {StyleSheet,TouchableOpacity,Text,ActivityIndicator} from 'react-native';
 import {wp,hp,normalize} from '../../helper/responsiveScreen'
 
 
 export default class CustomButton extends Component{
     render(){
-        const {onPress,title, isDisable = false}=this.props;
+        const {onPress,title, isDisable = false,isLoading = false }=this.props;
         return(
             <TouchableOpacity disabled={isDisable} onPress={onPress} style={[styles.btn,isDisable && {opacity:0.5}]}>
-                <Text style={styles.loginText}>{title}</Text>
+                {(isLoading && isDisable) ?  <ActivityIndicator color={'white'} size={'large'}/>  : <Text style={styles.loginText}>{title}</Text>}
             </TouchableOpacity>
         )
     }

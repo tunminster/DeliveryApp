@@ -28,9 +28,9 @@ import jwt_decode from 'jwt-decode';
 import CustomBackHeader from "../components/header/customBackHeader";
 
 export const OtpVerificationScreen = ({ navigation,route = {} }) => {
-
+    const { VerifyEmailOTP,signUp } = React.useContext(AuthContext);
     const [OTPCode, setOTPCode] = React.useState("");
-
+    const [isLoading, setLoading] = React.useState(false);
 
     const clickOnOTPVerify = () => {
 
@@ -41,9 +41,26 @@ export const OtpVerificationScreen = ({ navigation,route = {} }) => {
             alert("Enter a valid email.")
         } else {
             if(route?.params?.isRegister){
-                navigation.navigate('SignIn')
+
+                const body= {
+                    "email": route?.params?.registerData?.email,
+                    "code": OTPCode
+                }
+                setLoading(true);
+                VerifyEmailOTP(body).then((res)=> {
+                    debugger
+                    setLoading(false);
+
+                    if(res?.status === "approved"){
+                        signUp(body.email, route?.params?.registerData?.password, route?.params?.registerData?.confirmPassword);
+                    } else {
+                        alert('OTP verification failed')
+                    }
+
+                }).catch(()=>setLoading(false));
+                // navigation.navigate('SignIn')
             } else {
-                navigation.navigate('ResetPassword')
+                navigation.navigate('ResetPassword',{email:route?.params?.email,otpCode:OTPCode})
             }
 
         }
@@ -99,9 +116,10 @@ export const OtpVerificationScreen = ({ navigation,route = {} }) => {
                 </Text>
 
                 <CustomButton
-                    isDisable={OTPCode.length !== 6}
                     onPress={clickOnOTPVerify}
                     title={'Verify'}
+                    isDisable={isLoading || OTPCode.length !== 6}
+                    isLoading={isLoading}
                 />
 
             </View>

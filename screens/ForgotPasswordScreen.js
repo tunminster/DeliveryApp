@@ -27,9 +27,9 @@ import jwt_decode from 'jwt-decode';
 import CustomBackHeader from "../components/header/customBackHeader";
 
 export const ForgotPasswordScreen = ({ navigation }) => {
-
+    const { ForgotPasswordOTP } = React.useContext(AuthContext);
     const [email, setEmail] = React.useState("");
-
+    const [isLoading, setLoading] = React.useState(false);
 
     const clickOnSendOTP = () => {
         var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
@@ -41,7 +41,15 @@ export const ForgotPasswordScreen = ({ navigation }) => {
         else if (!pattern.test(email)) {
             alert("Enter a valid email.")
         } else {
-            navigation.navigate('OtpVerification')
+            setLoading(true);
+            ForgotPasswordOTP(email).then((res)=>{
+                setLoading(false);
+                if(res?.email !== ''){
+                    navigation.navigate('OtpVerification',{email:email})
+                }
+            }).catch(()=>{
+                setLoading(false);
+            })
         }
 
     }
@@ -70,6 +78,8 @@ export const ForgotPasswordScreen = ({ navigation }) => {
                 />
 
                 <CustomButton
+                    isDisable={isLoading}
+                    isLoading={isLoading}
                     onPress={clickOnSendOTP}
                     title={'Send OTP'}
                 />
