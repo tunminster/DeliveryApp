@@ -4,6 +4,7 @@ import {
   ImageBackground, ActivityIndicator,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Clipboard from '@react-native-community/clipboard';
 import { wp, hp, normalize } from '../helper/responsiveScreen'
 import Colors from '../constants/Colors'
 import Header from '../components/header'
@@ -111,11 +112,11 @@ class HomeScreen extends Component {
     // let fcmToken = await AsyncStorage.getItem("fcmToken");
     let fcmToken = undefined;
     console.log("fcmToken from AsyncStorage: ", fcmToken);
-    // Clipboard.setString(fcmToken);
+     Clipboard.setString(fcmToken);
     if (!fcmToken) {
       try {
         const token = await messaging().getToken();
-        // Clipboard.setString(token);
+         Clipboard.setString(token);
         console.log("FCM token: " + token);
         // AsyncStorage.setItem("fcmToken", token);
       } catch (e) {

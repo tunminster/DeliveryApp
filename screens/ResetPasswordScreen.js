@@ -56,11 +56,9 @@ export const ResetPasswordScreen = ({ navigation,route }) => {
                 "password": password,
                 "confirmPassword": confirmPassword
             }
-            debugger
             setLoading(true);
             VerifyOTPResetPassword(body).then((res)=>{
                 setLoading(false);
-                debugger
                 if(res?.status === 'approved' ){
                     alert('Successfully password changed')
                     navigation.dispatch(

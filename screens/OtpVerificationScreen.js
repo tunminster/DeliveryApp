@@ -26,9 +26,10 @@ import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
 import CustomBackHeader from "../components/header/customBackHeader";
+import {RequestEmailOTP} from "../components/RequestEmailOTP";
 
 export const OtpVerificationScreen = ({ navigation,route = {} }) => {
-    const { VerifyEmailOTP,signUp } = React.useContext(AuthContext);
+    const { VerifyEmailOTP,signUp,ForgotPasswordOTP } = React.useContext(AuthContext);
     const [OTPCode, setOTPCode] = React.useState("");
     const [isLoading, setLoading] = React.useState(false);
 
@@ -48,7 +49,6 @@ export const OtpVerificationScreen = ({ navigation,route = {} }) => {
                 }
                 setLoading(true);
                 VerifyEmailOTP(body).then((res)=> {
-                    debugger
                     setLoading(false);
 
                     if(res?.status === "approved"){
@@ -109,7 +109,17 @@ export const OtpVerificationScreen = ({ navigation,route = {} }) => {
                 />
 
                 <Text style={[styles.account,{marginVertical:'5%'}]}>Didn't get the Code?
-                    <TouchableOpacity onPress={() => alert('resend password')}>
+                    <TouchableOpacity onPress={() =>{
+                        if(route?.params?.isRegister){
+                            RequestEmailOTP(route?.params?.email).then(()=>{
+                                alert('Successfully Resent otp.')
+                            })
+                        } else {
+                            ForgotPasswordOTP(route?.params?.email).then(()=>{
+                                alert('Successfully Resent otp.')
+                            })
+                        }
+                    }}>
 
                         <Text style={styles.signup}> Resend</Text>
                     </TouchableOpacity>

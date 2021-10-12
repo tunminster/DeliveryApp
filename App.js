@@ -68,12 +68,11 @@ export default function App(props) {
             const result = JSON.stringify(data);
             if (result.toUpperCase() == '"Account created"'.toUpperCase()) {
               loginRequest(email, password);
-
             }
             else {
+                setIsLoading(false);
               Alert.alert("Please try to create account again.");
             }
-            setIsLoading(false);
           }).catch((error) => {
             setIsLoading(false);
             console.log('error', error)
