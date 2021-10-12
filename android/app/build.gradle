@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics' // add crashlytics
 import com.android.build.OutputFile
 
 /**
@@ -165,6 +166,10 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                unstrippedNativeLibsDir 'build/intermediates/merged_native_libs/release/out/lib'
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

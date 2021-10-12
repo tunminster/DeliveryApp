@@ -28,4 +28,8 @@ export default {
     otpScreenTitle: 'OTP Verification',
     resetPasswordScreenCaption: 'Enter your new password atleast 6 digit long.',
     resetPasswordScreenTitle: 'Reset Password',
+    applicationFees: 'Application fees',
+    deliveryFees:"Delivery fees",
+    tax: "Tax",
+    subTotal: 'Subtotal'
 }

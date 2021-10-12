@@ -57,13 +57,13 @@ class Orders extends Component {
                     console.log('order res', res);
                     let preparingData = res.filter(element => {
                         //let data = element.orderStatus == 'Preparing';
-                        let data = element.status === 3;
+                        let data = element.status === 4;
                         return data;
                     });
 
                     let completeData = res.filter(element => {
                         // let data = element.orderStatus == 'succeeded';
-                        let data = element.status === 6;
+                        let data = element.status === 0;
                         return data;
                     });
 
@@ -88,9 +88,9 @@ class Orders extends Component {
 
     renderItem = (item, index) => {
         let status = '';
-        if (item.status === 6) {
+        if (item.status === 4) {
             status = 'Delivered'
-        } else if (item.status === 3) {
+        } else if (item.status === 0) {
             status = 'Preparing'
         }
         return (

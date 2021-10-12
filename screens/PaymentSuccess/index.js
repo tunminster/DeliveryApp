@@ -106,6 +106,13 @@ class PaymentSuccess extends Component {
         }).start();
     }
 
+    renderBillField = (title = '', amount = 0) => (
+        <View style={[styles.bottomChildContainer1,{height: hp(5)}]}>
+            <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+        </View>
+    )
+
     render() {
         const { progressStatus, isAddress, orderDetails, loading, orderType } = this.state;
 
@@ -194,6 +201,10 @@ class PaymentSuccess extends Component {
                                         <View style={styles.seperateLine} />
                                     </View>
                                 )}
+                                {/*{this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}*/}
+                                {/*{orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}*/}
+                                {/*{this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}*/}
+                                {/*{this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}*/}
 
                             </ScrollView>
 
@@ -304,6 +315,13 @@ const styles = StyleSheet.create({
         width: wp(4),
         height: wp(4),
         alignSelf: 'center',
+    },
+    bottomChildContainer1: {
+        flexDirection: 'row',
+        height: hp(6),
+        marginHorizontal: wp(5),
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
 });
 

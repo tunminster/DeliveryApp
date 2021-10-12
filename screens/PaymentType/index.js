@@ -356,7 +356,7 @@ class PaymentType extends Component {
                     <View style={styles.mapContainer}>
                         <MapView
                             ref={r => this.mapRef = r}
-                            //provider={'google'}
+                            provider={'google'}
                             style={styles.mapView}
                             region={{
                                 latitude: lat,

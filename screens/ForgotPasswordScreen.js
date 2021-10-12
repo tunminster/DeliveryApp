@@ -81,6 +81,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
                 {/*</Text>*/}
 
             </View>
+            <View style={{flex:1}} />
             <Image source={require('../assets/images/Background.png')} resizeMode='stretch' style={isX ? isiPAD ? styles.backgroundimg : styles.backgroundimg1 : styles.backgroundimg} />
         </SmartScrollView>
     );

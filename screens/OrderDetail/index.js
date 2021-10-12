@@ -60,8 +60,16 @@ class OrderDetail extends Component {
             });
     }
 
+    renderBillField = (title = '', amount = 0) => (
+        <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
+            <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+        </View>
+    )
+
     render() {
         const data = this.props.route.params.order;
+        const {orderDetails = {}} = this.state;
         console.log('data...', data)
         return (
             <View style={styles.container}>
@@ -108,6 +116,12 @@ class OrderDetail extends Component {
                                         <View style={styles.seperateLine} />
                                     </View>
                                 )}
+                            <View style={{flex:1}}>
+                            {/*{this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}*/}
+                            {/*{orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}*/}
+                            {/*{this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}*/}
+                            {/*{this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}*/}
+                            </View>
                         </ScrollView>
 
                         <View style={styles.bottomContainer}>
