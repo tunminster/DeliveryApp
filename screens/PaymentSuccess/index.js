@@ -201,10 +201,10 @@ class PaymentSuccess extends Component {
                                         <View style={styles.seperateLine} />
                                     </View>
                                 )}
-                                {/*{this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}*/}
-                                {/*{orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}*/}
-                                {/*{this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}*/}
-                                {/*{this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}*/}
+                                {this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}
+                                {orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}
+                                {this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}
+                                {this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}
 
                             </ScrollView>
 

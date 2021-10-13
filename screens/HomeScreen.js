@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput,
   ImageBackground, ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Clipboard from '@react-native-community/clipboard';
@@ -26,6 +27,7 @@ import LocationView from "../components/locationView"
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import vars from '../utils/vars';
+import {post,put} from '../utils/helpers'
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
@@ -107,21 +109,35 @@ class HomeScreen extends Component {
     }
   }
 
+  registerNotification = (token) => {
+    post(`${vars.notificationRegisterPost}?handle=${token}`,{},(res)=>{
+      let body = {
+        "platform": "fcm",
+          "handle": token,
+        "tags":[]
+      }
+      put(`${vars.notificationRegisterPost}?id=${res.id}`,body,(res)=>{
+        console.log('successfully fcm register')
+      })
+    })
+  };
 
   async getToken() {
-    // let fcmToken = await AsyncStorage.getItem("fcmToken");
-    let fcmToken = undefined;
+     let fcmToken = await AsyncStorage.getItem("fcmToken");
     console.log("fcmToken from AsyncStorage: ", fcmToken);
-     Clipboard.setString(fcmToken);
+     // Clipboard.setString(fcmToken);
     if (!fcmToken) {
       try {
         const token = await messaging().getToken();
-         Clipboard.setString(token);
+         // Clipboard.setString(token);
+        this.registerNotification(token)
         console.log("FCM token: " + token);
-        // AsyncStorage.setItem("fcmToken", token);
+        await AsyncStorage.setItem("fcmToken", token);
       } catch (e) {
         console.error("token registration failed?", e);
       }
+    } else {
+      this.registerNotification(fcmToken);
     }
   }
 
@@ -159,6 +175,7 @@ class HomeScreen extends Component {
 
     retrieveData(STORAGE_KEY)
       .then((data) => {
+        Clipboard.setString(data);
         const config = {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };

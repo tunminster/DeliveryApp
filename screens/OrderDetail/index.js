@@ -117,10 +117,10 @@ class OrderDetail extends Component {
                                     </View>
                                 )}
                             <View style={{flex:1}}>
-                            {/*{this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}*/}
-                            {/*{orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}*/}
-                            {/*{this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}*/}
-                            {/*{this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}*/}
+                            {this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}
+                            {orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}
+                            {this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}
+                            {this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}
                             </View>
                         </ScrollView>
 
