@@ -18,6 +18,10 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+  <key>BGTaskSchedulerPermittedIdentifiers</key>
+  <array>
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER)e</string>
+  </array>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>

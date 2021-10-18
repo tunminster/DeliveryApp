@@ -175,7 +175,7 @@ class HomeScreen extends Component {
 
     retrieveData(STORAGE_KEY)
       .then((data) => {
-        Clipboard.setString(data);
+        //Clipboard.setString(data);
         const config = {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };

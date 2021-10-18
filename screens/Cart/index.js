@@ -5,7 +5,7 @@ import Button from '../../components/button';
 import Store from '../../config/store/index';
 import { observer } from 'mobx-react';
 import CartItem from './CartItem';
-import { getTotalPrice } from '../../utils/helpers';
+import {getTotalPrice, post, put} from '../../utils/helpers';
 import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Colors from '../../constants/Colors'
 import BackIcon from '../../components/backIcon';
@@ -19,13 +19,38 @@ class Cart extends Component {
         super(props)
         this.state = {
             isEdit: false,
-            isDeliver:false
+            isDeliver:true,
+            applicationFees: {
+                platformFee: 0,
+                deliveryFee: 0,
+                totalAmount: 0,
+                taxFees:0,
+                subTotal: 0
+            }
         }
+    }
+    componentDidMount() {
+    this.getCartDetail();
+    }
+
+    getCartDetail = (isDeliver = false) => {
+        let subTotal = getTotalPrice()
+        post(`${vars.applicationFeesPost}`,{
+            "subTotal":subTotal
+        },(res)=>{
+            this.setState({applicationFees: {
+                    platformFee: res?.platformFee || 0,
+                    deliveryFee: res?.deliveryFee || 0,
+                    totalAmount: res?.totalAmount || 0,
+                    taxFees:res?.taxFees || 0,
+                    subTotal:subTotal || 0,
+                }});
+        })
     }
 
     checkout() {
         if (Store.cart.length != 0) {
-            this.props.navigation.navigate('PaymentType',{isDeliver:this.state.isDeliver});
+            this.props.navigation.navigate('PaymentType',{isDeliver:this.state.isDeliver,cartDetails:this.state.applicationFees});
         } else {
             alert("Please add item")
         }
@@ -38,8 +63,8 @@ class Cart extends Component {
     )
 
     render() {
-        const { isEdit } = this.state;
-
+        const { isEdit,isDeliver = true,applicationFees = {} } = this.state;
+        console.log('[fees]',applicationFees);
         return (
             <View style={styles.container}>
 
@@ -63,10 +88,8 @@ class Cart extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.seperateLine} />
-                <View style={{marginVertical:wp(2),marginHorizontal:wp(5)}}>
-                    <SwitchButton status={this.state.isDeliver} onChange={(value)=>{
-                        this.setState({isDeliver:value})
-                    }}   />
+                <View style={{ alignItems:'flex-end',marginVertical:wp(2)}}>
+                    <SwitchButton status={this.state.isDeliver} onChange={(value)=>this.setState({isDeliver:value})}   />
                 </View>
 
                 <Text style={{ ...styles.restaurantTitle, color: Colors.black, marginLeft: wp(5), marginTop: hp(1) }}>{Store.restaurantData.storeName}</Text>
@@ -83,7 +106,10 @@ class Cart extends Component {
                 <ScrollView style={{ marginBottom: hp(17) }}>
                     {Store.cart.map((item, i) =>
                         <CartItem
-                            onPress={() => this.forceUpdate()}
+                            onPress={() => {
+                                this.getCartDetail();
+                                this.forceUpdate()
+                            }}
                             isEdit ={this.state.isEdit}
                             data={item} key={i} index={i} navigation={this.props.navigation} />)}
                     <View style={styles.bottomChildContainer}>
@@ -91,10 +117,10 @@ class Cart extends Component {
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{flex:1}}>
-                        {/*{this.renderBillField(vars.subTotal,orderDetails?.subtotalAmount)}*/}
-                        {/*{orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}*/}
-                        {/*{this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}*/}
-                        {/*{this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}*/}
+                        {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
+                        {applicationFees?.taxFees > 0 && this.renderBillField(vars.tax,applicationFees?.taxFees)}
+                        {isDeliver && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
+                        {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
                     </View>
                 </ScrollView>
 
@@ -102,7 +128,7 @@ class Cart extends Component {
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{'Order Total'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${vars.currency} ${(applicationFees.totalAmount / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
 

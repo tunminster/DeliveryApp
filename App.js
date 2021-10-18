@@ -10,7 +10,7 @@ import DrawerNavigator from './navigation/DrawerNavigator';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
-
+import {useNavigation} from '@react-navigation/native'
 import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import OtpVerificationScreen from './screens/OtpVerificationScreen';
@@ -145,14 +145,37 @@ export default function App(props) {
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
+
       messaging().onMessage(async (remoteMessage) => {
           console.log("[Notification]", remoteMessage);
+          //setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),1000)
           //store.dispatch(callSetOrderShow(0));
       });
       messaging().setBackgroundMessageHandler(async (remoteMessage) => {
           console.log("[Notification]", remoteMessage);
+           setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),1000)
           //store.dispatch(callSetOrderShow(0));
       });
+      messaging().onNotificationOpenedApp(remoteMessage => {
+          setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),3000)
+          console.log(
+              'Notification caused app to open from background state:',
+              remoteMessage.notification,
+          );
+      });
+
+      // Check whether an initial notification is available
+      messaging()
+          .getInitialNotification()
+          .then(remoteMessage => {
+              if (remoteMessage) {
+                  setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),3000)
+                  console.log(
+                      'Notification caused app to open from quit state:',
+                      remoteMessage.notification,
+                  );
+              }
+          });
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();

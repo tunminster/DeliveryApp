@@ -8,6 +8,7 @@ import { PaymentMethodComponent } from '../../components/PaymentMethodComponent'
 import Loading from '../../components/loading';
 import { wp, hp, normalize, } from '../../helper/responsiveScreen';
 import Colors from '../../constants/Colors'
+import vars from "../../utils/vars";
 
 class Payment extends Component {
 
@@ -76,7 +77,16 @@ class Payment extends Component {
             });
     }
 
+    renderBillField = (title = '', amount = 0) => (
+        <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
+            <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+        </View>
+    )
+
     render() {
+        const {cartDetails:applicationFees} = this.props?.route?.params
+        console.log(applicationFees)
         return (
             <View style={styles.container}>
 
@@ -86,13 +96,20 @@ class Payment extends Component {
                     <Text style={styles.headerTitle}>{'Payment'}</Text>
                 </View>
                 <View style={styles.seperateLine} />
-
                 {this.state.loading ?
                     <Loading /> :
                     <TouchableWithoutFeedback
                         onPress={() => Keyboard.dismiss()}>
                         <View style={styles.childContainer}>
                             <CreditCardInput onChange={cardData => this.setState({ cardData })} />
+                            <View style={{flex:1}}>
+                                {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
+                                {applicationFees?.taxFees > 0 && this.renderBillField(vars.tax,applicationFees?.taxFees)}
+                                {applicationFees?.deliveryFees > 0 && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
+                                {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
+                                {this.renderBillField(vars.subTotal,applicationFees?.subTotal)}
+                                {this.renderBillField('Total Amount',applicationFees?.totalAmount)}
+                            </View>
                             <Button
                                 onPress={() => this.sendRequest()}
                                 title={'Confirm'}
@@ -137,7 +154,20 @@ const styles = StyleSheet.create({
     btn: {
         margin: wp(6),
         backgroundColor: Colors.tabIconSelected
-    }
+    },
+    bottomContainer: {
+        position: 'absolute',
+        bottom: 0,
+        height: hp(17),
+        width: '100%'
+    },
+    bottomChildContainer: {
+        flexDirection: 'row',
+        height: hp(6),
+        marginHorizontal: wp(3),
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
 });
 
 export default Payment;

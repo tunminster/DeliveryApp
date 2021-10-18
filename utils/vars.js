@@ -32,5 +32,6 @@ export default {
     deliveryFees:"Delivery fees",
     tax: "Tax",
     subTotal: 'Subtotal',
-    notificationRegisterPost:"https://delivery-api.harveynetwork.com/api/customer-notification/register"
+    notificationRegisterPost:"https://delivery-api.harveynetwork.com/api/customer-notification/register",
+    applicationFeesPost:"https://delivery-api.harveynetwork.com/api/order/get-application-fees"
 }

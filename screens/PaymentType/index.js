@@ -54,9 +54,9 @@ class PaymentType extends Component {
          const {params = {}} = this.props.route
 
          if (params?.isDeliver) {
-             this.setState({ storeId: Store.restaurantData.storeId,dropdownValue:'Pick up order at',lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id })
-         } else {
              this.setState({ storeId: Store.restaurantData.storeId,dropdownValue:'Deliver to', lat: Store.deliverAddress.lat, lng: Store.deliverAddress.lng, selectedAddress: Store.deliverAddress.id == 0 ? this.state.addresssId : Store.deliverAddress.id })
+         } else {
+             this.setState({ storeId: Store.restaurantData.storeId,dropdownValue:'Pick up order at',lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id })
         }
 
         try {
@@ -197,7 +197,8 @@ class PaymentType extends Component {
                             this.paymentWithBalance(cartData);
                             break;
                         case 'card':
-                            this.props.navigation.navigate('Payment', { viaCart: cartData, orderType: dropdownValue == 'Pick up order at' ? 1 : 2 } );
+                            console.log(this.props);
+                            this.props.navigation.navigate('Payment', { viaCart: cartData, orderType: dropdownValue == 'Pick up order at' ? 1 : 2,cartDetails: this.props?.route?.params.cartDetails } );
                             break;
                         case 'pay':
                             this.makePayment()
@@ -306,6 +307,7 @@ class PaymentType extends Component {
 
     render() {
         const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue} = this.state;
+        console.log(lat,lng,latDelta,lngDelta)
         return (
             <View style={styles.container}>
 

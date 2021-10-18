@@ -29,7 +29,7 @@ const SwitchButton = props => {
     setToggle(props.status);
   }, [props]);
 
-
+let style=  toggle ? {right:wp(0.7)} : {left:wp(0.7)};
   return (
       <View style={{flexDirection:"row",alignItems:'center',justifyContent:'space-between'}}>
           <View style={{justifyContent: 'center', alignItems: 'center',flexDirection:'row'}}>
@@ -47,26 +47,29 @@ const SwitchButton = props => {
                       justifyContent: 'center',
                       alignItems: !toggle ? 'flex-start' : 'flex-end',
                       borderRadius: wp(20),
-                      width: wp(14),
-                      height: wp(8),
+
+                      height: wp(9),
                       marginRight:wp(2),
                       backgroundColor: toggle ? Colors.tabIconSelected : Colors.gray,
                   }}>
-                  <View
-                      style={{
-                          height: wp(7),
-                          width: wp(7),
-                          margin: 1.5,
-                          backgroundColor: Colors.white,
-                          borderRadius: wp(10),
-                          shadowColor: '#00000029',
-                          shadowOffset: {width: 1, height: 2},
-                          shadowOpacity: 1,
-                          shadowRadius: 2
-                      }}
-                  />
+                      <View
+                          style={{
+                              ...style,
+                              position:'absolute',
+                              right:wp(.5),
+                              height: wp(7.6),
+                              width: wp(7.6),
+                              backgroundColor: Colors.white,
+                              borderRadius: wp(10),
+                              shadowColor: '#00000029',
+                              shadowOffset: {width: 1, height: 2},
+                              shadowOpacity: 1,
+                              shadowRadius: 2
+                          }}
+                      />
+                  <Text style={[styles.restaurantTitle,{color:Colors.white,marginLeft:wp(toggle ? 3 : 10),marginRight:wp(toggle ? 10: 3)}]}>{toggle ? 'Delivery': 'Collection'}</Text>
               </TouchableOpacity>
-              <Text style={styles.restaurantTitle}>{  toggle ? 'Pick up order at' : 'Deliver to'}</Text>
+
           </View>
       </View>
 

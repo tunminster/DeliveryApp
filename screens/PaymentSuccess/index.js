@@ -47,25 +47,24 @@ class PaymentSuccess extends Component {
                 const config = {
                     headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
                 };
-
                 console.log('config', config)
-                const storeOpeningHoursData = Store.restaurantData.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday())
+                const storeOpeningHoursData = Store?.restaurantData?.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday())
                 let timeZone
-                if (storeOpeningHoursData.timeZone == null) {
+                if (storeOpeningHoursData?.timeZone == null) {
                     timeZone = 7
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'E') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'E') {
                     timeZone = 1
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'C') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'C') {
                     timeZone = 2
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'M') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'M') {
                     timeZone = 3
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'P') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'P') {
                     timeZone = 4
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'A') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'A') {
                     timeZone = 5
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'H') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'H') {
                     timeZone = 6
-                } else if (storeOpeningHoursData.timeZone.charAt(0) == 'G') {
+                } else if (storeOpeningHoursData?.timeZone.charAt(0) == 'G') {
                     timeZone = 7
                 }
                 const value = 'orderId=' + this.props.route.params.orderId + '&timeZone=' + timeZone

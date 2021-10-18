@@ -57,13 +57,13 @@ class Orders extends Component {
                     console.log('order res', res);
                     let preparingData = res.filter(element => {
                         //let data = element.orderStatus == 'Preparing';
-                        let data = element.status === 4;
+                        let data = element.status === 3;
                         return data;
                     });
 
                     let completeData = res.filter(element => {
                         // let data = element.orderStatus == 'succeeded';
-                        let data = element.status === 0;
+                        let data = element.status === 6;
                         return data;
                     });
 
