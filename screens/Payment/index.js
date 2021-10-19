@@ -3,13 +3,13 @@ import { View, ScrollView, Alert, AsyncStorage, Text, StyleSheet, TouchableWitho
 import { CreditCardInput } from 'react-native-credit-card-input';
 import Button from '../../components/button';
 import BackIcon from '../../components/backIcon';
-import { post } from '../../utils/helpers';
+import {getTotalPrice, post} from '../../utils/helpers';
 import { PaymentMethodComponent } from '../../components/PaymentMethodComponent'
 import Loading from '../../components/loading';
 import { wp, hp, normalize, } from '../../helper/responsiveScreen';
 import Colors from '../../constants/Colors'
 import vars from "../../utils/vars";
-
+import Store from '../../config/store/index';
 class Payment extends Component {
 
     state = {
@@ -52,7 +52,6 @@ class Payment extends Component {
             + "&card[exp_year]=" + strExpiryYear + "&card[cvc]=" + this.state.cardData.values.cvc
 
         this.setState({ loading: true })
-
         PaymentMethodComponent(data)
             .then((responseJson) => {
                 console.log('payment method responseJson', responseJson)
@@ -85,8 +84,7 @@ class Payment extends Component {
     )
 
     render() {
-        const {cartDetails:applicationFees} = this.props?.route?.params
-        console.log(applicationFees)
+        const applicationFees = Store.applicationFees
         return (
             <View style={styles.container}>
 
@@ -105,10 +103,10 @@ class Payment extends Component {
                             <View style={{flex:1}}>
                                 {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
                                 {applicationFees?.taxFees > 0 && this.renderBillField(vars.tax,applicationFees?.taxFees)}
-                                {applicationFees?.deliveryFees > 0 && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
+                                {applicationFees?.deliveryFee > 0 && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
                                 {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
                                 {this.renderBillField(vars.subTotal,applicationFees?.subTotal)}
-                                {this.renderBillField('Total Amount',applicationFees?.totalAmount)}
+                                {this.renderBillField('Total Amount',getTotalPrice())}
                             </View>
                             <Button
                                 onPress={() => this.sendRequest()}

@@ -24,7 +24,7 @@ export default {
     appleIdMessage: 'You must share your email address to login with the apple Id',
     forgotScreenTitle: 'Forgot Password',
     forgotScreenCaption: 'Please enter your Information below in order to login to you Account',
-    otpScreenCaption: 'Enter the 4 digit code sent to your registered Email address.',
+    otpScreenCaption: 'Enter the 6 digit code sent to your registered Email address.',
     otpScreenTitle: 'OTP Verification',
     resetPasswordScreenCaption: 'Enter your new password atleast 6 digit long.',
     resetPasswordScreenTitle: 'Reset Password',

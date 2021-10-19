@@ -198,7 +198,7 @@ class PaymentType extends Component {
                             break;
                         case 'card':
                             console.log(this.props);
-                            this.props.navigation.navigate('Payment', { viaCart: cartData, orderType: dropdownValue == 'Pick up order at' ? 1 : 2,cartDetails: this.props?.route?.params.cartDetails } );
+                            this.props.navigation.navigate('Payment', { viaCart: cartData, orderType: dropdownValue == 'Pick up order at' ? 1 : 2 } );
                             break;
                         case 'pay':
                             this.makePayment()

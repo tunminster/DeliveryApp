@@ -86,6 +86,16 @@ export function fixImgPath(src) {
 }
 
 export function cacheCart(cart, cartCount) {
+    let subTotal = getTotalPrice(true)
+    if(subTotal > 0){
+        post(`${vars.applicationFeesPost}`,{
+            "subTotal":subTotal
+        },(res)=>{
+            console.log(subTotal,'[sdas]',res)
+            Store.setApplicationFee(res)
+        })
+    }
+
     AsyncStorage.setItem('@cart', JSON.stringify(cart));
     AsyncStorage.setItem('@cartCount', cartCount.toString());
 }
@@ -97,10 +107,17 @@ export function getCachedCart() {
     });
 }
 
-export function getTotalPrice() {
-    return Store.cart.map(x => {
+export function getTotalPrice( isSubTotal = false) {
+    let totalAmount = 0;
+    let applicationFees = Store.applicationFees;
+    let isDeliver = Store.isDelivery;
+    let subTotal = Store.cart.map(x => {
         return getDiscountPrice(x) * x.count
-    }).reduce((a, b) => a + b, 0)
+    }).reduce((a, b) => a + b, 0);
+    totalAmount = isDeliver ? (applicationFees.deliveryFee + subTotal + applicationFees.platformFee + applicationFees.taxFees) : (applicationFees.subTotal + applicationFees.platformFee + applicationFees.taxFees)
+   let a = isSubTotal ? subTotal : totalAmount;
+    console.log(isSubTotal,'[isSubtotal]',a)
+    return a
 }
 
 export function getDiscountPrice(x) {

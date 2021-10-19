@@ -11,6 +11,12 @@ class Store{
     @observable addBasket = [];
     @observable restaurantData = null
     @observable deliverAddress = null
+    @observable isDelivery = true;
+    @observable applicationFees = {
+        platformFee: 0,
+        deliveryFee: 0,
+        taxFees:0,
+    };
 
     @action setCurrentRoute(route) {
         this.currentRoute = route;
@@ -55,6 +61,16 @@ class Store{
     }
     @action setAllProducts(data) {
         this.allProducts = data;
+    }
+    @action setDelivery(data) {
+        this.isDelivery = data;
+    }
+    @action setApplicationFee(data) {
+        this.applicationFees = {
+            platformFee: data.platformFee || 0,
+            deliveryFee: data.deliveryFee || 0,
+            taxFees:data.taxFees || 0,
+        };
     }
 
 }
