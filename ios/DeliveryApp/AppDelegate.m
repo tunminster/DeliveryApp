@@ -4,13 +4,14 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
-
+#import <GoogleMaps/GoogleMaps.h>
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
 #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
 #import <EXSplashScreen/EXSplashScreenService.h>
 #import <UMCore/UMModuleRegistryProvider.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <Firebase.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -45,10 +46,13 @@ static void InitializeFlipper(UIApplication *application) {
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
-    
+  if ([FIRApp defaultApp] == nil) {
+      [FIRApp configure];
+    }
   self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[UMModuleRegistryProvider alloc] init]];
   self.launchOptions = launchOptions;
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  [GMSServices provideAPIKey:@"AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8"];
   #ifdef DEBUG
     [self initializeReactNativeApp];
   #else

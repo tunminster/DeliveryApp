@@ -45,6 +45,7 @@ class RestaurantList extends Component {
             menuDetailIndex: -1,
             menuDetailCount: 0,
             storeOpeningHours: null
+
         }
     }
 

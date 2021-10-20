@@ -283,6 +283,7 @@ class AddressCreation extends Component {
                             <MapView
                                 ref={r => this.mapRef = r}
                                 style={styles.mapView}
+                                provider={'google'}
                                 region={{
                                     latitude: lat == '' ? 0.0 : lat,
                                     longitude: lng == '' ? 0.0 : lng,
@@ -298,7 +299,6 @@ class AddressCreation extends Component {
                                         latitude: lat == '' ? 0.0 : lat,
                                         longitude: lng == '' ? 0.0 : lng,
                                     }}
-                                    draggable
                                     draggable={true}
                                 />
                             </MapView>

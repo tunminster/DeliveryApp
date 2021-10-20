@@ -145,7 +145,7 @@ class MoreScreen extends Component {
           <ProfileItem
             title={'LogOut'}
             onPress={() => {
-              logout(),
+              logout();
                 navigation.dispatch(
                   CommonActions.reset({
                     index: 0,

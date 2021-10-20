@@ -10,11 +10,16 @@ import DrawerNavigator from './navigation/DrawerNavigator';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { Icon } from 'react-native-elements';
-
+import {useNavigation} from '@react-navigation/native'
 import { SignIn, CreateAccount, Splash } from './screens/LoginScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import OtpVerificationScreen from './screens/OtpVerificationScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import { AuthRequestLogin, AuthRequestGoogleLogin, AuthRequestFBLogin, AuthRequestAppleLogin } from './components/AuthLoginComponent';
 
 import { CreateAccountComponent } from './components/CreateAccountComponent';
+import { RequestPasswordOTP } from './components/RequestPasswordOTP';
+import { VerifyOTP } from './components/VerifyOTPPassoword';
 import { AuthContext } from './constants/Context';
 import { storeData, retrieveData, storeUser } from './components/AuthKeyStorageComponent';
 import Store from './config/store';
@@ -33,7 +38,9 @@ import OrderDetail from './screens/OrderDetail';
 import Support from './screens/Support';
 import RestaurantList from './screens/RestaurantList';
 import MyDetails from './screens/MyDetails';
-
+import messaging from '@react-native-firebase/messaging';
+import {RequestEmailOTP} from "./components/RequestEmailOTP";
+import {VerifyEmailOTP} from "./components/VerifyEmailOTP";
 const Stack = createStackNavigator();
 state = {
   email: "",
@@ -60,20 +67,66 @@ export default function App(props) {
           .then((data) => {
             const result = JSON.stringify(data);
             if (result.toUpperCase() == '"Account created"'.toUpperCase()) {
-
               loginRequest(email, password);
-
             }
             else {
+                setIsLoading(false);
               Alert.alert("Please try to create account again.");
             }
-            setIsLoading(false);
           }).catch((error) => {
             setIsLoading(false);
             console.log('error', error)
           });
 
       },
+        ForgotPasswordOTP:(email) => {
+            return new Promise((resolve,reject)=>{
+                RequestPasswordOTP(email)
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
+        RequestEmailOTP:(email) => {
+            return new Promise((resolve,reject)=>{
+                RequestEmailOTP(email )
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
+        VerifyOTPResetPassword:(data = {}) => {
+            return new Promise((resolve,reject)=>{
+                VerifyOTP(data)
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
+        VerifyEmailOTP:(data = {}) => {
+            return new Promise((resolve,reject)=>{
+                VerifyEmailOTP(data)
+                    .then((data) => {
+                        resolve(data);
+                    }).catch((error) => {
+                    reject(error)
+                    console.log('error', error)
+                });
+            })
+
+        },
       signOut: () => {
         setUserToken(null);
       },
@@ -92,6 +145,37 @@ export default function App(props) {
 
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
+
+      messaging().onMessage(async (remoteMessage) => {
+          console.log("[Notification]", remoteMessage);
+          //setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),1000)
+          //store.dispatch(callSetOrderShow(0));
+      });
+      messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+          console.log("[Notification]", remoteMessage);
+           setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),1000)
+          //store.dispatch(callSetOrderShow(0));
+      });
+      messaging().onNotificationOpenedApp(remoteMessage => {
+          setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),3000)
+          console.log(
+              'Notification caused app to open from background state:',
+              remoteMessage.notification,
+          );
+      });
+
+      // Check whether an initial notification is available
+      messaging()
+          .getInitialNotification()
+          .then(remoteMessage => {
+              if (remoteMessage) {
+                  setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),3000)
+                  console.log(
+                      'Notification caused app to open from quit state:',
+                      remoteMessage.notification,
+                  );
+              }
+          });
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();
@@ -226,7 +310,6 @@ export default function App(props) {
     setIsLoading(true);
     AuthRequestFBLogin(token)
       .then((data) => {
-        console.log('facebook response', data)
         const result = JSON.parse(data);
         setUserToken(result.auth_token);
 
@@ -234,6 +317,7 @@ export default function App(props) {
         storeData(STORAGE_KEY, result.auth_token)
           .then((data) => {
             const result = JSON.stringify(data);
+
           });
 
         storeUser(result.auth_token).then((data) => {
@@ -324,6 +408,9 @@ const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
   <AuthStack.Navigator headerMode="none">
     <AuthStack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
+    <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: "Forgot Password" }} />
+    <AuthStack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: "Forgot Password" }} />
+    <AuthStack.Screen name="OtpVerification" component={OtpVerificationScreen} options={{ title: "OTP Verification" }} />
     <AuthStack.Screen name="CreateAccount" component={CreateAccount}
       options={{ title: "Create Account" }} />
   </AuthStack.Navigator>
@@ -453,6 +540,9 @@ const PageScreen = () => (
     <PageStack.Screen name="SignIn" component={SignIn}
       options={{ headerShown: false }}
     />
+      <PageStack.Screen name="ForgotPassword" component={ForgotPasswordScreen}  options={{ title: "Forgot Password",headerShown: false }} />
+      <PageStack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: "Forgot Password",headerShown: false }} />
+      <PageStack.Screen name="OtpVerification" component={OtpVerificationScreen} options={{ title: "OTP Verification",headerShown: false }} />
 
     <PageStack.Screen name="CreateAccount" component={CreateAccount}
       options={{ headerShown: false }} />
@@ -506,22 +596,22 @@ const RootStackScreen = ({ userToken }) => (
         // )}
         />
       ) : (
-          <RootStack.Screen name="Auth" component={AuthStackScreen}
-            options={({ navigation }) => ({ headerShown: false }
-              // {
-              //   title: 'Restaurant Name',
-              //   headerStyle: {
-              //   backgroundColor: '#f4511e',
-              //   },
-              //   headerTintColor: '#fff',
-              //   headerTitleStyle: {
-              //     fontWeight: 'bold',
-              //   },
+        <RootStack.Screen name="Auth" component={AuthStackScreen}
+          options={({ navigation }) => ({ headerShown: false }
+            // {
+            //   title: 'Restaurant Name',
+            //   headerStyle: {
+            //   backgroundColor: '#f4511e',
+            //   },
+            //   headerTintColor: '#fff',
+            //   headerTitleStyle: {
+            //     fontWeight: 'bold',
+            //   },
 
-              // }
-            )}
-          />
-        )
+            // }
+          )}
+        />
+      )
     }
 
 

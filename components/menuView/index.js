@@ -11,7 +11,6 @@ import Colors from '../../constants/Colors'
 import moment from 'moment';
 import vars from '../../utils/vars';
 
-
 class MenuView extends Component {
     constructor(props) {
         super(props)
