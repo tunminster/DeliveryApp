@@ -125,11 +125,11 @@ class HomeScreen extends Component {
   async getToken() {
      let fcmToken = await AsyncStorage.getItem("fcmToken");
     console.log("fcmToken from AsyncStorage: ", fcmToken);
-     // Clipboard.setString(fcmToken);
+      Clipboard.setString(fcmToken);
     if (!fcmToken) {
       try {
         const token = await messaging().getToken();
-         // Clipboard.setString(token);
+        Clipboard.setString(token);
         this.registerNotification(token)
         console.log("FCM token: " + token);
         await AsyncStorage.setItem("fcmToken", token);

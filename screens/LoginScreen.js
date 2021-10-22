@@ -1,5 +1,16 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Dimensions,
+  Platform
+} from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { wp, hp, normalize, isX, isIOS, isiPAD } from '../helper/responsiveScreen';
@@ -133,7 +144,7 @@ export const SignIn = ({ navigation }) => {
     <SmartScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={loginstyles.container}
-      applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+      applyKeyboardCheck={Platform.OS === 'ios'}
       disabled={false}
       alwaysBounceVertical={false} >
       <View style={{ marginVertical: isiPAD ? hp(3) : hp(4), alignItems: 'center' }}>
@@ -159,8 +170,8 @@ export const SignIn = ({ navigation }) => {
           onChangeText={text => setPassword({ password: text })}
           autoCorrect={false}
         />
-            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push("ForgotPassword")}>
-              <Text style={loginstyles.forgot}>Forgot Password?</Text>
+            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push1("ForgotPassword")}>
+              <Text style={loginstyles.forgot}>Forgot Password1?</Text>
             </TouchableOpacity>
 
 
