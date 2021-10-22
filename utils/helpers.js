@@ -87,10 +87,20 @@ export function fixImgPath(src) {
 
 export function cacheCart(cart, cartCount) {
     let subTotal = getTotalPrice(true)
-    if(subTotal > 0){
-        post(`${vars.applicationFeesPost}`,{
-            "subTotal":subTotal
-        },(res)=>{
+    const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
+    let body = {
+        "subTotal": subTotal,
+        "orderType": isDelivery ? 2 : 1,
+        "customerId": deliverAddress?.customerId?.toString(),
+        "storeId": restaurantData?.storeId,
+        "customerLatitude": deliverAddress?.lat,
+        "customerLongitude": deliverAddress?.lng,
+        "storeLatitude": restaurantData?.location?.latitude || 0,
+        "storeLongitude": restaurantData?.location?.longitude || 0
+    }
+    debugger
+    if(subTotal > 0 && Object.values(restaurantData).length > 0){
+        post(`${vars.applicationFeesPost}`,body,(res)=>{
             console.log(subTotal,'[sdas]',res)
             Store.setApplicationFee(res)
         })

@@ -35,10 +35,19 @@ class Cart extends Component {
 
     getCartDetail = () => {
         let subTotal = getTotalPrice(true)
+        const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
+        let body = {
+            "subTotal": subTotal,
+            "orderType": isDelivery ? 2 : 1,
+            "customerId": deliverAddress?.customerId?.toString(),
+            "storeId": restaurantData?.storeId,
+            "customerLatitude": deliverAddress?.lat,
+            "customerLongitude": deliverAddress?.lng,
+            "storeLatitude": restaurantData?.location?.latitude || 0,
+            "storeLongitude": restaurantData?.location?.longitude || 0
+        }
         if(subTotal > 0){
-            post(`${vars.applicationFeesPost}`,{
-                "subTotal":subTotal
-            },(res)=>{
+            post(`${vars.applicationFeesPost}`,body,(res)=>{
                 Store.setApplicationFee(res)
                 this.setState({applicationFees: {
                         platformFee: res?.platformFee || 0,

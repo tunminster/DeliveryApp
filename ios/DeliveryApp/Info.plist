@@ -46,6 +46,8 @@
 	<string>410282153495193</string>
 	<key>FacebookDisplayName</key>
 	<string>RagiBull UK</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -77,8 +79,6 @@
 	</array>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-  <key>ITSAppUsesNonExemptEncryption</key>
-  <false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
