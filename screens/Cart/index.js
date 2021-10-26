@@ -35,10 +35,19 @@ class Cart extends Component {
 
     getCartDetail = () => {
         let subTotal = getTotalPrice(true)
+        const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
+        let body = {
+            "subTotal": subTotal,
+            "orderType": isDelivery ? 2 : 1,
+            "customerId": deliverAddress?.customerId?.toString(),
+            "storeId": restaurantData?.storeId,
+            "customerLatitude": deliverAddress?.lat,
+            "customerLongitude": deliverAddress?.lng,
+            "storeLatitude": restaurantData?.location?.latitude || 0,
+            "storeLongitude": restaurantData?.location?.longitude || 0
+        }
         if(subTotal > 0){
-            post(`${vars.applicationFeesPost}`,{
-                "subTotal":subTotal
-            },(res)=>{
+            post(`${vars.applicationFeesPost}`,body,(res)=>{
                 Store.setApplicationFee(res)
                 this.setState({applicationFees: {
                         platformFee: res?.platformFee || 0,
@@ -61,7 +70,7 @@ class Cart extends Component {
     renderBillField = (title = '', amount = 0) => (
         <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
             <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
-            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${Store?.remoteConfig?.currency} ${(amount / 100).toFixed(2)}`}</Text>
         </View>
     )
 
@@ -120,7 +129,7 @@ class Cart extends Component {
                             data={item} key={i} index={i} navigation={this.props.navigation} />)}
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{'Subtotal'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`${vars.currency} ${(getTotalPrice(true) / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`${Store?.remoteConfig?.currency} ${(getTotalPrice(true) / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{flex:1}}>
                         {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
@@ -134,7 +143,7 @@ class Cart extends Component {
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{'Order Total'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${vars.currency} ${(totalAmount / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${Store?.remoteConfig?.currency} ${(totalAmount / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
 

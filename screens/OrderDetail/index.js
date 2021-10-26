@@ -9,6 +9,7 @@ import { retrieveData } from '../../components/AuthKeyStorageComponent';
 import Api from '../../config/api';
 import vars from '../../utils/vars';
 import Loading from '../../components/loading';
+import Store from "../../config/store";
 var uuid = require('react-native-uuid');
 
 class OrderDetail extends Component {
@@ -63,7 +64,7 @@ class OrderDetail extends Component {
     renderBillField = (title = '', amount = 0) => (
         <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
             <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
-            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${Store?.remoteConfig?.currency} ${(amount / 100).toFixed(2)}`}</Text>
         </View>
     )
 
@@ -111,7 +112,7 @@ class OrderDetail extends Component {
                                             <Text numberOfLines={1}
                                                 style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`${orderItem.count}  x  ${orderItem.productName}`}</Text>
                                             <Text numberOfLines={1}
-                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`${vars.currency} ${((orderItem.productPrice * orderItem.count) / 100).toFixed(2)}`}</Text>
+                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`${Store?.remoteConfig?.currency} ${((orderItem.productPrice * orderItem.count) / 100).toFixed(2)}`}</Text>
                                         </View>
                                         <View style={styles.seperateLine} />
                                     </View>
@@ -128,7 +129,7 @@ class OrderDetail extends Component {
                             <View style={styles.seperateLine} />
                             <View style={styles.bottomChildContainer}>
                                 <Text style={{ ...styles.title, color: Colors.black, fontWeight: 'bold' }}>{'Total'}</Text>
-                                <Text style={{ ...styles.subTitle, color: Colors.black }}>{`${vars.currency} ${(data.totalAmount / 100).toFixed(2)}`}</Text>
+                                <Text style={{ ...styles.subTitle, color: Colors.black }}>{`${Store?.remoteConfig?.currency} ${(data.totalAmount / 100).toFixed(2)}`}</Text>
                             </View>
                             <View style={styles.seperateLine} />
                             <Button

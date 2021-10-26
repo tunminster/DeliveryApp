@@ -2,18 +2,19 @@ import * as React from 'react';
 import vars from '../utils/vars';
 
 import { AuthContext } from '../constants/Context';
+import Store from "../config/store";
 var uuid = require('react-native-uuid');
 
 export async function AuthRequestLogin(email, password) {
   //const [result, setResult] = React.useState(null);
   let guid = uuid.v1();
   console.log('uuid.....login', guid)
-  let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/login", {
+  let response = await fetch(`${Store?.remoteConfig?.host}/api/auth/login`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-Shard': vars.xShard,
+      'X-Shard': Store?.remoteConfig?.xShard,
       'Request-Id': guid,
     },
     body: JSON.stringify({
@@ -32,12 +33,12 @@ export async function AuthRequestLogin(email, password) {
 
 export async function AuthRequestFBLogin(token) {
   let guid = uuid.v1();
-  let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/facebook", {
+  let response = await fetch(`${Store?.remoteConfig?.host}/api/auth/account/login/facebook`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-Shard': vars.xShard,
+      'X-Shard': Store?.remoteConfig?.xShard,
       'Request-Id': guid,
     },
     body: JSON.stringify({
@@ -52,12 +53,12 @@ export async function AuthRequestFBLogin(token) {
 
 export async function AuthRequestGoogleLogin(token) {
   let guid = uuid.v1();
-  let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/google", {
+  let response = await fetch(`${vars?.host}/api/auth/account/login/google`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-Shard': vars.xShard,
+      'X-Shard': Store?.remoteConfig?.xShard,
       'Request-Id': guid,
     },
     body: JSON.stringify({
@@ -72,12 +73,12 @@ export async function AuthRequestGoogleLogin(token) {
 
 export async function AuthRequestAppleLogin(data){
   let guid = uuid.v1();
-  let response = await fetch("https://delivery-api.harveynetwork.com/api/auth/account/login/apple", {
+  let response = await fetch(`${Store?.remoteConfig?.host}/api/auth/account/login/apple`, {
       method: 'POST',
       headers:{
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Shard': vars.xShard,
+        'X-Shard': Store?.remoteConfig?.xShard,
       'Request-Id': guid, 
       },
       body: JSON.stringify(data)

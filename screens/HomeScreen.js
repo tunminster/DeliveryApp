@@ -589,6 +589,7 @@ class HomeScreen extends Component {
     //   }
     // })
     //console.log(moment(new Date()).format("hh:mm"),'[restaurantData]',restaurantData)
+    console.log(Store?.remoteConfig?.xShard,'[X-SHARD]',vars.xShard)
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -689,7 +690,7 @@ class HomeScreen extends Component {
                 onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
-                amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
+                amount={`${Store?.remoteConfig?.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
             }
 
             <FilterView

@@ -1622,7 +1622,7 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-6.0.2.tgz"
   "version" "6.0.2"
 
-"@react-native-firebase/analytics@12.9.2":
+"@react-native-firebase/analytics@^12.9.2", "@react-native-firebase/analytics@12.9.2":
   "integrity" "sha512-5UYVRyvmF5Ws7rZ2JM3zOwH3yoquhexwXT071HWdxSYsyCSco5rtxq27QVtqhB+LiqzztALZrERfK3hEsqLBXQ=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-12.9.2.tgz"
   "version" "12.9.2"

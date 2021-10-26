@@ -79,7 +79,7 @@ class Payment extends Component {
     renderBillField = (title = '', amount = 0) => (
         <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
             <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
-            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${Store?.remoteConfig?.currency} ${(amount / 100).toFixed(2)}`}</Text>
         </View>
     )
 

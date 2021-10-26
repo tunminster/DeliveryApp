@@ -1,18 +1,19 @@
 import * as React from 'react';
 var uuid = require('react-native-uuid');
 import vars from '../utils/vars';
+import Store from "../config/store";
 
 export async function VerifyEmailOTP(data = {}){
     return new Promise(async (resolve,reject)=>{
         try {
             let guid = uuid.v1();
             console.log('uuid.....signup', guid)
-            let response = await fetch("https://delivery-api.harveynetwork.com/api/Auth/verify-email-otp", {
+            let response = await fetch(`${Store?.remoteConfig?.host}/api/Auth/verify-email-otp`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    'X-Shard': vars.xShard,
+                    'X-Shard': Store?.remoteConfig?.xShard,
                     'Request-Id': guid,
                 },
                 body: JSON.stringify(data)

@@ -24,6 +24,7 @@ import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
+import Store from "../config/store";
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -133,8 +134,6 @@ export const SignIn = ({ navigation }) => {
       // setPasswordError("Enter a valid password");
       alert("Enter a valid password.")
     }
-
-
     else if (email.email != null && password.password != null) {
       signIn(email.email, password.password);
     }
@@ -170,8 +169,8 @@ export const SignIn = ({ navigation }) => {
           onChangeText={text => setPassword({ password: text })}
           autoCorrect={false}
         />
-            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push1("ForgotPassword")}>
-              <Text style={loginstyles.forgot}>Forgot Password1?</Text>
+            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push("ForgotPassword")}>
+              <Text style={loginstyles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
 
 
