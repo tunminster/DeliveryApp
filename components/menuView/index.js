@@ -115,7 +115,7 @@ class MenuView extends Component {
                                                         <View style={{ flexDirection: 'column', flex: 0.7 }}>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
-                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`${vars.currency} ${(item.unitPrice / 100).toFixed(2)}`}</Text>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`${Store?.remoteConfig?.currency} ${(item.unitPrice / 100).toFixed(2)}`}</Text>
                                                         </View>
 
                                                         <Image
@@ -139,7 +139,7 @@ class MenuView extends Component {
                                 onPress={() => onBasketViewPress()}
                                 style={{ marginBottom: hp(1) }}
                                 count={Store.cart.length}
-                                amount={`${vars.currency} ${(getTotalPrice / 100).toFixed(2)}`} />
+                                amount={`${Store?.remoteConfig?.currency} ${(getTotalPrice / 100).toFixed(2)}`} />
                         }
 
                         <Modal

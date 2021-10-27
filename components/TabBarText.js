@@ -3,7 +3,6 @@ import { Text } from 'react-native';
 import Colors from '../constants/Colors';
 import { wp, hp, normalize, isiPAD } from '../helper/responsiveScreen';
 
-
 export default function TabBarIcon(props) {
   return (
     <Text

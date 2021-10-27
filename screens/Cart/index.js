@@ -70,7 +70,7 @@ class Cart extends Component {
     renderBillField = (title = '', amount = 0) => (
         <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
             <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
-            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${Store?.remoteConfig?.currency} ${(amount / 100).toFixed(2)}`}</Text>
         </View>
     )
 
@@ -129,7 +129,7 @@ class Cart extends Component {
                             data={item} key={i} index={i} navigation={this.props.navigation} />)}
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{'Subtotal'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`${vars.currency} ${(getTotalPrice(true) / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.gray }}>{`${Store?.remoteConfig?.currency} ${(getTotalPrice(true) / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{flex:1}}>
                         {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
@@ -143,7 +143,7 @@ class Cart extends Component {
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{'Order Total'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${vars.currency} ${(totalAmount / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${Store?.remoteConfig?.currency} ${(totalAmount / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
 

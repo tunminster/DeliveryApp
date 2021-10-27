@@ -33,7 +33,7 @@ export function post(url, data, success, error) {
             let guid = uuid.v1();
             console.log('uuid.....Store', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + responseData, 'Request-Id': guid,'X-Shard': vars.xShard }
+                headers: { Authorization: 'Bearer ' + responseData, 'Request-Id': guid,'X-Shard': Store?.remoteConfig?.xShard }
             };
             console.log('url', url, ",,,,", config)
             Api.post(url, data, config)
@@ -53,7 +53,7 @@ export function put(url, data, success, error) {
             let guid = uuid.v1();
             console.log('uuid.....Store', guid)
             const config = {
-                headers: { Authorization: 'Bearer ' + responseData, 'Request-Id': guid,'X-Shard': vars.xShard }
+                headers: { Authorization: 'Bearer ' + responseData, 'Request-Id': guid,'X-Shard': Store?.remoteConfig?.xShard }
             };
             console.log('url', url, ",,,,", config)
             Api.put(url, data, config)
@@ -82,7 +82,7 @@ export function searchFilter(data, filterTxt) {
 }
 
 export function fixImgPath(src) {
-    return vars.host + "/uploads/" + src;
+    return Store?.remoteConfig?.host + "/uploads/" + src;
 }
 
 export function cacheCart(cart, cartCount) {
@@ -98,8 +98,7 @@ export function cacheCart(cart, cartCount) {
         "storeLatitude": restaurantData?.location?.latitude || 0,
         "storeLongitude": restaurantData?.location?.longitude || 0
     }
-    debugger
-    if(subTotal > 0 && Object.values(restaurantData).length > 0){
+    if(subTotal > 0 && Object.values(restaurantData || {}).length > 0){
         post(`${vars.applicationFeesPost}`,body,(res)=>{
             console.log(subTotal,'[sdas]',res)
             Store.setApplicationFee(res)

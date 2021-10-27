@@ -125,11 +125,11 @@ class HomeScreen extends Component {
   async getToken() {
      let fcmToken = await AsyncStorage.getItem("fcmToken");
     console.log("fcmToken from AsyncStorage: ", fcmToken);
-     // Clipboard.setString(fcmToken);
+      Clipboard.setString(fcmToken);
     if (!fcmToken) {
       try {
         const token = await messaging().getToken();
-         // Clipboard.setString(token);
+        Clipboard.setString(token);
         this.registerNotification(token)
         console.log("FCM token: " + token);
         await AsyncStorage.setItem("fcmToken", token);
@@ -175,7 +175,7 @@ class HomeScreen extends Component {
 
     retrieveData(STORAGE_KEY)
       .then((data) => {
-        //Clipboard.setString(data);
+        Clipboard.setString(data);
         const config = {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };
@@ -689,7 +689,7 @@ class HomeScreen extends Component {
                 onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
-                amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
+                amount={`${Store?.remoteConfig?.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
             }
 
             <FilterView

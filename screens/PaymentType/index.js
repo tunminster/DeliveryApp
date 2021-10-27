@@ -61,9 +61,9 @@ class PaymentType extends Component {
 
         try {
             await Stripe.setOptionsAsync({
-                publishableKey: vars.publishableKey,
-                androidPayMode: vars.androidPayMode,
-                merchantId: vars.merchantId,
+                publishableKey: Store?.remoteConfig?.publishableKey,
+                androidPayMode: Store?.remoteConfig?.androidPayMode,
+                merchantId: Store?.remoteConfig?.merchantId,
             });
         } catch (error) {
             console.log('error', error)
@@ -239,13 +239,13 @@ class PaymentType extends Component {
     androidItems() {
         const data = {
             total_price: (getTotalPrice() / 100).toFixed(2),
-            currency_code: vars.paymentCurrencyCode,
+            currency_code: Store?.remoteConfig?.paymentCurrencyCode,
             line_items: []
         }
 
         Store.cart.map(product => {
             data.line_items.push({
-                currency_code: vars.paymentCurrencyCode,
+                currency_code: Store?.remoteConfig?.paymentCurrencyCode,
                 description: product.productName,
                 total_price: JSON.stringify((product.unitPrice / 100 * product.count).toFixed(2)),
                 unit_price: JSON.stringify((product.unitPrice / 100).toFixed(2)),
@@ -261,7 +261,7 @@ class PaymentType extends Component {
                 if (canMakePayment) {
                     console.log('iosItems', this.iosItems())
                     await Stripe.paymentRequestWithNativePayAsync(vars.isIos ?
-                        { currencyCode: vars.paymentCurrencyCode } : this.androidItems(),
+                        { currencyCode: Store?.remoteConfig?.paymentCurrencyCode } : this.androidItems(),
                         vars.isIos ? this.iosItems() : '')
                         .then(paymentResponse => {
                             console.log('paymentResponse', JSON.stringify(paymentResponse))
@@ -319,7 +319,7 @@ class PaymentType extends Component {
                     </View>
                     <View style={styles.seperateLine} />
 
-                   
+
                     <View style={styles.mapContainer}>
                         <MapView
                             ref={r => this.mapRef = r}

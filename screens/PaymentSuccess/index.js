@@ -108,7 +108,7 @@ class PaymentSuccess extends Component {
     renderBillField = (title = '', amount = 0) => (
         <View style={[styles.bottomChildContainer1,{height: hp(5)}]}>
             <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
-            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${vars.currency} ${(amount / 100).toFixed(2)}`}</Text>
+            <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${Store?.remoteConfig?.currency} ${(amount / 100).toFixed(2)}`}</Text>
         </View>
     )
 
@@ -195,7 +195,7 @@ class PaymentSuccess extends Component {
                                             <Text numberOfLines={1}
                                                 style={{ ...styles.subTitle, color: Colors.black, width: wp(73) }}>{`${item.count}  x  ${item.productName}`}</Text>
                                             <Text numberOfLines={1}
-                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`${vars.currency} ${((item.productPrice * item.count) / 100).toFixed(2)}`}</Text>
+                                                style={{ ...styles.subTitle, color: Colors.black, }}>{`${Store?.remoteConfig?.currency} ${((item.productPrice * item.count) / 100).toFixed(2)}`}</Text>
                                         </View>
                                         <View style={styles.seperateLine} />
                                     </View>
@@ -210,7 +210,7 @@ class PaymentSuccess extends Component {
                             <View style={styles.bottomContainer}>
                                 <View style={styles.seperateLine} />
                                 <View style={styles.bottomChildContainer}>
-                                    <Text style={{ ...styles.title, }}>{`Total - ${vars.currency} ${(orderDetails.totalAmount / 100).toFixed(2)}`}</Text>
+                                    <Text style={{ ...styles.title, }}>{`Total - ${Store?.remoteConfig?.currency} ${(orderDetails.totalAmount / 100).toFixed(2)}`}</Text>
                                 </View>
                             </View>
                         </View>

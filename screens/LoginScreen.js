@@ -1,5 +1,16 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Dimensions,
+  Platform
+} from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
 import { wp, hp, normalize, isX, isIOS, isiPAD } from '../helper/responsiveScreen';
@@ -13,6 +24,7 @@ import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
+import Store from "../config/store";
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -122,8 +134,6 @@ export const SignIn = ({ navigation }) => {
       // setPasswordError("Enter a valid password");
       alert("Enter a valid password.")
     }
-
-
     else if (email.email != null && password.password != null) {
       signIn(email.email, password.password);
     }
@@ -133,7 +143,7 @@ export const SignIn = ({ navigation }) => {
     <SmartScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={loginstyles.container}
-      applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+      applyKeyboardCheck={Platform.OS === 'ios'}
       disabled={false}
       alwaysBounceVertical={false} >
       <View style={{ marginVertical: isiPAD ? hp(3) : hp(4), alignItems: 'center' }}>

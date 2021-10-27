@@ -10,6 +10,7 @@ import BackIcon from '../../components/backIcon';
 import Loading from '../../components/loading';
 import { wp, hp, normalize } from '../../helper/responsiveScreen';
 import Colors from '../../constants/Colors'
+import Store from "../../config/store";
 
 var uuid = require('react-native-uuid');
 
@@ -88,9 +89,9 @@ class Orders extends Component {
 
     renderItem = (item, index) => {
         let status = '';
-        if (item.status === 4) {
+        if (item.status === 6) {
             status = 'Delivered'
-        } else if (item.status === 0) {
+        } else if (item.status === 3) {
             status = 'Preparing'
         }
         return (
@@ -108,7 +109,7 @@ class Orders extends Component {
                             <Text style={{ ...styles.subTitle, color: Colors.gray, }}>{status}</Text>
                             {item.storeName && <Text numberOfLines={1} style={{ ...styles.subTitle, color: Colors.black, fontWeight: 'bold' }}>{item.storeName}</Text>}
                             <Text numberOfLines={1} style={{ ...styles.subTitle, color: Colors.black, }}>
-                                {`${vars.currency} ${(item.totalAmount / 100).toFixed(2)} - ${moment(item.dateCreated).format('DD MMM YYYY')}`}</Text>
+                                {`${Store?.remoteConfig?.currency} ${(item.totalAmount / 100).toFixed(2)} - ${moment(item.dateCreated).format('DD MMM YYYY')}`}</Text>
                         </View>
                         {/* <Text numberOfLines={1} style={styles.title}>{title}</Text> */}
                     </View>

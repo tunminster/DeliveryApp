@@ -1621,7 +1621,12 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-6.0.2.tgz"
   "version" "6.0.2"
 
-"@react-native-firebase/app@^12.9.0", "@react-native-firebase/app@12.9.0":
+"@react-native-firebase/analytics@^12.9.2", "@react-native-firebase/analytics@12.9.3":
+  "integrity" "sha512-z4OPppeqDlcoWe75MI+6FFZMd4jSkWw1Tya8px05TTnjwWcl0nclzUbloicWLrSnhxSyRrUSgxrreiConI/E4g=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-12.9.3.tgz"
+  "version" "12.9.3"
+
+"@react-native-firebase/app@^12.9.0", "@react-native-firebase/app@12.9.0", "@react-native-firebase/app@12.9.3":
   "integrity" "sha512-0kJDgkZk+EWK9/XJb/T7NOs2bH9s3R/cSIX//dsYD9I9DtIyq7BPSKZOTgUQPzmDH0NGXjOOXbXvrCahpewzpg=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-12.9.0.tgz"
   "version" "12.9.0"
@@ -1642,6 +1647,11 @@
   "integrity" "sha512-r7d0hZqx5s84XIzhojfdZ68ubNUCzTmhiXhvbv2Ragbrk2hpBIzSGd05Cf8de2UAqj07K8+2x4PnIgg4QLRiNQ=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-12.9.0.tgz"
   "version" "12.9.0"
+
+"@react-native-firebase/remote-config@^12.9.2":
+  "integrity" "sha512-fMnnDQaz92DU2xRfHOeIsPXeRJzngpwI7ZFboia+FBQl+/utOoBeEGqfkseyWZlB9haFMzWgvwmZ0ia70FWe2A=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/remote-config/-/remote-config-12.9.3.tgz"
+  "version" "12.9.3"
 
 "@react-navigation/bottom-tabs@^5.11.2":
   "integrity" "sha512-7+hH00N9Ze74VcX8uYWVyXFXZ0Fwid+lG+SSLtmnJjk1Y6oIQpQ17EPqKO0UZlKKjhsvMlAnL5fdgFtoqnSjcA=="
