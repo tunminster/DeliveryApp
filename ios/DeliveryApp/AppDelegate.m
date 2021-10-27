@@ -52,7 +52,7 @@ static void InitializeFlipper(UIApplication *application) {
   self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[UMModuleRegistryProvider alloc] init]];
   self.launchOptions = launchOptions;
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  [GMSServices provideAPIKey:@"AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8"];
+  [GMSServices provideAPIKey:@"AIzaSyDOaeA5MxiKziYqctQWV0M_T6sL2OOe4vw"];
   #ifdef DEBUG
     [self initializeReactNativeApp];
   #else
