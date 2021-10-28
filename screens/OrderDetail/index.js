@@ -45,7 +45,6 @@ class OrderDetail extends Component {
 
                 const value = 'orderId=' + orderId + '&timeZone=' + 7
                 console.log('value', value)
-
                 Api.get('/Order/GetOrderDetails?' + value, config).then(res => {
                     console.log('GetOrderDetails res...', res);
                     this.setState({ orderDetails: res, loading: false })
@@ -71,7 +70,7 @@ class OrderDetail extends Component {
     render() {
         const data = this.props.route.params.order;
         const {orderDetails = {}} = this.state;
-        console.log('data...', data)
+        console.log('data...', orderDetails)
         return (
             <View style={styles.container}>
 

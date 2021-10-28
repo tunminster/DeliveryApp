@@ -30,6 +30,7 @@ class Cart extends Component {
         }
     }
     componentDidMount() {
+        this.setState({isDeliver:Store.isDelivery})
     this.getCartDetail();
     }
 
@@ -48,7 +49,8 @@ class Cart extends Component {
         }
         if(subTotal > 0){
             post(`${vars.applicationFeesPost}`,body,(res)=>{
-                Store.setApplicationFee(res)
+                console.log('[fees]',res);
+                Store.setApplicationFee({...res,subTotal})
                 this.setState({applicationFees: {
                         platformFee: res?.platformFee || 0,
                         deliveryFee: res?.deliveryFee || 0,
@@ -76,8 +78,8 @@ class Cart extends Component {
 
     render() {
         const { isEdit,isDeliver = true,applicationFees = {} } = this.state;
-        const totalAmount = isDeliver ? (applicationFees.deliveryFee + applicationFees.subTotal + applicationFees.platformFee + applicationFees.taxFees) : (applicationFees.subTotal + applicationFees.platformFee + applicationFees.taxFees)
-        console.log(totalAmount,'[fees]',Store.applicationFees);
+
+        // console.log(totalAmount,'[fees]',Store.applicationFees);
         return (
             <View style={styles.container}>
 
@@ -104,6 +106,7 @@ class Cart extends Component {
                 <View style={{ alignItems:'flex-end',marginVertical:wp(2)}}>
                     <SwitchButton status={this.state.isDeliver} onChange={(value)=>this.setState({isDeliver:value},()=>{
                         Store.setDelivery(value)
+                        this.getCartDetail()
                     })}   />
                 </View>
 
@@ -143,7 +146,7 @@ class Cart extends Component {
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
                     <View style={styles.bottomChildContainer}>
                         <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{'Order Total'}</Text>
-                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${Store?.remoteConfig?.currency} ${(totalAmount / 100).toFixed(2)}`}</Text>
+                        <Text style={{ ...styles.restaurantTitle, color: Colors.black }}>{`${Store?.remoteConfig?.currency} ${(applicationFees?.totalAmount / 100).toFixed(2)}`}</Text>
                     </View>
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />
 

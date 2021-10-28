@@ -689,7 +689,7 @@ class HomeScreen extends Component {
                 onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
-                amount={`${Store?.remoteConfig?.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
+                amount={`${Store?.remoteConfig?.currency} ${(Store?.applicationFees?.totalAmount / 100).toFixed(2)}`} />
             }
 
             <FilterView

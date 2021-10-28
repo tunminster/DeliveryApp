@@ -1,5 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Image, View, AsyncStorage } from 'react-native';
+import { TouchableOpacity, Image, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Store from '../config/store';
 import Api from '../config/api';
 import vars from './vars';
@@ -101,7 +103,7 @@ export function cacheCart(cart, cartCount) {
     if(subTotal > 0 && Object.values(restaurantData || {}).length > 0){
         post(`${vars.applicationFeesPost}`,body,(res)=>{
             console.log(subTotal,'[sdas]',res)
-            Store.setApplicationFee(res)
+            Store.setApplicationFee({...res,subTotal})
         })
     }
 
