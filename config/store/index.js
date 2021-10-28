@@ -99,13 +99,13 @@ class Store {
         this.remoteConfig = {
             ...this.remoteConfig,
             host : data?.host || 'https://delivery-api.harveynetwork.com',
-            currency : data?.currency || '$',
-            paymentCurrencyCode : data?.paymentCurrencyCode || 'USD',
+            currency : data?.currency || '£',
+            paymentCurrencyCode : data?.paymentCurrencyCode || 'GBP',
             androidPayMode : data?.androidPayMode || 'test',
-            merchantId : data?.merchantId || 'merchant.com.d eliveryapp.app',
+            merchantId : data?.merchantId || 'merchant.com.deliveryapp.app',
             stripeSecretKey : data?.stripeSecretKey || 'sk_test_51IOWfdGQlL3ftoEbbRRjQeLXKBEWRX9ZBtZmkeCQ5mbGoh3lbx6QbqfbLpUQeRryDMgVYHkySPnxjAVnxuqQNRxf00oM1u3Gtg',
             publishableKey : data?.publishableKey || 'pk_test_51IOWfdGQlL3ftoEbeRWvgmjcQP0nVIyq3ne8nzukYDIfIXJ68YxszvJk3BCOWHvEVCXfwYWwGtMsX2Y2lHRE6JGi00g39JUUSb',
-            xShard : data?.xShard ? data?.xShard : 'Raus',
+            xShard : data?.xShard ? data?.xShard : 'Rauk',
             locationBaseUrl : data?.locationBaseUrl || "https://maps.googleapis.com/maps/api/place/autocomplete/json",
             google_key : data?.google_key || "AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8",
             geoCodeBaseUrl : data?.geoCodeBaseUrl || "https://maps.googleapis.com/maps/api/geocode/json"
