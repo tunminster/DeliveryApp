@@ -46,6 +46,8 @@
 	<string>410282153495193</string>
 	<key>FacebookDisplayName</key>
 	<string>RagiBull</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

@@ -119,7 +119,7 @@ class AddressCreation extends Component {
         AutoCompleteComponent(body)
             .then((res) => {
                 console.log("Auto complete response ===> ", res)
-                this.setState({ addressData: res.predictions, isMap: true, isAddress: false })
+                this.setState({ addressData: res.predictions, isMap: false, isAddress: false })
 
             }).catch((error) => {
                 console.log('error', error)
@@ -159,7 +159,8 @@ class AddressCreation extends Component {
                         lng: location && location.geometry && location.geometry.location && location.geometry.location.lng ? location.geometry.location.lng : null,
                         country: country && country.length ? country[0].long_name : "",
                         isMap: false,
-                        searchName: address.split(",").slice(0, -2).join(",")
+                        searchName: address.split(",").slice(0, -2).join(","),
+                        addressData:[]
                     })
 
                 }).catch((error) => {
@@ -210,7 +211,7 @@ class AddressCreation extends Component {
     render() {
         const { addressLine, city, postCode, country, searchName, addressData, isMap, lat, lng,
             isAddress, description, loading, latDelta, lngDelta } = this.state
-            console.log("lat....", lat)
+        console.log("lat....", lat)
         return (
             // <KeyboardAwareScrollView
             //     contentContainerStyle={{
@@ -224,7 +225,7 @@ class AddressCreation extends Component {
 
             <View style={{ flex: 1, paddingTop: Platform.OS == 'ios' ? hp(4) : hp(0), }}>
 
-                <View style={{ flexDirection: 'row',   paddingVertical: wp(3), paddingHorizontal: wp(3), backgroundColor: Colors.white }}>
+                <View style={{ flexDirection: 'row', paddingVertical: wp(3), paddingHorizontal: wp(3), backgroundColor: Colors.white }}>
                     <BackIcon
                         tintColor={Colors.black}
                         onPress={() => {
@@ -247,7 +248,7 @@ class AddressCreation extends Component {
                     disabled={false}
                     alwaysBounceVertical={false} >
 
-                    {isMap && !isAddress &&
+                    {!isAddress &&
                         <View style={styles.childContainer}>
                             <FlatList
                                 contentContainerStyle={styles.flatListContainer}
@@ -265,21 +266,23 @@ class AddressCreation extends Component {
                             onChangeText={text => this.onChangeText(text)}
                             autoCorrect={false}
                         /> */}
-                    {!isAddress &&
-                        <View style={{ marginBottom: hp(-1) }}>
-                            <Custominput
-                                placeholder="Search here"
-                                placeholderTextColor="rgba(0,0,0,0.32)"
-                                icon={require('../../assets/images/search.png')}
-                                style
-                                value={searchName}
-                                onChangeText={text => this.onChangeText(text)}
-                                autoCorrect={false} />
-                        </View>
-                    }
 
-                    {!isMap &&
-                        <View style={{ flex: 1 }}>
+
+                    {
+                        <View style={{ flex: 1}}>
+                            {!isAddress &&
+                                <View style={{ top:hp(1),zIndex:111, position: 'absolute'}}>
+                                    <Custominput
+                                        style={{ backgroundColor: Colors.white }}
+                                        placeholder="Search here"
+                                        placeholderTextColor="rgba(0,0,0,0.32)"
+                                        icon={require('../../assets/images/search.png')}
+
+                                        value={searchName}
+                                        onChangeText={text => this.onChangeText(text)}
+                                        autoCorrect={false} />
+                                </View>
+                            }
                             <MapView
                                 ref={r => this.mapRef = r}
                                 style={styles.mapView}
@@ -305,13 +308,13 @@ class AddressCreation extends Component {
                             <Button
                                 onPress={() => this.setState({ isAddress: true, isMap: true })}
                                 title={'Set address'}
-                                style={{ marginVertical: hp(2), backgroundColor: Colors.tabIconSelected}}
+                                style={{ marginVertical: hp(2), backgroundColor: Colors.tabIconSelected }}
                             />
                         </View>
                     }
 
                     {isAddress &&
-                        <View>
+                        <View style={{backgroundColor:Colors.white,padding:hp(2),position:'absolute',alignItems:'center',flex:1,width:wp(100),height:'100%'}}>
                             {/* <Text>Address line:</Text>
                                 <TextInput
                                     value={addressLine}
@@ -414,7 +417,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.white,
         paddingHorizontal: wp(5),
-        paddingTop: hp(2),
+        // paddingTop: hp(2),
         minHeight: Dimensions.get('window').height - hp(14)
     },
     inputText: {
@@ -425,21 +428,22 @@ const styles = StyleSheet.create({
         marginBottom: hp(2)
     },
     itemContainerStyle: {
-        backgroundColor: Colors.seprator_color,
+        backgroundColor: Colors.white,
         borderRadius: wp(3),
         padding: wp(3),
         marginHorizontal: wp(5),
-        marginVertical: wp(2)
+        marginVertical: wp(1)
     },
     flatListContainer: {
         flexGrow: 1
     },
     childContainer: {
-        marginTop: hp(13),
+        marginTop: hp(8),
         position: 'absolute',
         right: 0,
         left: 0,
-        // backgroundColor: Colors.white
+        //  backgroundColor: 'red',
+        zIndex: 1111
     },
     mapView: {
         flex: 1,

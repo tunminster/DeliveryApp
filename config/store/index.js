@@ -89,9 +89,11 @@ class Store {
 
     @action setApplicationFee(data) {
         this.applicationFees = {
-            platformFee: data.platformFee || 0,
-            deliveryFee: data.deliveryFee || 0,
-            taxFees: data.taxFees || 0,
+            platformFee: data?.platformFee || 0,
+            deliveryFee: data?.deliveryFee || 0,
+            taxFee: data?.taxFee || 0,
+            totalAmount:data?.totalAmount || 0,
+            subTotal:data?.subTotal || 0
         };
     }
 

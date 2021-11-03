@@ -21,7 +21,6 @@ export async function RequestEmailOTP(email){
                 })
             });
             let result = await response.json();
-            debugger
             resolve(result)
 
         } catch (err){
