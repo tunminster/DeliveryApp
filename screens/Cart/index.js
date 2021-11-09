@@ -24,7 +24,7 @@ class Cart extends Component {
                 platformFee: 0,
                 deliveryFee: 0,
                 totalAmount: 0,
-                taxFees:0,
+                taxFee:0,
                 subTotal: 0
             }
         }
@@ -55,7 +55,7 @@ class Cart extends Component {
                         platformFee: res?.platformFee || 0,
                         deliveryFee: res?.deliveryFee || 0,
                         totalAmount: res?.totalAmount || 0,
-                        taxFees:res?.taxFees || 0,
+                        taxFee:res?.taxFee || 0,
                         subTotal:subTotal || 0,
                     }});
             })
@@ -79,7 +79,7 @@ class Cart extends Component {
     render() {
         const { isEdit,isDeliver = true,applicationFees = {} } = this.state;
 
-        // console.log(totalAmount,'[fees]',Store.applicationFees);
+         console.log('[fees]',Store.applicationFees);
         return (
             <View style={styles.container}>
 
@@ -136,7 +136,7 @@ class Cart extends Component {
                     </View>
                     <View style={{flex:1}}>
                         {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
-                        {applicationFees?.taxFees > 0 && this.renderBillField(vars.tax,applicationFees?.taxFees)}
+                        {applicationFees?.taxFee > 0 && this.renderBillField(vars.tax,applicationFees?.taxFee)}
                         {Store.isDelivery && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
                         {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
                     </View>

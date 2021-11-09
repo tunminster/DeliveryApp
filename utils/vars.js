@@ -18,7 +18,7 @@ let geoCodeBaseUrl = Store?.remoteConfig?.geoCodeBaseUrl || "https://maps.google
 export const setRemoteConfig = (data) => {
     setBaseURL(data)
     host = data?.host || 'https://delivery-api.harveynetwork.com';
-    currency = data?.currency || '$';
+    currency = data?.currency || '£';
     paymentCurrencyCode = data?.paymentCurrencyCode || 'GBP';
     androidPayMode = data?.androidPayMode || 'test';
     merchantId = data?.merchantId || 'merchant.com.deliveryapp.app'

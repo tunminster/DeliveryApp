@@ -288,7 +288,7 @@ class RestaurantList extends Component {
                     storeOpeningHours={storeOpeningHours}
                     onMenuPress={(item) => this.onMenuPress(item)}
                     onBasketViewPress={() => this.onBasketViewPress()}
-                    getTotalPrice={getTotalPrice()}
+                    getTotalPrice={Store?.applicationFees?.totalAmount || 0}
                     newOrderModelVisible={newOrderModelVisible}
                     newStoreName={newStoreName}
                     newOrderCancel={() => this.setState({ newOrderModelVisible: false })}

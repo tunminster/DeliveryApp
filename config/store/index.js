@@ -15,13 +15,13 @@ class Store {
     @observable isDelivery = true;
     @observable remoteConfig = {
         "host": "https://delivery-api.harveynetwork.com",
-        "currency": "$",
-        "paymentCurrencyCode": "USD",
+        "currency": "£",
+        "paymentCurrencyCode": "GBP",
         "androidPayMode": "test",
         "merchantId": "merchant.com.deliveryapp.app",
         "stripeSecretKey": "sk_test_51IOWfdGQlL3ftoEbbRRjQeLXKBEWRX9ZBtZmkeCQ5mbGoh3lbx6QbqfbLpUQeRryDMgVYHkySPnxjAVnxuqQNRxf00oM1u3Gtg",
         "publishableKey": "pk_test_51IOWfdGQlL3ftoEbeRWvgmjcQP0nVIyq3ne8nzukYDIfIXJ68YxszvJk3BCOWHvEVCXfwYWwGtMsX2Y2lHRE6JGi00g39JUUSb",
-        "xShard": "Raus",
+        "xShard": "Rauk",
         "locationBaseUrl": "https://maps.googleapis.com/maps/api/place/autocomplete/json",
         "google_key": "AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8",
         "geoCodeBaseUrl": "https://maps.googleapis.com/maps/api/geocode/json"
@@ -30,6 +30,8 @@ class Store {
         platformFee: 0,
         deliveryFee: 0,
         taxFees: 0,
+        totalAmount: 0,
+        subTotal:0
     };
 
     @action setCurrentRoute(route) {
@@ -91,7 +93,7 @@ class Store {
         this.applicationFees = {
             platformFee: data?.platformFee || 0,
             deliveryFee: data?.deliveryFee || 0,
-            taxFees: data?.taxFees || 0,
+            taxFee: data?.taxFee || 0,
             totalAmount:data?.totalAmount || 0,
             subTotal:data?.subTotal || 0
         };

@@ -102,7 +102,7 @@ class Payment extends Component {
                             <CreditCardInput onChange={cardData => this.setState({ cardData })} />
                             <View style={{flex:1}}>
                                 {this.renderBillField(vars.subTotal,applicationFees.subTotal)}
-                                {applicationFees?.taxFees > 0 && this.renderBillField(vars.tax,applicationFees?.taxFees)}
+                                {applicationFees?.taxFee > 0 && this.renderBillField(vars.tax,applicationFees?.taxFee)}
                                 {applicationFees?.deliveryFee > 0 && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
                                 {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
                                 {this.renderBillField('Total Amount',applicationFees?.totalAmount)}
