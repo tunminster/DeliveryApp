@@ -136,7 +136,7 @@ class PaymentType extends Component {
     prepareCart(stripePaymentIntentId) {
         const newData = {
             products: [],
-            totalPrice: getTotalPrice(),
+            totalPrice: Store?.applicationFees?.totalAmount || 0,
             shippingAddressId: this.state.selectedAddress,
             stripePaymentIntentId: stripePaymentIntentId
         };
@@ -178,7 +178,6 @@ class PaymentType extends Component {
                     orderType: dropdownValue == 'Pick up order at' ? 1 : 2,
                     storeId: storeId
                 }
-
                 Store.cart.map(product => {
                     data.orderItems.push({ productId: product.id, count: product.count });
                 });
@@ -231,14 +230,14 @@ class PaymentType extends Component {
         });
         data.push({
             label: vars.labelName,
-            amount: (getTotalPrice() / 100).toFixed(2)
+            amount: (Store?.applicationFees?.totalAmount / 100).toFixed(2)
         })
         return data;
     }
 
     androidItems() {
         const data = {
-            total_price: (getTotalPrice() / 100).toFixed(2),
+            total_price: ((Store?.applicationFees?.totalAmount || 0) / 100).toFixed(2),
             currency_code: Store?.remoteConfig?.paymentCurrencyCode,
             line_items: []
         }

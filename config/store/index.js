@@ -30,6 +30,8 @@ class Store {
         platformFee: 0,
         deliveryFee: 0,
         taxFees: 0,
+        totalAmount: 0,
+        subTotal:0
     };
 
     @action setCurrentRoute(route) {
@@ -104,7 +106,7 @@ class Store {
             currency : data?.currency || '$',
             paymentCurrencyCode : data?.paymentCurrencyCode || 'USD',
             androidPayMode : data?.androidPayMode || 'test',
-            merchantId : data?.merchantId || 'merchant.com.d eliveryapp.app',
+            merchantId : data?.merchantId || 'merchant.com.deliveryapp.app',
             stripeSecretKey : data?.stripeSecretKey || 'sk_test_51IOWfdGQlL3ftoEbbRRjQeLXKBEWRX9ZBtZmkeCQ5mbGoh3lbx6QbqfbLpUQeRryDMgVYHkySPnxjAVnxuqQNRxf00oM1u3Gtg',
             publishableKey : data?.publishableKey || 'pk_test_51IOWfdGQlL3ftoEbeRWvgmjcQP0nVIyq3ne8nzukYDIfIXJ68YxszvJk3BCOWHvEVCXfwYWwGtMsX2Y2lHRE6JGi00g39JUUSb',
             xShard : data?.xShard ? data?.xShard : 'Raus',
