@@ -13,7 +13,9 @@ import messaging from '@react-native-firebase/messaging';
 export function logout() {
     AuthStore.setIsLogin(false);
     AuthStore.setUser({});
-    messaging().deleteToken();
+    messaging().deleteToken().then(r => {
+        console.log(r)
+    });
     AsyncStorage.removeItem('login credential');
     AsyncStorage.removeItem('fcmToken');
     AsyncStorage.removeItem('facebook credential');
@@ -87,7 +89,14 @@ export function fixImgPath(src) {
     return Store?.remoteConfig?.host + "/uploads/" + src;
 }
 
+
+
 export function cacheCart(cart, cartCount) {
+    updateCartAmount();
+    AsyncStorage.setItem('@cart', JSON.stringify(cart));
+    AsyncStorage.setItem('@cartCount', cartCount.toString());
+}
+export function updateCartAmount() {
     let subTotal = getTotalPrice(true)
     const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
     let body = {
@@ -101,14 +110,10 @@ export function cacheCart(cart, cartCount) {
         "storeLongitude": restaurantData?.location?.longitude || 0
     }
     if(subTotal > 0 && Object.values(restaurantData || {}).length > 0){
-        post(`${vars.applicationFeesPost}`,body,(res)=>{
-            console.log(subTotal,'[sdas]',res)
+        post(`${Store?.remoteConfig?.host}${vars.applicationFeesPost}`,body,(res)=>{
             Store.setApplicationFee({...res,subTotal})
         })
     }
-
-    AsyncStorage.setItem('@cart', JSON.stringify(cart));
-    AsyncStorage.setItem('@cartCount', cartCount.toString());
 }
 
 export function getCachedCart() {

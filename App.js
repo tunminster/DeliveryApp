@@ -196,6 +196,16 @@ export default function App(props) {
 
             })
         }
+
+        const onClickNotification = (notification = {}) =>{
+            if(notification?.data?.orderId){
+                containerRef?.current?.navigate('PaymentSuccess', {
+                    orderId: notification?.data?.orderId,
+                    orderType: notification?.data?.orderType || 1
+                })
+            }
+        }
+
     // Load any resources or data that we need prior to rendering the app
     React.useEffect(async () => {
         await firebase.perf().setPerformanceCollectionEnabled(true);
@@ -207,17 +217,11 @@ export default function App(props) {
         });
         messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             console.log("[Notification]", remoteMessage);
-            setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                orderId: "rauk-189660406",
-                orderType: 2
-            }), 1000)
+            setTimeout(() =>onClickNotification(remoteMessage) , 1000)
             //store.dispatch(callSetOrderShow(0));
         });
         messaging().onNotificationOpenedApp(remoteMessage => {
-            setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                orderId: "rauk-189660406",
-                orderType: 2
-            }), 3000)
+            setTimeout(() =>onClickNotification(remoteMessage) , 100)
             console.log(
                 'Notification caused app to open from background state:',
                 remoteMessage.notification,
@@ -229,10 +233,7 @@ export default function App(props) {
             .getInitialNotification()
             .then(remoteMessage => {
                 if (remoteMessage) {
-                    setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                        orderId: "rauk-189660406",
-                        orderType: 2
-                    }), 3000)
+                    setTimeout(() =>onClickNotification(remoteMessage), 3000)
                     console.log(
                         'Notification caused app to open from quit state:',
                         remoteMessage.notification,
