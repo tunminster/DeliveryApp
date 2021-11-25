@@ -144,9 +144,25 @@ class SearchScreen extends Component {
       () => { this.getRestaurant() })
   }
 
+  isOpenRestaurant = (openTime, closeTime, timezone) => {
+    let format = 'hh:mm'
+    let time = moment(new Date(), format);
+    let beforeTime = moment(openTime, format);
+    let afterTime = moment(closeTime, format);
+    return time.isBetween(beforeTime, afterTime)
+
+  }
+
   renderRestaurant = (item, index) => {
+    // let isClosed;
+    // if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+    //   isClosed = true
+    // } else {
+    //   isClosed = false
+    // }
     let isClosed;
-    if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+    let currentTimeRestaurant = item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday());
+    if (currentTimeRestaurant && (currentTimeRestaurant?.open == "00:00" || !this.isOpenRestaurant(currentTimeRestaurant.open,currentTimeRestaurant.close,currentTimeRestaurant.timeZone))) {
       isClosed = true
     } else {
       isClosed = false
@@ -154,6 +170,7 @@ class SearchScreen extends Component {
 
     return (
       <TouchableOpacity
+          disabled={isClosed}
         style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
         onPress={() => {
           isClosed ? null :
