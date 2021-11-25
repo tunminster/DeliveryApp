@@ -68,6 +68,6 @@ export default {
     deliveryFees: "Delivery fees",
     tax: "Tax",
     subTotal: 'Subtotal',
-    notificationRegisterPost: `${host}/api/customer-notification/register`,
-    applicationFeesPost: `${host}/api/order/get-application-fees`
+    notificationRegisterPost: `/api/customer-notification/register`,
+    applicationFeesPost: `/api/order/get-application-fees`
 }

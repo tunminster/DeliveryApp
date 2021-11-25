@@ -306,7 +306,7 @@ class PaymentType extends Component {
 
     render() {
         const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue} = this.state;
-        console.log(lat,lng,latDelta,lngDelta)
+        console.log(Store.deliverAddress)
         return (
             <View style={styles.container}>
 

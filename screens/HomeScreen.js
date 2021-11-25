@@ -16,7 +16,7 @@ import { GetLocationComponent } from '../components/GetLocationComponent'
 import { retrieveData } from '../components/AuthKeyStorageComponent';
 import Api from '../config/api';
 import Loading from '../components/loading';
-import { lowerCase, getTotalPrice } from '../utils/helpers'
+import {lowerCase, getTotalPrice, updateCartAmount} from '../utils/helpers'
 import BasketView from '../components/basketView';
 import Store from '../config/store';
 import MenuView from "../components/menuView"
@@ -74,7 +74,7 @@ class HomeScreen extends Component {
   }
 
   componentDidMount = async () => {
-    this.requestUserPermission();
+     this.requestUserPermission();
     this.focusListener = this.props.navigation.addListener("focus", () => {
       this.forceUpdate()
     })
@@ -110,13 +110,13 @@ class HomeScreen extends Component {
   }
 
   registerNotification = (token) => {
-    post(`${vars.notificationRegisterPost}?handle=${token}`,{},(res)=>{
+    post(`${Store?.remoteConfig?.host}${vars.notificationRegisterPost}?handle=${token}`,{},(res)=>{
       let body = {
         "platform": "fcm",
           "handle": token,
         "tags":[]
       }
-      put(`${vars.notificationRegisterPost}?id=${res.id}`,body,(res)=>{
+      put(`${Store?.remoteConfig?.host}${vars.notificationRegisterPost}?id=${res.id}`,body,(res)=>{
         console.log('successfully fcm register')
       })
     })
@@ -125,15 +125,16 @@ class HomeScreen extends Component {
   async getToken() {
      let fcmToken = await AsyncStorage.getItem("fcmToken");
     console.log("fcmToken from AsyncStorage: ", fcmToken);
-      Clipboard.setString(fcmToken);
+      //Clipboard.setString(fcmToken);
     if (!fcmToken) {
       try {
         const token = await messaging().getToken();
-        Clipboard.setString(token);
+        //Clipboard.setString(token);
         this.registerNotification(token)
         console.log("FCM token: " + token);
         await AsyncStorage.setItem("fcmToken", token);
       } catch (e) {
+        //alert(e)
         console.error("token registration failed?", e);
       }
     } else {
@@ -175,7 +176,7 @@ class HomeScreen extends Component {
 
     retrieveData(STORAGE_KEY)
       .then((data) => {
-        Clipboard.setString(data);
+        //Clipboard.setString(data);
         const config = {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };
@@ -482,8 +483,9 @@ class HomeScreen extends Component {
   onAddBasketPress = (menuDetaildata) => {
     let restaurantData = this.state.restaurantData.find(x => x.storeId === menuDetaildata.storeId)
     this.setState({ menuModelVisible: true, menuDetailVisible: false })
-    Store.addBasket.push(menuDetaildata)
-    Store.restaurantData = restaurantData
+    Store.restaurantData = restaurantData;
+    Store.addBasket.push(menuDetaildata);
+    updateCartAmount();
   }
 
   onConfirmPress = () => {

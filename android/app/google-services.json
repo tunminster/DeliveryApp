@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "516028708004-ck9suhgqqj41m1j0e33k80lcfvongl7d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deliveryapp.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "516028708004-gcce5vras30jtg37js5bgsjh4pu929su.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,7 +44,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBE-Ks-UXxCzjSKW42Ml1Hhm3IMl0gzjL8"
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
         }
       ],
       "services": {
@@ -59,12 +67,20 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:516028708004:android:8f028276f3f516b886e231",
+        "mobilesdk_app_id": "1:516028708004:android:7ac86246bdc1f08286e231",
         "android_client_info": {
           "package_name": "com.ragibull.app"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "516028708004-n7kilrbsaphclkqqva3fdh599qbknl97.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
         {
           "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
           "client_type": 3
@@ -72,7 +88,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBE-Ks-UXxCzjSKW42Ml1Hhm3IMl0gzjL8"
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
         }
       ],
       "services": {
@@ -95,7 +111,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:516028708004:android:e6eb806e952da34f86e231",
+        "mobilesdk_app_id": "1:516028708004:android:330fff92f095e4d886e231",
         "android_client_info": {
           "package_name": "com.ragibull.uk.app"
         }
@@ -109,6 +125,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyBE-Ks-UXxCzjSKW42Ml1Hhm3IMl0gzjL8"
+        },
+        {
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
         }
       ],
       "services": {

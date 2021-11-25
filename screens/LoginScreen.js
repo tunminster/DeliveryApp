@@ -70,17 +70,24 @@ export const SignIn = ({ navigation }) => {
   const signInWithGoogle = async () => {
     try {
       GoogleSignin.configure({
-        webClientId: '775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com',
-        iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
+        webClientId: Platform.OS === 'ios' ? '516028708004-1b8f5nu4l81ielv1f2r0hgqna08dosv8.apps.googleusercontent.com' : '516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com',
+        //webClientId: '516028708004-1b8f5nu4l81ielv1f2r0hgqna08dosv8.apps.googleusercontent.com',
+        // iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
+        iosClientId: '516028708004-1b8f5nu4l81ielv1f2r0hgqna08dosv8.apps.googleusercontent.com',
         offlineAccess: false,
       })
 
       await GoogleSignin.signOut()
       await GoogleSignin.hasPlayServices()
-      const userInfo = await GoogleSignin.signIn()
+      const userInfo = await GoogleSignin.signIn().catch((er)=>{
+        debugger
+      })
+      debugger
+      alert(JSON.stringify(userInfo))
       googleSignIn(userInfo.idToken)
       console.log('userInfo', userInfo)
     } catch (e) {
+      alert(JSON.stringify(e))
       console.log("error", e);
     }
   }

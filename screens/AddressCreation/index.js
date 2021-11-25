@@ -305,11 +305,11 @@ class AddressCreation extends Component {
                                     draggable={true}
                                 />
                             </MapView>
-                            <Button
-                                onPress={() => this.setState({ isAddress: true, isMap: true })}
+                            {!isAddress && <Button
+                                onPress={() => this.setState({isAddress: true, isMap: true})}
                                 title={'Set address'}
-                                style={{ marginVertical: hp(2), backgroundColor: Colors.tabIconSelected }}
-                            />
+                                style={{marginVertical: hp(2), backgroundColor: Colors.tabIconSelected}}
+                            />}
                         </View>
                     }
 

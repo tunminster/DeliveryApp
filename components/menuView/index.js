@@ -140,7 +140,7 @@ class MenuView extends Component {
                                 onPress={() => onBasketViewPress()}
                                 style={{ marginBottom: hp(1) }}
                                 count={Store.cart.length}
-                                amount={`${Store?.remoteConfig?.currency} ${(Store?.applicationFees?.totalAmount > 0 ? Store?.applicationFees?.totalAmount : getTotalPrice() / 100).toFixed(2)}`} />
+                                amount={`${Store?.remoteConfig?.currency} ${(Store?.applicationFees?.totalAmount > 0 ? (Store?.applicationFees?.totalAmount / 100) : getTotalPrice() / 100).toFixed(2)}`} />
                         }
 
                         <Modal

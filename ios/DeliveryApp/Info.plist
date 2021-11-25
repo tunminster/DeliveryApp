@@ -31,12 +31,15 @@
 			<array>
 				<string>fb410282153495193</string>
 				<string>com.ragibull.app</string>
+				<string>com.googleusercontent.apps.516028708004-1b8f5nu4l81ielv1f2r0hgqna08dosv8</string>
 			</array>
 		</dict>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.337543803569-ka132imsm02isjpjfcd6mdjam8o0agam</string>
+				<string>com.googleusercontent.apps.516028708004-1b8f5nu4l81ielv1f2r0hgqna08dosv8</string>
 			</array>
 		</dict>
 	</array>

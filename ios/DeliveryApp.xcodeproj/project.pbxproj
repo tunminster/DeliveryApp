@@ -13,9 +13,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		881D543C25DD3B7700319C56 /* Void.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881D543B25DD3B7700319C56 /* Void.swift */; };
+		88C91C0D274BF9FA00C4D861 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 88C91C0C274BF9FA00C4D861 /* GoogleService-Info.plist */; };
 		96905EF65AED1B983A6B3ABC /* libPods-DeliveryApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-DeliveryApp.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		CD6B729E271EE2010027EC15 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6B729D271EE2010027EC15 /* GoogleService-Info.plist */; };
 		CDB14C4D272142CB0045FBEA /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = CDB14C4C272142CA0045FBEA /* main.jsbundle */; };
 /* End PBXBuildFile section */
 
@@ -33,9 +33,9 @@
 		881D543A25DD3B7700319C56 /* DeliveryApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DeliveryApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		881D543B25DD3B7700319C56 /* Void.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Void.swift; sourceTree = "<group>"; };
 		881D543E25DD404600319C56 /* deliveryapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = deliveryapp.entitlements; path = DeliveryApp/deliveryapp.entitlements; sourceTree = "<group>"; };
+		88C91C0C274BF9FA00C4D861 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = DeliveryApp/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		CD6B729D271EE2010027EC15 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CDB14C4C272142CA0045FBEA /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -56,8 +56,8 @@
 		13B07FAE1A68108700A75B9A /* DeliveryApp */ = {
 			isa = PBXGroup;
 			children = (
+				88C91C0C274BF9FA00C4D861 /* GoogleService-Info.plist */,
 				CDB14C4C272142CA0045FBEA /* main.jsbundle */,
-				CD6B729D271EE2010027EC15 /* GoogleService-Info.plist */,
 				881D543E25DD404600319C56 /* deliveryapp.entitlements */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -199,10 +199,10 @@
 			files = (
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				CD6B729E271EE2010027EC15 /* GoogleService-Info.plist in Resources */,
 				CDB14C4D272142CB0045FBEA /* main.jsbundle in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+				88C91C0D274BF9FA00C4D861 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -408,7 +408,7 @@
 				CODE_SIGN_ENTITLEMENTS = DeliveryApp/deliveryapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 57N9JSSC2L;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -445,7 +445,7 @@
 				CODE_SIGN_ENTITLEMENTS = DeliveryApp/deliveryapp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 57N9JSSC2L;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = DeliveryApp/Info.plist;

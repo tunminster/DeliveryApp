@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, Text, TouchableOpacity } from 'react-native';
+import {View, ScrollView, Image, Text, TouchableOpacity, Modal} from 'react-native';
 import styles from './styles';
 import Button from '../../components/button';
 import Store from '../../config/store/index';
+import AuthStore from '../../config/store/auth';
 import { observer } from 'mobx-react';
 import CartItem from './CartItem';
 import {getTotalPrice, post, put} from '../../utils/helpers';
@@ -11,6 +12,7 @@ import Colors from '../../constants/Colors'
 import BackIcon from '../../components/backIcon';
 import SwitchButton from '../../components/SwitchButton';
 import vars from '../../utils/vars';
+import Loading from "../../components/loading";
 
 @observer
 class Cart extends Component {
@@ -26,7 +28,8 @@ class Cart extends Component {
                 totalAmount: 0,
                 taxFee:0,
                 subTotal: 0
-            }
+            },
+            isLoading:false
         }
     }
     componentDidMount() {
@@ -37,10 +40,12 @@ class Cart extends Component {
     getCartDetail = () => {
         let subTotal = getTotalPrice(true)
         const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
+        const {user = {}} = AuthStore;
+        this.setState({isLoading:true})
         let body = {
             "subTotal": subTotal,
             "orderType": isDelivery ? 2 : 1,
-            "customerId": deliverAddress?.customerId?.toString(),
+            "customerId": user?.id.toString(),
             "storeId": restaurantData?.storeId,
             "customerLatitude": deliverAddress?.lat,
             "customerLongitude": deliverAddress?.lng,
@@ -48,7 +53,7 @@ class Cart extends Component {
             "storeLongitude": restaurantData?.location?.longitude || 0
         }
         if(subTotal > 0){
-            post(`${vars.applicationFeesPost}`,body,(res)=>{
+            post(`${Store?.remoteConfig?.host}${vars.applicationFeesPost}`,body,(res)=>{
                 console.log('[fees]',res);
                 Store.setApplicationFee({...res,subTotal})
                 this.setState({applicationFees: {
@@ -57,8 +62,10 @@ class Cart extends Component {
                         totalAmount: res?.totalAmount || 0,
                         taxFee:res?.taxFee || 0,
                         subTotal:subTotal || 0,
-                    }});
+                    },   isLoading:false});
             })
+        } else {
+            this.setState({isLoading:false})
         }
     }
 
@@ -77,12 +84,16 @@ class Cart extends Component {
     )
 
     render() {
-        const { isEdit,isDeliver = true,applicationFees = {} } = this.state;
+        const { isEdit,isDeliver = true,applicationFees = {},isLoading = false } = this.state;
 
-         console.log('[fees]',Store.applicationFees);
         return (
             <View style={styles.container}>
+                {isLoading && <Modal  transparent={true} visible={isLoading}>
+                    <View style={{flex:1,backgroundColor:'#00000050',height:"120%",width:'100%',position:'absolute',zIndex:100}}>
+                        <Loading/>
+                    </View>
 
+                </Modal> }
                 <View style={styles.header}>
                     <View style={{ flexDirection: 'row' }}>
                         <BackIcon
