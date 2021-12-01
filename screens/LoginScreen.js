@@ -35,6 +35,12 @@ export const SignIn = ({ navigation }) => {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
 
+  React.useEffect(()=>{
+    GoogleSignin.configure({
+      webClientId:"516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
+    });
+  },[])
+
   const facebookLogIn = async () => {
 
     try {
@@ -69,11 +75,11 @@ export const SignIn = ({ navigation }) => {
 
   const signInWithGoogle = async () => {
     try {
-      GoogleSignin.configure({
-        webClientId: '775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com',
-        iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
-        offlineAccess: false,
-      })
+      // GoogleSignin.configure({
+      //   webClientId: '337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com',
+      //   iosClientId: '337543803569-ka132imsm02isjpjfcd6mdjam8o0agam.apps.googleusercontent.com',
+      //   offlineAccess: false,
+      // })
 
       await GoogleSignin.signOut()
       await GoogleSignin.hasPlayServices()
@@ -260,11 +266,11 @@ export const CreateAccount = ({ navigation }) => {
 
   const signInWithGoogle = async () => {
     try {
-      GoogleSignin.configure({
-        webClientId: '775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com',
-        iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
-        offlineAccess: false,
-      })
+      // GoogleSignin.configure({
+      //   webClientId: '775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com',
+      //   iosClientId: '775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk.apps.googleusercontent.com',
+      //   offlineAccess: false,
+      // })
 
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()

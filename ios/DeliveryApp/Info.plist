@@ -34,9 +34,11 @@
 			</array>
 		</dict>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.775223385264-7p663sjpfdl3lmqm6bbn0ocbs0sgqotk</string>
+				<string>com.googleusercontent.apps.516028708004-pfsjqpjlse4vo0cpidvmrkb5s13mt8ar</string>
 			</array>
 		</dict>
 	</array>
