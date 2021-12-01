@@ -24,9 +24,8 @@ class OrderDetail extends Component {
 
     componentDidMount() {
         const order = this.props.route.params.order;
-        if (order.orderType == 1) {
-            this.getOrderDetails(order.id)
-        }
+        this.getOrderDetails(order.id)
+
     }
 
     getOrderDetails = (orderId) => {

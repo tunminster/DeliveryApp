@@ -182,6 +182,7 @@ export default function App(props) {
                                 resolve()
                             } else {
                                 AsyncStorage.getItem('us_remote_config').then((conf)=>{
+                                    console.log('[config]',JSON.parse(conf))
                                     if(conf !== null){
                                         setRemoteConfig(JSON.parse(conf));
                                         Store.setRemoteConfig(JSON.parse(conf))
