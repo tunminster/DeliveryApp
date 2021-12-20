@@ -89,7 +89,11 @@ export default function App(props) {
                             loginRequest(email, password);
                         } else {
                             setIsLoading(false);
-                            Alert.alert("Please try to create account again.");
+                            if(JSON.parse(result)?.DuplicateUserName && JSON.parse(result)?.DuplicateUserName[0] !== ""){
+                                Alert.alert(JSON.parse(result)?.DuplicateUserName[0]);
+                            } else {
+                                Alert.alert("Please try to create account again.");
+                            }
                         }
                     }).catch((error) => {
                     setIsLoading(false);
