@@ -58,6 +58,7 @@ class AddressDetail extends Component{
                     />
                     <View style={{marginBottom:10}} />
                     <MapView
+                        provider={'google'}
                         region={{
                             latitude: lat,
                             longitude: lng,

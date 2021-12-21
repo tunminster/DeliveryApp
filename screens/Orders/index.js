@@ -10,6 +10,7 @@ import BackIcon from '../../components/backIcon';
 import Loading from '../../components/loading';
 import { wp, hp, normalize } from '../../helper/responsiveScreen';
 import Colors from '../../constants/Colors'
+import Store from "../../config/store";
 
 var uuid = require('react-native-uuid');
 
@@ -54,14 +55,16 @@ class Orders extends Component {
                 };
 
                 Api.get('/order/getByUserId/' + AuthStore.user.id + '?page=' + page + '&pagesize=' + 10, config).then(res => {
-                    console.log('order res', JSON.stringify(res));
+                    console.log('order res', res);
                     let preparingData = res.filter(element => {
-                        let data = element.orderStatus == 'Preparing';
+                        //let data = element.orderStatus == 'Preparing';
+                        let data = element.status === 3 || element.status === 0 || element.status === 1;
                         return data;
                     });
 
                     let completeData = res.filter(element => {
-                        let data = element.orderStatus == 'succeeded';
+                        // let data = element.orderStatus == 'succeeded';
+                        let data = element.status === 4 || element.status === 5 || element.status === 6;
                         return data;
                     });
 
@@ -86,9 +89,9 @@ class Orders extends Component {
 
     renderItem = (item, index) => {
         let status = '';
-        if (item.orderStatus == 'succeeded') {
+        if (item.status === 4 || item.status === 5 || item.status === 6) {
             status = 'Delivered'
-        } else if (item.orderStatus == 'Preparing') {
+        } else if (item.status === 0 || item.status === 1 || item.status === 3) {
             status = 'Preparing'
         }
         return (
@@ -106,7 +109,7 @@ class Orders extends Component {
                             <Text style={{ ...styles.subTitle, color: Colors.gray, }}>{status}</Text>
                             {item.storeName && <Text numberOfLines={1} style={{ ...styles.subTitle, color: Colors.black, fontWeight: 'bold' }}>{item.storeName}</Text>}
                             <Text numberOfLines={1} style={{ ...styles.subTitle, color: Colors.black, }}>
-                                {`${vars.currency} ${(item.totalAmount / 100).toFixed(2)} - ${moment(item.dateCreated).format('DD MMM YYYY')}`}</Text>
+                                {`${Store?.remoteConfig?.currency} ${(item.totalAmount / 100).toFixed(2)} - ${moment(item.dateCreated).format('DD MMM YYYY')}`}</Text>
                         </View>
                         {/* <Text numberOfLines={1} style={styles.title}>{title}</Text> */}
                     </View>

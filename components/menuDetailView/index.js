@@ -5,6 +5,7 @@ import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Colors from '../../constants/Colors'
 import Button from '../../components/button';
 import vars from '../../utils/vars';
+import Store from "../../config/store";
 
 class MenuDetailView extends Component {
 
@@ -39,7 +40,7 @@ class MenuDetailView extends Component {
                                     <Text style={{ ...styles.restaurantTitle, fontWeight: 'bold' }}>
                                         {menuDetaildata.productName}</Text>
                                     <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, marginRight: wp(2), fontWeight: '700' }}>
-                                        {`${vars.currency} ${(menuDetaildata.unitPrice / 100).toFixed(2)}`}</Text>
+                                        {`${Store?.remoteConfig?.currency} ${(menuDetaildata.unitPrice / 100).toFixed(2)}`}</Text>
                                 </View>
                                 <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{menuDetaildata.description}</Text>
                             </View>

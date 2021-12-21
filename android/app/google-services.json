@@ -1,28 +1,96 @@
 {
   "project_info": {
-    "project_number": "775223385264",
-    "project_id": "ragibull-uk",
-    "storage_bucket": "ragibull-uk.appspot.com"
+    "project_number": "516028708004",
+    "project_id": "deliveryapp-298211",
+    "storage_bucket": "deliveryapp-298211.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:775223385264:android:4d238392e4643fa5cb2f75",
+        "mobilesdk_app_id": "1:516028708004:android:7ac86246bdc1f08286e231",
+        "android_client_info": {
+          "package_name": "com.ragibull.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "516028708004-4ovhlokeovi47mc6ac9afe70c0j8cj29.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "7d396ad2a31e0d929c6849a28ddb88561f9443fb"
+          }
+        },
+        {
+          "client_id": "516028708004-b8pu70f6qtqrl5g571uavf4inum1tqt6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "516028708004-motdqp2sn2crmg030tk9nr52s10dml4e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "6ba68fdd09116f7c48572e8c337235f0c119877f"
+          }
+        },
+        {
+          "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.deliveryapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516028708004:android:330fff92f095e4d886e231",
         "android_client_info": {
           "package_name": "com.ragibull.uk.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "775223385264-8lc6m276sq401m1t7pim4q55kurvsfn8.apps.googleusercontent.com",
+          "client_id": "516028708004-b3drb827o1pde3di2pv7337ei7nc17ic.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ragibull.uk.app",
-            "certificate_hash": "b3d2a9628c472c306c1e10fbb6bf173b71614d13"
+            "certificate_hash": "3d096c8d8f134d92391bd33841e8b8aecf58b8f3"
           }
         },
         {
-          "client_id": "775223385264-a46ea19a6rtm8lm7fk14i23sbu2ve9tn.apps.googleusercontent.com",
+          "client_id": "516028708004-it1ci90f2rgrv9o63k267jjoqkiagqer.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.uk.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "516028708004-oth2mgk19t6gs02rnljfrpn1ncbgdbkm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ragibull.uk.app",
@@ -30,21 +98,28 @@
           }
         },
         {
-          "client_id": "775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com",
+          "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCCJLGPVEi1w8v10MU5wXu8_uND6Qqpk_Q"
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "775223385264-4p0cgcnnvr4e6pgqorur72k4caiuhdr7.apps.googleusercontent.com",
+              "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.deliveryapp"
+              }
             }
           ]
         }

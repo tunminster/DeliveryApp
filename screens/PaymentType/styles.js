@@ -94,6 +94,7 @@ export default {
         marginLeft: wp(5),
         marginBottom: hp(2),
         alignItems: 'center',
+        marginTop: wp(5)
     },
     mapView: {
         flex: 1,
