@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput,
   ImageBackground, ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Clipboard from '@react-native-community/clipboard';
 import { wp, hp, normalize } from '../helper/responsiveScreen'
 import Colors from '../constants/Colors'
 import Header from '../components/header'
@@ -14,7 +16,7 @@ import { GetLocationComponent } from '../components/GetLocationComponent'
 import { retrieveData } from '../components/AuthKeyStorageComponent';
 import Api from '../config/api';
 import Loading from '../components/loading';
-import { lowerCase, getTotalPrice } from '../utils/helpers'
+import {lowerCase, getTotalPrice, updateCartAmount} from '../utils/helpers'
 import BasketView from '../components/basketView';
 import Store from '../config/store';
 import MenuView from "../components/menuView"
@@ -23,12 +25,14 @@ import MenuDetailView from "../components/menuDetailView"
 import FilterView from "../components/filterView"
 import LocationView from "../components/locationView"
 import moment from 'moment';
+import momentTimezone from 'moment-timezone';
 import vars from '../utils/vars';
+import {post,put} from '../utils/helpers'
 
 var uuid = require('react-native-uuid');
 let guid = uuid.v1();
 var STORAGE_KEY = 'id_token';
-
+import messaging from '@react-native-firebase/messaging';
 class HomeScreen extends Component {
 
   constructor(props) {
@@ -70,6 +74,7 @@ class HomeScreen extends Component {
   }
 
   componentDidMount = async () => {
+     this.requestUserPermission();
     this.focusListener = this.props.navigation.addListener("focus", () => {
       this.forceUpdate()
     })
@@ -90,6 +95,50 @@ class HomeScreen extends Component {
       if (this.state.latitude == '') {
         this.callLocation(false)
       }
+    }
+  }
+
+  async requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log("Authorization status:", authStatus);
+      this.getToken();
+    }
+  }
+
+  registerNotification = (token) => {
+    post(`${Store?.remoteConfig?.host}${vars.notificationRegisterPost}?handle=${token}`,{},(res)=>{
+      let body = {
+        "platform": "fcm",
+          "handle": token,
+        "tags":[]
+      }
+      put(`${Store?.remoteConfig?.host}${vars.notificationRegisterPost}?id=${res.id}`,body,(res)=>{
+        console.log('successfully fcm register')
+      })
+    })
+  };
+
+  async getToken() {
+     let fcmToken = await AsyncStorage.getItem("fcmToken");
+    console.log("fcmToken from AsyncStorage: ", fcmToken);
+      //Clipboard.setString(fcmToken);
+    if (!fcmToken) {
+      try {
+        const token = await messaging().getToken();
+        //Clipboard.setString(token);
+        this.registerNotification(token)
+        console.log("FCM token: " + token);
+        await AsyncStorage.setItem("fcmToken", token);
+      } catch (e) {
+        //alert(e)
+        console.error("token registration failed?", e);
+      }
+    } else {
+      this.registerNotification(fcmToken);
     }
   }
 
@@ -127,6 +176,7 @@ class HomeScreen extends Component {
 
     retrieveData(STORAGE_KEY)
       .then((data) => {
+        //Clipboard.setString(data);
         const config = {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };
@@ -164,7 +214,7 @@ class HomeScreen extends Component {
           headers: { Authorization: 'Bearer ' + data, 'Request-Id': guid }
         };
 
-        console.log('config', config, storeId)
+        console.log('config', config)
         Api.get('V1/Store/Store-Details?storeId=' + storeId, config).then(res => {
           console.log('Store details res', JSON.stringify(res));
           this.setState({ isMenuLoading: false, menuModelVisible: true, menuData: res })
@@ -235,7 +285,7 @@ class HomeScreen extends Component {
           })
         } else {
           this.setState({
-            headerTitle: userLocation.formatted_address, restaurantData: [], page: 1,isLoading: false
+            headerTitle: userLocation.formatted_address, restaurantData: [], page: 1, isLoading: false
           },
             () => { this.getRestaurant() })
             Store.deliverAddress = { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
@@ -286,9 +336,47 @@ class HomeScreen extends Component {
     )
   }
 
+  // isOpenRestaurant = (openTime, closeTime, timezone) => {
+  //   // handle special case
+  //   if (openTime === "24HR") {
+  //     return "open";
+  //   }
+  //
+  //   // get the current date and time in the given time zone
+  //   const now = momentTimezone.tz(timezone);
+  //   // Get the exact open and close times on that date in the given time zone
+  //   // See https://github.com/moment/moment-timezone/issues/119
+  //   const date = now.format("YYYY-MM-DD");
+  //   const storeOpenTime = momentTimezone.tz(date + ' ' + openTime, "YYYY-MM-DD h:mm", timezone);
+  //   const storeCloseTime = momentTimezone.tz(date + ' ' + closeTime, "YYYY-MM-DD h:mm", timezone);
+  //
+  //   let check;
+  //   if (storeCloseTime.isBefore(storeOpenTime)) {
+  //     // Handle ranges that span over midnight
+  //     check = now.isAfter(storeOpenTime) || now.isBefore(storeCloseTime);
+  //   } else {
+  //     // Normal range check using an inclusive start time and exclusive end time
+  //     check = now.isBetween(storeOpenTime, storeCloseTime, null, '[)');
+  //   }
+  //   console.log('time',check)
+  //   return check;
+  //
+  // }
+
+  isOpenRestaurant = (openTime, closeTime, timezone) => {
+    let format = 'hh:mm'
+    let time = moment(new Date(), format);
+        let beforeTime = moment(openTime, format);
+        let afterTime = moment(closeTime, format);
+    return time.isBetween(beforeTime, afterTime)
+
+  }
+
+
   renderRestaurant = (item, index) => {
     let isClosed;
-    if (item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday()).open == "00:00") {
+    let currentTimeRestaurant = item.item.storeOpeningHours.find(x => x.dayOfWeek == moment().isoWeekday());
+    if (currentTimeRestaurant && (currentTimeRestaurant?.open == "00:00" || !this.isOpenRestaurant(currentTimeRestaurant.open,currentTimeRestaurant.close,currentTimeRestaurant.timeZone))) {
       isClosed = true
     } else {
       isClosed = false
@@ -297,6 +385,7 @@ class HomeScreen extends Component {
     return (
       <TouchableOpacity
         style={{ ...styles.searchContainer, marginBottom: hp(1), marginTop: hp(0.5), marginLeft: 1 }}
+        disabled={isClosed}
         onPress={() => {
           isClosed ? null :
             this.getMenu(item.item.storeId)
@@ -394,8 +483,9 @@ class HomeScreen extends Component {
   onAddBasketPress = (menuDetaildata) => {
     let restaurantData = this.state.restaurantData.find(x => x.storeId === menuDetaildata.storeId)
     this.setState({ menuModelVisible: true, menuDetailVisible: false })
-    Store.addBasket.push(menuDetaildata)
-    Store.restaurantData = restaurantData
+    Store.restaurantData = restaurantData;
+    Store.addBasket.push(menuDetaildata);
+    updateCartAmount();
   }
 
   onConfirmPress = () => {
@@ -491,6 +581,16 @@ class HomeScreen extends Component {
       filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
       menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible,
       storeOpeningHours } = this.state
+    // restaurantData?.length > 0 && restaurantData.map((i,index)=>{
+    //   if(index == 0){
+    //     i.storeOpeningHours.map((j,index1)=>{
+    //       if(index1 == 3) {
+    //         j.close = '17:24'
+    //       }
+    //     })
+    //   }
+    // })
+    //console.log(moment(new Date()).format("hh:mm"),'[restaurantData]',restaurantData)
     return (
       <View style={styles.container}>
         {isLoading ? <Loading /> :
@@ -591,7 +691,7 @@ class HomeScreen extends Component {
                 onPress={() => this.onBasketViewPress()}
                 style={{ marginBottom: hp(2) }}
                 count={Store.cart.length}
-                amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
+                amount={`${Store?.remoteConfig?.currency} ${(Store?.applicationFees?.totalAmount / 100).toFixed(2)}`} />
             }
 
             <FilterView
@@ -615,7 +715,7 @@ class HomeScreen extends Component {
               storeOpeningHours={storeOpeningHours}
               onMenuPress={(item) => this.onMenuPress(item)}
               onBasketViewPress={() => this.onBasketViewPress()}
-              getTotalPrice={getTotalPrice()}
+              getTotalPrice={Store?.applicationFees?.totalAmount || 0}
               newOrderModelVisible={newOrderModelVisible}
               newStoreName={newStoreName}
               newOrderCancel={() => this.setState({ newOrderModelVisible: false })}

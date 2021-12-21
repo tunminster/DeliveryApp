@@ -45,6 +45,7 @@ class RestaurantList extends Component {
             menuDetailIndex: -1,
             menuDetailCount: 0,
             storeOpeningHours: null
+
         }
     }
 
@@ -287,7 +288,7 @@ class RestaurantList extends Component {
                     storeOpeningHours={storeOpeningHours}
                     onMenuPress={(item) => this.onMenuPress(item)}
                     onBasketViewPress={() => this.onBasketViewPress()}
-                    getTotalPrice={getTotalPrice()}
+                    getTotalPrice={Store?.applicationFees?.totalAmount || 0}
                     newOrderModelVisible={newOrderModelVisible}
                     newStoreName={newStoreName}
                     newOrderCancel={() => this.setState({ newOrderModelVisible: false })}
@@ -311,7 +312,7 @@ class RestaurantList extends Component {
                         onPress={() => this.onBasketViewPress()}
                         style={{ marginBottom: hp(3) }}
                         count={Store.cart.length}
-                        amount={`${vars.currency} ${(getTotalPrice() / 100).toFixed(2)}`} />
+                        amount={`${Store?.remoteConfig?.currency} ${(Store?.applicationFees?.totalAmount / 100).toFixed(2)}`} />
                 }
             </View>
         )

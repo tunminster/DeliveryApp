@@ -9,8 +9,8 @@ import Store from '../../config/store';
 import BasketView from '../../components/basketView';
 import Colors from '../../constants/Colors'
 import moment from 'moment';
+import {getTotalPrice} from '../../utils/helpers'
 import vars from '../../utils/vars';
-
 
 class MenuView extends Component {
     constructor(props) {
@@ -35,7 +35,7 @@ class MenuView extends Component {
 
     render() {
         const { expandeIndex, isStoreOpeningHours } = this.state;
-        const { menuModelVisible, onCancelPress, menuData, onMenuPress, onBasketViewPress, getTotalPrice,
+        const { menuModelVisible, onCancelPress, menuData, onMenuPress, onBasketViewPress,
             newOrderModelVisible, newStoreName, newOrderCancel, onConfirmPress, storeOpeningHours } = this.props;
         console.log('storeOpeningHours', storeOpeningHours)
 
@@ -116,7 +116,7 @@ class MenuView extends Component {
                                                         <View style={{ flexDirection: 'column', flex: 0.7 }}>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: 'bold' }}>{item.productName}</Text>
                                                             <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray }}>{item.description}</Text>
-                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`${vars.currency} ${(item.unitPrice / 100).toFixed(2)}`}</Text>
+                                                            <Text style={{ ...styles.restaurantSubTitle, color: Colors.gray, fontWeight: '700' }}>{`${Store?.remoteConfig?.currency} ${(item.unitPrice / 100).toFixed(2)}`}</Text>
                                                         </View>
 
                                                         <Image
@@ -140,7 +140,7 @@ class MenuView extends Component {
                                 onPress={() => onBasketViewPress()}
                                 style={{ marginBottom: hp(1) }}
                                 count={Store.cart.length}
-                                amount={`${vars.currency} ${(getTotalPrice / 100).toFixed(2)}`} />
+                                amount={`${Store?.remoteConfig?.currency} ${(Store?.applicationFees?.totalAmount > 0 ? (Store?.applicationFees?.totalAmount / 100) : getTotalPrice() / 100).toFixed(2)}`} />
                         }
 
                         <Modal

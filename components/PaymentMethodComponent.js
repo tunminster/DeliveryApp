@@ -1,5 +1,6 @@
 import * as React from 'react';
 import vars from '../utils/vars';
+import Store from "../config/store";
 
 export async function PaymentMethodComponent(data) {
 
@@ -7,7 +8,7 @@ export async function PaymentMethodComponent(data) {
     method: 'POST',
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Bearer " + vars.stripeSecretKey
+      "Authorization": "Bearer " + Store?.remoteConfig?.stripeSecretKey
     },
     body:data
   });

@@ -1,20 +1,36 @@
 {
   "project_info": {
-    "project_number": "337543803569",
-    "project_id": "ragibull",
-    "storage_bucket": "ragibull.appspot.com"
+    "project_number": "516028708004",
+    "project_id": "deliveryapp-298211",
+    "storage_bucket": "deliveryapp-298211.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:337543803569:android:b308faf24c7c9455a2a890",
+        "mobilesdk_app_id": "1:516028708004:android:7ac86246bdc1f08286e231",
         "android_client_info": {
           "package_name": "com.ragibull.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "337543803569-c62n5n2ir03eith97u10p5o1lvo1mjos.apps.googleusercontent.com",
+          "client_id": "516028708004-4ovhlokeovi47mc6ac9afe70c0j8cj29.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "7d396ad2a31e0d929c6849a28ddb88561f9443fb"
+          }
+        },
+        {
+          "client_id": "516028708004-b8pu70f6qtqrl5g571uavf4inum1tqt6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ragibull.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "516028708004-motdqp2sn2crmg030tk9nr52s10dml4e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ragibull.app",
@@ -22,29 +38,64 @@
           }
         },
         {
-          "client_id": "337543803569-h2bnhn6thlpuq7haq2m5oqrhps4latni.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ragibull.app",
-            "certificate_hash": "b3d2a9628c472c306c1e10fbb6bf173b71614d13"
-          }
-        },
-        {
-          "client_id": "337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com",
+          "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDDVwWntgqfOKnp5AwLFN83zlYB8XvzwEc"
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com",
+              "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.deliveryapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516028708004:android:330fff92f095e4d886e231",
+        "android_client_info": {
+          "package_name": "com.ragibull.uk.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoV5aGNm7sefouWglIk0ViWd6S5gI9I9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.deliveryapp"
+              }
             }
           ]
         }

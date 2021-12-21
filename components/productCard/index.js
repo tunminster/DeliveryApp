@@ -21,7 +21,7 @@ class ProductCard extends Component {
                 <Text style={styles.itemDesc} numberOfLines={5}>{description}</Text>
                 <Text style={[styles.itemName, { marginTop: 10, fontWeight: '800' }]}>
                     <Text>
-                        <Text>{`${vars.currency} ${(unitPrice / 100).toFixed(2)}`}</Text>
+                        <Text>{`${Store?.remoteConfig?.currency} ${(unitPrice / 100).toFixed(2)}`}</Text>
                     </Text>
                 </Text>
 

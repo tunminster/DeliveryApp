@@ -51,19 +51,19 @@ class PaymentType extends Component {
         if (parseInt(Store.deliverAddress.id) == 0) {
             this.sortAddress()
         }
-        if (this.state.dropdownValue == 'Pick up order at') {
-            this.setState({
-                lat: Store.restaurantData.location.latitude,
-                lng: Store.restaurantData.location.longitude, 
-                storeId: Store.restaurantData.storeId,
-                selectedAddress: Store.deliverAddress ? Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id : null
-            })
+         const {params = {}} = this.props.route
+
+         if (params?.isDeliver) {
+             this.setState({ storeId: Store.restaurantData.storeId,dropdownValue:'Deliver to', lat: Store.deliverAddress.lat, lng: Store.deliverAddress.lng, selectedAddress: Store.deliverAddress.id == 0 ? this.state.addresssId : Store.deliverAddress.id })
+         } else {
+             this.setState({ storeId: Store.restaurantData.storeId,dropdownValue:'Pick up order at',lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id })
         }
+
         try {
             await Stripe.setOptionsAsync({
-                publishableKey: vars.publishableKey,
-                androidPayMode: vars.androidPayMode,
-                merchantId: vars.merchantId,
+                publishableKey: Store?.remoteConfig?.publishableKey,
+                androidPayMode: Store?.remoteConfig?.androidPayMode,
+                merchantId: Store?.remoteConfig?.merchantId,
             });
         } catch (error) {
             console.log('error', error)
@@ -71,7 +71,6 @@ class PaymentType extends Component {
     }
 
     sortAddress = async () => {
-
         try {
             GetLocationComponent(null, Store.deliverAddress.lat, Store.deliverAddress.lng)
                 .then((res) => {
@@ -123,7 +122,7 @@ class PaymentType extends Component {
                         }, err => {
                             console.log('err', err)
                         });
-                    }                   
+                    }
 
                 }).catch((error) => {
                     console.log('error', error)
@@ -137,7 +136,7 @@ class PaymentType extends Component {
     prepareCart(stripePaymentIntentId) {
         const newData = {
             products: [],
-            totalPrice: getTotalPrice(),
+            totalPrice: Store?.applicationFees?.totalAmount || 0,
             shippingAddressId: this.state.selectedAddress,
             stripePaymentIntentId: stripePaymentIntentId
         };
@@ -179,13 +178,11 @@ class PaymentType extends Component {
                     orderType: dropdownValue == 'Pick up order at' ? 1 : 2,
                     storeId: storeId
                 }
-
                 Store.cart.map(product => {
                     data.orderItems.push({ productId: product.id, count: product.count });
                 });
 
                 this.setState({ loading: true })
-
                 post('/Order/Payment/CreatePaymentIntent', data, res => {
                     console.log('CreatePaymentIntent res', res);
 
@@ -199,6 +196,7 @@ class PaymentType extends Component {
                             this.paymentWithBalance(cartData);
                             break;
                         case 'card':
+                            console.log(this.props);
                             this.props.navigation.navigate('Payment', { viaCart: cartData, orderType: dropdownValue == 'Pick up order at' ? 1 : 2 } );
                             break;
                         case 'pay':
@@ -232,21 +230,21 @@ class PaymentType extends Component {
         });
         data.push({
             label: vars.labelName,
-            amount: (getTotalPrice() / 100).toFixed(2)
+            amount: (Store?.applicationFees?.totalAmount / 100).toFixed(2)
         })
         return data;
     }
 
     androidItems() {
         const data = {
-            total_price: (getTotalPrice() / 100).toFixed(2),
-            currency_code: vars.paymentCurrencyCode,
+            total_price: ((Store?.applicationFees?.totalAmount || 0) / 100).toFixed(2),
+            currency_code: Store?.remoteConfig?.paymentCurrencyCode,
             line_items: []
         }
 
         Store.cart.map(product => {
             data.line_items.push({
-                currency_code: vars.paymentCurrencyCode,
+                currency_code: Store?.remoteConfig?.paymentCurrencyCode,
                 description: product.productName,
                 total_price: JSON.stringify((product.unitPrice / 100 * product.count).toFixed(2)),
                 unit_price: JSON.stringify((product.unitPrice / 100).toFixed(2)),
@@ -262,7 +260,7 @@ class PaymentType extends Component {
                 if (canMakePayment) {
                     console.log('iosItems', this.iosItems())
                     await Stripe.paymentRequestWithNativePayAsync(vars.isIos ?
-                        { currencyCode: vars.paymentCurrencyCode } : this.androidItems(),
+                        { currencyCode: Store?.remoteConfig?.paymentCurrencyCode } : this.androidItems(),
                         vars.isIos ? this.iosItems() : '')
                         .then(paymentResponse => {
                             console.log('paymentResponse', JSON.stringify(paymentResponse))
@@ -306,18 +304,9 @@ class PaymentType extends Component {
             });
     }
 
-    onDropdownPress = (item) => {
-        const { dropdownVisible, addresssId } = this.state;
-        this.setState({ dropdownVisible: !dropdownVisible, dropdownValue: item.title })
-        if (item.title == 'Pick up order at') {
-            this.setState({ lat: Store.restaurantData.location.latitude, lng: Store.restaurantData.location.longitude, selectedAddress: Store.deliverAddress.id == 0 ? null : Store.deliverAddress.id })
-        } else {
-            this.setState({ lat: Store.deliverAddress.lat, lng: Store.deliverAddress.lng, selectedAddress: Store.deliverAddress.id == 0 ? addresssId : Store.deliverAddress.id })
-        }
-    }
-
     render() {
-        const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue } = this.state;
+        const { loading, lat, lng, latDelta, lngDelta, dropdownVisible, dropdownValue} = this.state;
+        console.log(Store.deliverAddress)
         return (
             <View style={styles.container}>
 
@@ -329,34 +318,11 @@ class PaymentType extends Component {
                     </View>
                     <View style={styles.seperateLine} />
 
-                    <TouchableWithoutFeedback onPress={() => this.setState({ dropdownVisible: !dropdownVisible })}>
-                        <View style={styles.dropDownView}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Image source={require('../../assets/images/clock.png')}
-                                    resizeMode='contain' style={styles.icon} />
-                                <Text style={{ ...styles.title, marginLeft: wp(3), color: Colors.black, }}>{dropdownValue}</Text>
-                            </View>
-                            <Image source={dropdownVisible ? require('../../assets/images/up_arrow.png') : require('../../assets/images/down_arrow.png')} style={styles.downIcon} />
-                        </View>
-                    </TouchableWithoutFeedback>
-
-                    {dropdownVisible &&
-                        <View style={styles.dropDownItem}>
-                            {dropDownList.map((item, index) =>
-                                <TouchableWithoutFeedback key={index}
-                                    onPress={() => this.onDropdownPress(item)} >
-                                    <View>
-                                        <View style={styles.seperateLine} />
-                                        <Text style={{ ...styles.title, paddingVertical: hp(0.7), marginLeft: wp(3), color: Colors.black, }}>{item.title}</Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            )}
-                        </View>
-                    }
 
                     <View style={styles.mapContainer}>
                         <MapView
                             ref={r => this.mapRef = r}
+                            provider={'google'}
                             style={styles.mapView}
                             region={{
                                 latitude: lat,
@@ -371,7 +337,7 @@ class PaymentType extends Component {
                                     latitude: lat,
                                     longitude: lng,
                                 }}
-                                draggable
+                                // draggable
                                 draggable={true}
                             />
                         </MapView>

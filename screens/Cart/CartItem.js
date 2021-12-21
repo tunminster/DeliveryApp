@@ -78,7 +78,7 @@ class CartItem extends Component {
                     <Text style={{
                         ...styles.restaurantSubTitle,
                         marginRight: wp(3)
-                    }}>{`${vars.currency} ${((data.unitPrice * menuDetailCount) / 100).toFixed(2)}`}</Text>
+                    }}>{`${Store?.remoteConfig?.currency} ${((data.unitPrice * menuDetailCount) / 100).toFixed(2)}`}</Text>
 
                 </View>
                 <View style={styles.seperateLine} />
