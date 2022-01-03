@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics' // add crashlytics
+apply plugin: 'com.google.firebase.firebase-perf'
 import com.android.build.OutputFile
 
 /**
@@ -78,7 +80,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    enableHermes: false
+    enableHermes: false,
+    nodeExecutableAndArgs:  ["/usr/local/bin/node"]
 ]
 
 apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
@@ -132,11 +135,11 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.deliveryapp.app'
+        applicationId 'com.ragibull.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 3
+        versionName "1.0.2"
         multiDexEnabled true
         manifestPlaceholders = [appAuthRedirectScheme: 'com.redirectScheme.comm']
     }
@@ -164,6 +167,10 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                unstrippedNativeLibsDir 'build/intermediates/merged_native_libs/release/out/lib'
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -201,7 +208,7 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'com.facebook.android:facebook-android-sdk:7.1.0'
 
     implementation(project(':react-native-maps')){
         exclude group: 'com.google.android.gms', module: 'play-services-base'

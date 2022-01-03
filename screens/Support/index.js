@@ -86,7 +86,7 @@ class Support extends Component {
                             this.phone = ref;
                         }}
                         onPressFlag={this.onPressFlag}
-                        initialCountry='gb'
+                        initialCountry='us'
                         autoFormat="true"
                     />
 

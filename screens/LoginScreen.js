@@ -1,8 +1,19 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Dimensions,
+  Platform
+} from "react-native";
 import { AuthContext } from '../constants/Context';
 import { UserInterfaceIdiom } from 'expo-constants';
-import { wp, hp, normalize, isX, isIOS, isiPAD} from '../helper/responsiveScreen';
+import { wp, hp, normalize, isX, isIOS, isiPAD } from '../helper/responsiveScreen';
 import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
@@ -13,6 +24,7 @@ import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
+import Store from "../config/store";
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
@@ -21,10 +33,18 @@ export const SignIn = ({ navigation }) => {
   const { appleSignIn } = React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+
+  React.useEffect(()=>{
+    GoogleSignin.configure({
+      webClientId:"516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
+    });
+  },[])
 
   const facebookLogIn = async () => {
 
     try {
+      LoginManager.logOut()
       LoginManager.logInWithPermissions(['public_profile', 'email']).then(
         function (result) {
           if (result.isCancelled) {
@@ -55,12 +75,13 @@ export const SignIn = ({ navigation }) => {
 
   const signInWithGoogle = async () => {
     try {
-      GoogleSignin.configure({
-        webClientId: '516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com',
-        iosClientId: '516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com',
-        offlineAccess: false,
-      })
+      // GoogleSignin.configure({
+      //   webClientId: '337543803569-5032h18ejdp4a2bj7hum75plie488trk.apps.googleusercontent.com',
+      //   iosClientId: '337543803569-ka132imsm02isjpjfcd6mdjam8o0agam.apps.googleusercontent.com',
+      //   offlineAccess: false,
+      // })
 
+      await GoogleSignin.signOut()
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
       googleSignIn(userInfo.idToken)
@@ -119,8 +140,6 @@ export const SignIn = ({ navigation }) => {
       // setPasswordError("Enter a valid password");
       alert("Enter a valid password.")
     }
-
-
     else if (email.email != null && password.password != null) {
       signIn(email.email, password.password);
     }
@@ -130,10 +149,10 @@ export const SignIn = ({ navigation }) => {
     <SmartScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={loginstyles.container}
-      applyKeyboardCheck={Platform.OS == 'ios' ? true : false}
+      applyKeyboardCheck={Platform.OS === 'ios'}
       disabled={false}
       alwaysBounceVertical={false} >
-      <View style={{ marginVertical: isiPAD ? hp(3) :  hp(4), alignItems: 'center' }}>
+      <View style={{ marginVertical: isiPAD ? hp(3) : hp(4), alignItems: 'center' }}>
         <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center', }}>
@@ -156,8 +175,12 @@ export const SignIn = ({ navigation }) => {
           onChangeText={text => setPassword({ password: text })}
           autoCorrect={false}
         />
+            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push("ForgotPassword")}>
+              <Text style={loginstyles.forgot}>Forgot Password?</Text>
+            </TouchableOpacity>
 
-        <Text style={loginstyles.forgot}>Forgot Password?</Text>
+
+
 
         <CustomButton
           onPress={() => dologin()}
@@ -165,13 +188,13 @@ export const SignIn = ({ navigation }) => {
         />
 
         <Text style={loginstyles.account}>Don't have an account?
-            <TouchableOpacity onPress={() => navigation.push("CreateAccount")}>
+          <TouchableOpacity onPress={() => navigation.push("CreateAccount")}>
 
             <Text style={loginstyles.signup}> Sign Up</Text>
           </TouchableOpacity>
         </Text>
 
-        <Text style={{ marginVertical: isiPAD ? hp(1) :  hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+        <Text style={{ marginVertical:  isiPAD ? hp(1) : hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
       </View>
 
       <View style={loginstyles.imagecontainer}>
@@ -203,17 +226,17 @@ export const SignIn = ({ navigation }) => {
 };
 
 export const CreateAccount = ({ navigation }) => {
-  const { signUp } = React.useContext(AuthContext);
+  const { RequestEmailOTP } = React.useContext(AuthContext);
   const { googleSignIn } = React.useContext(AuthContext);
   const { facebookSignIn } = React.useContext(AuthContext);
   const { appleSignIn } = React.useContext(AuthContext);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [isLoading, setLoading] = React.useState(false);
 
   const facebookLogIn = async () => {
     try {
-      LoginManager.logOut()
       LoginManager.logInWithPermissions(['public_profile', 'email']).then(
         function (result) {
           if (result.isCancelled) {
@@ -243,13 +266,6 @@ export const CreateAccount = ({ navigation }) => {
 
   const signInWithGoogle = async () => {
     try {
-      GoogleSignin.configure({
-        webClientId: '516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com',
-        iosClientId: '516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9.apps.googleusercontent.com',
-        offlineAccess: false,
-      })
-
-      await GoogleSignin.signOut()
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
       googleSignIn(userInfo.idToken)
@@ -317,7 +333,26 @@ export const CreateAccount = ({ navigation }) => {
     }
 
     else if (email.email != null && password.password != null) {
-      signUp(email.email, password.password, confirmPassword.confirmpassword);
+      setLoading(true);
+      RequestEmailOTP(email.email).then((res)=>{
+        setLoading(false);
+        if(res?.userEmailAddress !== ""){
+          navigation.navigate('OtpVerification',{isRegister:true,registerData:{
+              email: email.email,
+              password: password.password,
+              confirmPassword:confirmPassword.confirmpassword,
+            }})
+        }
+      }).catch(()=>{
+        alert('something went wrong please try again.')
+        setLoading(false);
+      })
+      // signUp(email.email, password.password, confirmPassword.confirmpassword).then((result)=>{
+      //   debugger
+      //   if (result.toUpperCase() == '"Account created"'.toUpperCase()) {
+      //     navigation.navigate('OtpVerification',{isRegister:true})
+      //   }
+      // });
     }
   }
 
@@ -366,7 +401,10 @@ export const CreateAccount = ({ navigation }) => {
         <CustomButton
           onPress={() => register()}
           title={'Sign Up'}
+          isDisable={isLoading}
+          isLoading={isLoading}
         />
+
 
         <Text style={loginstyles.account}>Already have an Account?
             <TouchableOpacity onPress={() => navigation.push("SignIn")}>
@@ -375,7 +413,7 @@ export const CreateAccount = ({ navigation }) => {
           </TouchableOpacity>
         </Text>
 
-        <Text style={{ marginVertical: isiPAD ? hp(1) :  hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
+        <Text style={{ marginVertical: isiPAD ? hp(1) : hp(2), color: '#777777', fontFamily: 'Roboto-Regular', fontSize: normalize(14) }}>Or</Text>
       </View>
 
       <View style={loginstyles.imagecontainer}>
@@ -478,6 +516,8 @@ const loginstyles = StyleSheet.create({
     fontSize: normalize(14),
     fontFamily: 'Roboto-Regular',
     color: '#FE595E',
+  },
+  forgotLink:{
     alignSelf: 'flex-end',
     marginRight: wp(5),
     marginTop: hp(-2),

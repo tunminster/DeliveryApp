@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "DeliveryApp",
-    "slug": "DeliveryApp",
+    "name": "RagiBull",
+    "slug": "RagiBull",
     "platforms": [
       "ios",
       "android",
@@ -25,20 +25,20 @@
     "ios": {
       "buildNumber": "2",
       "supportsTablet": true,
-      "bundleIdentifier": "com.deliveryapp",
+      "bundleIdentifier": "com.ragibull.app",
       "config": {
         "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.516028708004-0ilh32bgbc6k1pbkkc98ffdcp8e3n1h9"
+          "reservedClientId": "com.googleusercontent.apps.337543803569-ka132imsm02isjpjfcd6mdjam8o0agam"
         }
       }
     },
     "description": "",
     "android": {
-      "package": "com.deliveryapp.app",
+      "package": "com.ragibull.app",
       "config":{
         "googleSignIn":{
-          "apiKey":"AIzaSyA6OXx8HA3xlKM-ORCeLRyNfigpoAKEoh0",
-          "certificateHash":"E228B3152CD05A65CB9E0CEADFD2CAB93DEF8546"
+          "apiKey":"AIzaSyDDVwWntgqfOKnp5AwLFN83zlYB8XvzwEc",
+          "certificateHash":"6ba68fdd09116f7c48572e8c337235f0c119877f"
         }
       }
 
