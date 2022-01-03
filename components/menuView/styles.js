@@ -49,7 +49,7 @@ export default {
   modalMenuTitle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: hp(1.5),
+    marginTop: hp(2),
     marginBottom: hp(1),
     alignItems: 'center'
   },
