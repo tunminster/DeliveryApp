@@ -31,7 +31,14 @@ class Store {
         deliveryFee: 0,
         taxFees: 0,
         totalAmount: 0,
-        subTotal:0
+        subTotal:0,
+        deliveryTips: 0,
+        promotionDiscount: 0
+    };
+
+    @observable promotion = {
+        promotionDiscount: 0,
+        promoCode: ''
     };
 
     @action setCurrentRoute(route) {
@@ -95,7 +102,16 @@ class Store {
             deliveryFee: data?.deliveryFee || 0,
             taxFee: data?.taxFee || 0,
             totalAmount:data?.totalAmount || 0,
-            subTotal:data?.subTotal || 0
+            subTotal:data?.subTotal || 0,
+            deliveryTips: data?.deliveryTips || 0,
+            promotionDiscount: data?.promotionDiscount || 0
+        };
+    }
+
+    @action setPromoCode(data) { 
+        this.promotion = {
+            promotionDiscount: data?.promotionDiscount || 0,
+            promoCode: data?.promotionDiscount ? data?.promoCode : '',
         };
     }
 
