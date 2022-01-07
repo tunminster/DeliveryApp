@@ -39,7 +39,7 @@ export function post(url, data, success, error) {
             const config = {
                 headers: { Authorization: 'Bearer ' + responseData, 'Request-Id': guid,'X-Shard': Store?.remoteConfig?.xShard }
             };
-            console.log('url', url, ",,,,", config)
+            console.log('url', url, ",,,,", config, 'body', data);
             Api.post(url, data, config)
                 .then(res => success(res))
                 .catch(err => {
@@ -98,7 +98,7 @@ export function cacheCart(cart, cartCount) {
 }
 export function updateCartAmount() {
     let subTotal = getTotalPrice(true)
-    const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
+    const {restaurantData = {}, deliverAddress = {},isDelivery = true, promotion, applicationFees} = Store;
     let body = {
         "subTotal": subTotal,
         "orderType": isDelivery ? 2 : 1,
@@ -107,7 +107,9 @@ export function updateCartAmount() {
         "customerLatitude": deliverAddress?.lat,
         "customerLongitude": deliverAddress?.lng,
         "storeLatitude": restaurantData?.location?.latitude || 0,
-        "storeLongitude": restaurantData?.location?.longitude || 0
+        "storeLongitude": restaurantData?.location?.longitude || 0,
+        "deliveryTips": (applicationFees.deliveryTip || 0),
+        "promoCode":promotion?.promoCode || null
     }
     if(subTotal > 0 && Object.values(restaurantData || {}).length > 0){
         post(`${Store?.remoteConfig?.host}${vars.applicationFeesPost}`,body,(res)=>{
