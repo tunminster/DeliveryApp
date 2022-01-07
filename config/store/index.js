@@ -1,5 +1,5 @@
-import {observable, action, toJS} from 'mobx';
-import {cacheCart} from '../../utils/helpers';
+import { observable, action, toJS } from 'mobx';
+import { cacheCart } from '../../utils/helpers';
 import remoteConfig from "@react-native-firebase/remote-config";
 
 class Store {
@@ -31,7 +31,14 @@ class Store {
         deliveryFee: 0,
         taxFees: 0,
         totalAmount: 0,
-        subTotal:0
+        subTotal: 0,
+        deliveryTips: 0,
+        promotionDiscount: 0
+    };
+
+    @observable promotion = {
+        promotionDiscount: 0,
+        promoCode: ''
     };
 
     @action setCurrentRoute(route) {
@@ -94,25 +101,34 @@ class Store {
             platformFee: data?.platformFee || 0,
             deliveryFee: data?.deliveryFee || 0,
             taxFee: data?.taxFee || 0,
-            totalAmount:data?.totalAmount || 0,
-            subTotal:data?.subTotal || 0
+            totalAmount: data?.totalAmount || 0,
+            subTotal: data?.subTotal || 0,
+            deliveryTips: data?.deliveryTips || 0,
+            promotionDiscount: data?.promotionDiscount || 0,
+        };
+    }
+
+    @action setPromoCode(data) { 
+        this.promotion = {
+            promotionDiscount: data?.promotionDiscount || 0,
+            promoCode: data?.promotionDiscount ? data?.promoCode : '',
         };
     }
 
     @action setRemoteConfig(data) {
         this.remoteConfig = {
             ...this.remoteConfig,
-            host : data?.host || 'https://delivery-api.harveynetwork.com',
-            currency : data?.currency || '$',
-            paymentCurrencyCode : data?.paymentCurrencyCode || 'USD',
-            androidPayMode : data?.androidPayMode || 'test',
-            merchantId : data?.merchantId || 'merchant.com.deliveryapp.app',
-            stripeSecretKey : data?.stripeSecretKey || 'sk_test_51IOWfdGQlL3ftoEbbRRjQeLXKBEWRX9ZBtZmkeCQ5mbGoh3lbx6QbqfbLpUQeRryDMgVYHkySPnxjAVnxuqQNRxf00oM1u3Gtg',
-            publishableKey : data?.publishableKey || 'pk_test_51IOWfdGQlL3ftoEbeRWvgmjcQP0nVIyq3ne8nzukYDIfIXJ68YxszvJk3BCOWHvEVCXfwYWwGtMsX2Y2lHRE6JGi00g39JUUSb',
-            xShard : data?.xShard ? data?.xShard : 'Raus',
-            locationBaseUrl : data?.locationBaseUrl || "https://maps.googleapis.com/maps/api/place/autocomplete/json",
-            google_key : data?.google_key || "AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8",
-            geoCodeBaseUrl : data?.geoCodeBaseUrl || "https://maps.googleapis.com/maps/api/geocode/json"
+            host: data?.host || 'https://delivery-api.harveynetwork.com',
+            currency: data?.currency || '$',
+            paymentCurrencyCode: data?.paymentCurrencyCode || 'USD',
+            androidPayMode: data?.androidPayMode || 'test',
+            merchantId: data?.merchantId || 'merchant.com.deliveryapp.app',
+            stripeSecretKey: data?.stripeSecretKey || 'sk_test_51IOWfdGQlL3ftoEbbRRjQeLXKBEWRX9ZBtZmkeCQ5mbGoh3lbx6QbqfbLpUQeRryDMgVYHkySPnxjAVnxuqQNRxf00oM1u3Gtg',
+            publishableKey: data?.publishableKey || 'pk_test_51IOWfdGQlL3ftoEbeRWvgmjcQP0nVIyq3ne8nzukYDIfIXJ68YxszvJk3BCOWHvEVCXfwYWwGtMsX2Y2lHRE6JGi00g39JUUSb',
+            xShard: data?.xShard ? data?.xShard : 'Raus',
+            locationBaseUrl: data?.locationBaseUrl || "https://maps.googleapis.com/maps/api/place/autocomplete/json",
+            google_key: data?.google_key || "AIzaSyDIwggD-DXUmXaU462dwrzGpZ75y8VEOP8",
+            geoCodeBaseUrl: data?.geoCodeBaseUrl || "https://maps.googleapis.com/maps/api/geocode/json"
         };
     }
 
