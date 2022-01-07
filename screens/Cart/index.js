@@ -12,6 +12,9 @@ import BackIcon from '../../components/backIcon';
 import SwitchButton from '../../components/SwitchButton';
 import vars from '../../utils/vars';
 import Loading from "../../components/loading";
+import { Input } from '../../components';
+import NumericInput from '@wwdrew/react-native-numeric-textinput'
+import { TextInput, Button as PaperButton } from 'react-native-paper';
 
 @observer
 class Cart extends Component {
@@ -26,8 +29,11 @@ class Cart extends Component {
                 deliveryFee: 0,
                 totalAmount: 0,
                 taxFee:0,
-                subTotal: 0
+                subTotal: 0,
+                deliveryTip: (Store.applicationFees.deliveryTips || 0) / 100
             },
+            couponCode: Store.applicationFees.promotionDiscount > 0 ? Store.promotion.promoCode : '',
+            couponCodeApplied: Store.applicationFees.promotionDiscount > 0,
             isLoading:false
         }
     }
@@ -38,7 +44,8 @@ class Cart extends Component {
 
     getCartDetail = () => {
         let subTotal = getTotalPrice(true)
-        const {restaurantData = {}, deliverAddress = {},isDelivery = true} = Store;
+        const { restaurantData = {}, deliverAddress = {}, isDelivery = true, applicationFees } = Store;
+        const { user = {} } = AuthStore;
         this.setState({isLoading:true})
         let body = {
             "subTotal": subTotal,
@@ -48,7 +55,9 @@ class Cart extends Component {
             "customerLatitude": deliverAddress?.lat,
             "customerLongitude": deliverAddress?.lng,
             "storeLatitude": restaurantData?.location?.latitude || 0,
-            "storeLongitude": restaurantData?.location?.longitude || 0
+            "storeLongitude": restaurantData?.location?.longitude || 0,
+            "deliveryTips": isDelivery ? (this.state.applicationFees.deliveryTip || 0) * 100 : 0,
+            "promoCode": this.state.couponCodeApplied ? this.state.couponCode : null
         }
         if(subTotal > 0){
             post(`${Store?.remoteConfig?.host}${vars.applicationFeesPost}`,body,(res)=>{
@@ -60,6 +69,7 @@ class Cart extends Component {
                         totalAmount: res?.totalAmount || 0,
                         taxFee:res?.taxFee || 0,
                         subTotal:subTotal || 0,
+                        deliveryTip: (res?.deliveryTips || 0) / 100
                     },   isLoading:false});
             })
         } else {
@@ -74,10 +84,68 @@ class Cart extends Component {
             alert("Please add item")
         }
     }
+
+    onPromoClicked = async () => {
+        console.log('[PROMO]', this.state.couponCode);
+        if (!this.state.couponCode) return;
+        const { restaurantData = {}, deliverAddress = {}, isDelivery = true } = Store;
+        const { user = {} } = AuthStore;
+        let subTotal = getTotalPrice(true)
+        this.setState({ isLoading: true })
+        let body = {
+            couponCode: this.state.couponCode
+        }
+        if (subTotal > 0) {
+            try {
+                post(`${Store?.remoteConfig?.host}${vars.confirmCouponCodePost}`, body, (res) => {
+
+                    console.log('[PROMO]', res);
+                    if (res.status) {
+                        this.setState(
+                            {
+                                couponCodeApplied: true,
+                                isLoading: false
+                            }, () => this.getCartDetail());
+                    } else {
+                        alert(`${this.state.couponCode} is not a valid promo code.`);
+
+                        this.setState(
+                            {
+                                isLoading: false,
+                                couponCodeApplied: false
+                            }, () => this.getCartDetail());
+
+                    }
+                })
+            } catch (e) {
+                console.error(e);
+            }
+        } else {
+            this.setState({ isLoading: false })
+        }
+    }
+
+    onDeliveryTipSubmit = async () => {
+        console.log('[TIP]', this.state.applicationFees.deliveryTip);
+        this.getCartDetail();
+    }
+
     renderBillField = (title = '', amount = 0) => (
         <View style={[styles.bottomChildContainer,{height: hp(5)}]}>
             <Text style={{ ...styles.title, color: Colors.black,fontSize:normalize(16) }}>{title}</Text>
             <Text style={{ ...styles.subTitle, color: Colors.black,fontSize:normalize(16) }}>{`${Store?.remoteConfig?.currency} ${(amount / 100).toFixed(2)}`}</Text>
+        </View>
+    )
+
+    renderPromoInputField = (title = '', promoCode = '', onChange, onPromoClicked) => (
+        <View style={[styles.bottomChildContainer, { height: hp(5), alignItems: 'flex-start', flexDirection: 'column', marginTop: hp(5) }]}>
+            <Text style={{ ...styles.title, color: Colors.black, fontSize: normalize(16) }}>{title}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: hp(1) }}>
+                <TextInput theme={{ colors: { primary: Colors.tabIconSelected, underlineColor: 'transparent' } }} mode='outlined' outlineColor={Colors.tabIconSelected} autoComplete="off" autoCorrect={false} autoCapitalize={"characters"} onChangeText={onChange} value={promoCode} onEndEditing={onPromoClicked} style={{ ...styles.title, color: Colors.black, fontSize: normalize(16),flex:1, backgroundColor: '#fff', marginRight: 10, height: hp(6)  }}  />
+                <PaperButton mode="contained" theme={{ colors: { primary: Colors.tabIconSelected, underlineColor: 'transparent' } }} labelStyle={{ fontSize: 14, color: Colors.white }} contentStyle={{ height: hp(6) }} style={{ marginTop: 5 }} onPress={onPromoClicked}>
+                    {this.state.couponCodeApplied ? 'APPLIED' : 'APPLY'}
+                </PaperButton>
+            </View>
         </View>
     )
 
@@ -146,8 +214,29 @@ class Cart extends Component {
                     <View style={{flex:1}}>
                         {/*{this.renderBillField(vars.subTotal,applicationFees.subTotal)}*/}
                         {applicationFees?.taxFee > 0 && this.renderBillField(vars.tax,applicationFees?.taxFee)}
-                        {Store.isDelivery && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
                         {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
+                        {Store.isDelivery && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
+
+                        {Store.isDelivery && <View style={[styles.bottomChildContainer, { height: hp(5), alignItems: 'center' }]}>
+                            <Text style={{ ...styles.title, color: Colors.black, fontSize: normalize(16) }}>{vars.deliveryTips}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                <Text style={{ ...styles.subTitle, color: Colors.black, fontSize: normalize(16) }}>{`${Store?.remoteConfig?.currency} `}
+                                </Text>
+                                <NumericInput
+                                    type='decimal'
+                                    decimalPlaces={2}
+                                    value={applicationFees.deliveryTip ? applicationFees.deliveryTip : 0}
+                                    onUpdate={(value) => { console.log(this.state.applicationFees.deliveryTip, value); this.setState({ applicationFees: { ...applicationFees, deliveryTip: value } }) }}
+                                    style={{ ...styles.title, color: Colors.black, fontSize: normalize(16), minWidth: 40, borderBottomWidth: 1, borderColor: '#555' }}
+                                    selectTextOnFocus
+                                    onEndEditing={this.onDeliveryTipSubmit}
+                                />
+                            </View>
+                        </View>}
+
+                        {this.renderPromoInputField(vars.promoCode, couponCode, (couponCode) => { this.setState({ couponCode, couponCodeApplied: false }); }, this.onPromoClicked)}
+
+
                     </View>
                 </ScrollView>
 

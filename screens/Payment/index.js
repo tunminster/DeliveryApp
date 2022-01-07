@@ -103,8 +103,10 @@ class Payment extends Component {
                             <View style={{flex:1}}>
                                 {this.renderBillField(vars.subTotal,applicationFees.subTotal)}
                                 {applicationFees?.taxFee > 0 && this.renderBillField(vars.tax,applicationFees?.taxFee)}
-                                {applicationFees?.deliveryFee > 0 && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
                                 {this.renderBillField(vars.applicationFees,applicationFees?.platformFee)}
+                                {applicationFees?.deliveryFee > 0 && this.renderBillField(vars.deliveryFees,applicationFees?.deliveryFee)}
+                                {applicationFees?.deliveryTips > 0 && this.renderBillField(vars.deliveryTips,applicationFees?.deliveryTips)}
+                                {applicationFees?.promotionDiscount > 0 && this.renderBillField(vars.promotionDiscount,-applicationFees?.promotionDiscount)}
                                 {this.renderBillField('Total Amount',applicationFees?.totalAmount)}
                             </View>
                             <Button
