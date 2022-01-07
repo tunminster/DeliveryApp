@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native';
-// import { SplashScreen } from 'expo';
+
 import { firebase } from '@react-native-firebase/perf';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

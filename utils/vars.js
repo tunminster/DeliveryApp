@@ -66,8 +66,12 @@ export default {
     resetPasswordScreenTitle: 'Reset Password',
     applicationFees: 'Application fees',
     deliveryFees: "Delivery fees",
+    deliveryTips: 'Delivery tips',
+    promotionDiscount:'Promotion discount',
+    promoCode:'Have a promo code?',
     tax: "Tax",
     subTotal: 'Subtotal',
     notificationRegisterPost: `/api/customer-notification/register`,
-    applicationFeesPost: `/api/order/get-application-fees`
+    applicationFeesPost: `/api/order/get-application-fees`,
+    confirmCouponCodePost: `/api/v1/Stripe/confirm-coupon-code`,
 }
