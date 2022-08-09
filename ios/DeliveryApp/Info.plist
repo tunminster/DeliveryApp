@@ -48,6 +48,8 @@
 	<string>410282153495193</string>
 	<key>FacebookDisplayName</key>
 	<string>RagiBull</string>
+  <key>FacebookClientToken</key>
+    <string>4b71898a979b7458adf30f6691451160</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
