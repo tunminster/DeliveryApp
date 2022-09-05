@@ -34,7 +34,6 @@ export const ForgotPasswordScreen = ({ navigation }) => {
         var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
 
         if (email === null || email === '') {
-            // setEmailError("Enter a valid email.");
             alert("Enter an email.");
         }
         else if (!pattern.test(email)) {
@@ -82,12 +81,6 @@ export const ForgotPasswordScreen = ({ navigation }) => {
                     onPress={clickOnSendOTP}
                     title={'Send OTP'}
                 />
-                {/*<Text style={styles.account}>Already have an Account?*/}
-                {/*    <TouchableOpacity onPress={() => navigation.push("SignIn")}>*/}
-
-                {/*        <Text style={styles.signup}> Sign In</Text>*/}
-                {/*    </TouchableOpacity>*/}
-                {/*</Text>*/}
 
             </View>
             <View style={{flex:1}} />
