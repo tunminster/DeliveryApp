@@ -18,8 +18,7 @@ import Custominput from '../components/textinput';
 import CustomButton from '../components/loginbutton';
 import vars from '../utils/vars';
 import { GoogleSignin } from '@react-native-community/google-signin'
-import { LoginManager, AccessToken, Settings } from "react-native-fbsdk-next";
-//import { LoginManager, AccessToken } from 'react-native-fbsdk'
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next'
 import Loading from '../components/loading';
 import Colors from '../constants/Colors'
 import SmartScrollView from '../components/SmartScrollView'

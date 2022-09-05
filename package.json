@@ -59,7 +59,7 @@
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-credit-card-input": "^0.4.1",
     "react-native-elements": "^3.0.0-alpha.1",
-    "react-native-fbsdk-next": "^10.0.0",
+    "react-native-fbsdk-next": "^10.1.0",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-maps": "^0.29.3",
