@@ -39,6 +39,7 @@ export const SignIn = ({ navigation }) => {
     GoogleSignin.configure({
       webClientId:"516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
     });
+    Settings.initializeSDK();
   },[])
 
   const facebookLogIn = async () => {
