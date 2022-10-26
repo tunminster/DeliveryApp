@@ -90,5 +90,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+  	<true/>
 </dict>
 </plist>
