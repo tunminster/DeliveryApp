@@ -178,14 +178,14 @@ export default function App(props) {
                             if (fetchedRemotely) {
                                 let config = await remoteConfig().getAll();
                                 console.log('[config]',config)
-                                let config1 = config['us_remote_config']
+                                let config1 = config['da_remote_config']
                                 console.log('[config]',config1)
                                 setRemoteConfig(JSON.parse(config1._value));
-                                await AsyncStorage.setItem('us_remote_config',config1._value);
+                                await AsyncStorage.setItem('da_remote_config',config1._value);
                                 Store.setRemoteConfig(config1._value ? JSON.parse(config1._value) : {})
                                 resolve()
                             } else {
-                                AsyncStorage.getItem('us_remote_config').then((conf)=>{
+                                AsyncStorage.getItem('da_remote_config').then((conf)=>{
                                     console.log('[config]',JSON.parse(conf))
                                     if(conf !== null){
                                         setRemoteConfig(JSON.parse(conf));
@@ -203,8 +203,8 @@ export default function App(props) {
         }
     // Load any resources or data that we need prior to rendering the app
     React.useEffect(async () => {
-        await firebase.perf().setPerformanceCollectionEnabled(true);
-        await remote();
+        //await firebase.perf().setPerformanceCollectionEnabled(true);
+        //await remote();
         messaging().onMessage(async (remoteMessage) => {
             console.log("[Notification]", remoteMessage);
             //setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),1000)
@@ -212,17 +212,17 @@ export default function App(props) {
         });
         messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             console.log("[Notification]", remoteMessage);
-            setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                orderId: "rauk-189660406",
-                orderType: 2
-            }), 1000)
-            //store.dispatch(callSetOrderShow(0));
+            // setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
+            //     orderId: "rauk-189660406",
+            //     orderType: 2
+            // }), 1000)
+            store.dispatch(callSetOrderShow(0));
         });
         messaging().onNotificationOpenedApp(remoteMessage => {
-            setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                orderId: "rauk-189660406",
-                orderType: 2
-            }), 3000)
+            // setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
+            //     orderId: "rauk-189660406",
+            //     orderType: 2
+            // }), 3000)
             console.log(
                 'Notification caused app to open from background state:',
                 remoteMessage.notification,
@@ -234,10 +234,10 @@ export default function App(props) {
             .getInitialNotification()
             .then(remoteMessage => {
                 if (remoteMessage) {
-                    setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                        orderId: "rauk-189660406",
-                        orderType: 2
-                    }), 3000)
+                    // setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
+                    //     orderId: "rauk-189660406",
+                    //     orderType: 2
+                    // }), 3000)
                     console.log(
                         'Notification caused app to open from quit state:',
                         remoteMessage.notification,
@@ -247,7 +247,7 @@ export default function App(props) {
 
         async function loadResourcesAndDataAsync() {
             try {
-                SplashScreen.preventAutoHide();
+                await SplashScreen.preventAutoHideAsync();
                 // Load our initial navigation state
                 setInitialNavigationState(await getInitialState());
 
@@ -286,11 +286,11 @@ export default function App(props) {
                 console.warn(e);
             } finally {
                 setLoadingComplete(true);
-                SplashScreen.hide();
+                await SplashScreen.hideAsync();
             }
         }
 
-        loadResourcesAndDataAsync();
+        await loadResourcesAndDataAsync();
         // setTimeout(() => {
         //   setIsLoading(false);
         // }, 1000)
@@ -640,47 +640,10 @@ const RootStackScreen = ({userToken}) => (
                                   options={({navigation}) => (
                                       {headerShown: false}
                                   )}
-
-                    // options={({navigation, userToken}) => (
-                    //   {
-                    //     title: 'Restaurant Name',
-                    //     headerStyle: {
-                    //     backgroundColor: '#f4511e',
-                    //     },
-                    //     headerTintColor: '#fff',
-                    //     headerTitleStyle: {
-                    //       fontWeight: 'bold',
-                    //     },
-                    //     headerLeft: () => (
-                    //         <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-                    //           onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
-                    //           />
-                    //     ),
-                    //     headerRight: () => (
-                    //       <TouchableOpacity style={{paddingRight: 15, position: 'relative'}} onPress={() => this.props.navigation.navigate('Cart')} >
-                    //         <Image source={require('./assets/images/cart-icon-white.png')} style={{width: 29, height: 32, resizeMode: 'contain'}} />
-                    //         <View style={{width: 20, height: 20, borderRadius: 10, position: 'absolute', backgroundColor: '#fff', bottom: -7, right: 7, justifyContent: 'center'}}>
-                    //             <Text style={{color: '#000', textAlign: 'center', fontSize: 10}}>{Store.cartCount}</Text>
-                    //         </View>
-                    //     </TouchableOpacity>
-                    //     )
-                    //   }
-                    // )}
                 />
             ) : (
                 <RootStack.Screen name="Auth" component={AuthStackScreen}
                                   options={({navigation}) => ({headerShown: false}
-                                      // {
-                                      //   title: 'Restaurant Name',
-                                      //   headerStyle: {
-                                      //   backgroundColor: '#f4511e',
-                                      //   },
-                                      //   headerTintColor: '#fff',
-                                      //   headerTitleStyle: {
-                                      //     fontWeight: 'bold',
-                                      //   },
-
-                                      // }
                                   )}
                 />
             )

@@ -68,7 +68,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Accessing user's location to find nearest restaurants.</string>
+	<string>Accessing user&apos;s location to find nearest restaurants.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -89,6 +89,18 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fb-messenger-share-api</string>
+		<string>fb-messenger-api</string>
+		<string>fbapi</string>
+		<string>fbauth2</string>
+    <string>fbshareextension</string>
+	</array>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<false/>
 </dict>
 </plist>
