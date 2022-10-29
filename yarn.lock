@@ -1039,7 +1039,7 @@
     "@babel/preset-env" "^7.4.4"
     "@babel/preset-typescript" "^7.3.3"
 
-"@expo/config-plugins@^4.0.2", "@expo/config-plugins@^4.0.3", "@expo/config-plugins@^4.1.5":
+"@expo/config-plugins@^4.1.5":
   "integrity" "sha512-RVvU40RtZt12HavuDAe+LDIq9lHj7sheOfMEHdmpJ/uTA8pgvkbc56XF6JHQD+yRr6+uhhb+JnAasGq49dsQbw=="
   "resolved" "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-4.1.5.tgz"
   "version" "4.1.5"
@@ -1627,44 +1627,44 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-6.0.2.tgz"
   "version" "6.0.2"
 
-"@react-native-firebase/analytics@^12.9.0", "@react-native-firebase/analytics@12.9.2":
-  "integrity" "sha512-5UYVRyvmF5Ws7rZ2JM3zOwH3yoquhexwXT071HWdxSYsyCSco5rtxq27QVtqhB+LiqzztALZrERfK3hEsqLBXQ=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-12.9.2.tgz"
-  "version" "12.9.2"
+"@react-native-firebase/analytics@^14.12.0", "@react-native-firebase/analytics@14.12.0":
+  "integrity" "sha512-1ulisJVqpCVs+c3wukG7PCRyipBNqzWVzzC/WB+zaFLXu5gtYZU1RXbzuIUTQLLvVM4v+Yl1wdqcuhybjm+BQA=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-14.12.0.tgz"
+  "version" "14.12.0"
 
-"@react-native-firebase/app@^12.9.0", "@react-native-firebase/app@12.9.2", "@react-native-firebase/app@12.9.3":
-  "integrity" "sha512-aZ32taypvRGini7wynqbFTDppnFrBUsZAVcqB3ePY5tYi7DTTGK62UxIUGDuQ66BsHv7AULMOTj87RT1s37EHA=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-12.9.2.tgz"
-  "version" "12.9.2"
+"@react-native-firebase/app@14.12.0":
+  "integrity" "sha512-r/4eP96U3StUs9t3QSlNwCIjjZpEAzI0u8GF8VlNNgrFxUKQXmwe63dRXQXVrI03MxnHgg87OpoWgIxhRlC9Rg=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-14.12.0.tgz"
+  "version" "14.12.0"
   dependencies:
-    "@expo/config-plugins" "^4.0.2"
+    "@expo/config-plugins" "^4.1.5"
     "opencollective-postinstall" "^2.0.1"
     "superstruct" "^0.6.2"
 
-"@react-native-firebase/crashlytics@^12.9.0":
-  "integrity" "sha512-IkF17vlX36Ubqh3x1oVw7XdFQZ2uuaIhVflhAQdRp0YfUnhpTbk7G2SrjLoaDJ2fiTu6Y9+pKMbErrhJ2tAXnQ=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/crashlytics/-/crashlytics-12.9.2.tgz"
-  "version" "12.9.2"
+"@react-native-firebase/crashlytics@^14.12.0":
+  "integrity" "sha512-Qhcu8fYi9YjpBSwht/jTCW2aSyQzKhwc2PRqdp8frdVLsdgikOeGRElJ6DqUA8RgPtvsebAB1+v93lRfs6FTeQ=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/crashlytics/-/crashlytics-14.12.0.tgz"
+  "version" "14.12.0"
   dependencies:
-    "@expo/config-plugins" "^4.0.2"
+    "@expo/config-plugins" "^4.1.5"
     "stacktrace-js" "^2.0.0"
 
-"@react-native-firebase/messaging@^12.9.0":
-  "integrity" "sha512-oetLiJF3kuSCZyeu2hKHXj9kmeN4+6N+rBP5KckKce0HFbap/vKDB6nRr6lqa//BEOnEGC09HdJHnKlIClh9UA=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-12.9.2.tgz"
-  "version" "12.9.2"
+"@react-native-firebase/messaging@^14.12.0":
+  "integrity" "sha512-4JF93pYLyFiLjwU2RYlHMKSjI7DKLuqQrqCnC3M2yhgTDeYaJsqnYnTSDMfmmh9vZHfHjTztc6E2scwr/Mw8tg=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-14.12.0.tgz"
+  "version" "14.12.0"
 
-"@react-native-firebase/perf@^12.9.0":
-  "integrity" "sha512-/R7cvlLpsUOxI7gpAf+FLYkdrDq3xfrqfu5u52BOXg37xOkQy+1XDEf223eqzifQtys3j4Jb8bJ6jtv7B6/jCA=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/perf/-/perf-12.9.3.tgz"
-  "version" "12.9.3"
+"@react-native-firebase/perf@^14.12.0":
+  "integrity" "sha512-MSdAIXDdQfULXSkRvxi5Cia5oblMlqYvAsy5s3guaTjWphNt+s+PzI5UrH9vv4MvhuuD2zy0KXUzjnjiBoTujA=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/perf/-/perf-14.12.0.tgz"
+  "version" "14.12.0"
   dependencies:
-    "@expo/config-plugins" "^4.0.3"
+    "@expo/config-plugins" "^4.1.5"
 
-"@react-native-firebase/remote-config@^12.9.0":
-  "integrity" "sha512-/5dEruWB0NYbYYf1rve4gDpVirZRikOngf+djjuSdVWe46Pf7MH3O4oX/rSqLJd1VBA0ogSCB1pnToBcaSAy1g=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/remote-config/-/remote-config-12.9.2.tgz"
-  "version" "12.9.2"
+"@react-native-firebase/remote-config@^14.12.0":
+  "integrity" "sha512-WASOY12cwdiWUPgaaeKH2jfSpIhtDG/Xu8y0Ws5+RZYu9pox6/pTUkWUdXnJpWnR9Cg3FdOhzKxijMovsezbpw=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/remote-config/-/remote-config-14.12.0.tgz"
+  "version" "14.12.0"
 
 "@react-native/normalize-color@^2.0.0":
   "integrity" "sha512-Wip/xsc5lw8vsBlmY2MO/gFLp3MvuZ2baBZjDeTjjndMgM0h5sxz7AZR62RDPGgstp8Np7JzjvVqVT7tpFZqsw=="
@@ -7357,7 +7357,7 @@
   dependencies:
     "randombytes" "^2.0.3"
 
-"react-native-vector-icons@*", "react-native-vector-icons@>= 6.0.0", "react-native-vector-icons@>6.6.0":
+"react-native-vector-icons@*", "react-native-vector-icons@^9.2.0", "react-native-vector-icons@>= 6.0.0", "react-native-vector-icons@>6.6.0":
   "integrity" "sha512-wKYLaFuQST/chH3AJRjmOLoLy3JEs1JR6zMNgTaemFpNoXs0ztRnTxcxFD9xhX7cJe1/zoN5BpQYe7kL0m5yyA=="
   "resolved" "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-9.2.0.tgz"
   "version" "9.2.0"

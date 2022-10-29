@@ -92,5 +92,7 @@
 	<false/>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
   	<true/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 </dict>
 </plist>

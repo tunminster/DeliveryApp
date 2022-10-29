@@ -286,7 +286,7 @@ export default function App(props) {
                 console.warn(e);
             } finally {
                 setLoadingComplete(true);
-                SplashScreen.hide();
+                SplashScreen.hideAsync();
             }
         }
 
