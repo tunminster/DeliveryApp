@@ -37,12 +37,15 @@ class HomeScreen extends Component {
 
   constructor(props) {
     super(props)
+    
+    var lastUsedAddressId = AuthStore?.user?.addresses?.length > 0 ? AuthStore.user.addresses.at(-1).id : 0;
+
     this.state = {
       headerTitle: '',
       latitude: '',
       longitude: '',
       isModalVisible: false,
-      addressesId: 0,
+      addressesId: lastUsedAddressId,
       curLatitude: '',
       curLongitude: '',
       search: '',
@@ -69,9 +72,12 @@ class HomeScreen extends Component {
       newAddressModelVisible: false,
       tempAddress: null,
       onEndReachedCalledDuringMomentum: true,
-      storeOpeningHours: null
+      storeOpeningHours: null,
+      showLocationAlertModal: false
     }
   }
+
+
 
   componentDidMount = async () => {
      this.requestUserPermission();
@@ -372,6 +378,17 @@ class HomeScreen extends Component {
 
   }
 
+  onRestaurantClicked = (storeId, storeOpeningHours) => {
+    console.log("onRestaurant clicked " + this.state.addressesId);
+    if(this.state.addressesId === 0){
+      this.setState({showLocationAlertModal:true});
+    }else{
+      this.getMenu(storeId);
+      this.setState({storeOpeningHours: storeOpeningHours});
+    }
+
+  }
+
 
   renderRestaurant = (item, index) => {
     let isClosed;
@@ -388,8 +405,9 @@ class HomeScreen extends Component {
         disabled={isClosed}
         onPress={() => {
           isClosed ? null :
-            this.getMenu(item.item.storeId)
-          this.setState({ storeOpeningHours: item.item.storeOpeningHours })
+            this.onRestaurantClicked(item.item.storeId, item.item.storeOpeningHours);
+            //this.getMenu(item.item.storeId)
+            //this.setState({ storeOpeningHours: item.item.storeOpeningHours })
 
         }}>
         <ImageBackground
@@ -557,6 +575,11 @@ class HomeScreen extends Component {
 
   onNewAddressConfirmPress = () => {
     const { tempAddress } = this.state
+
+    if(tempAddress === null){
+      this.callLocation(false);
+    }
+
     this.setState({
       headerTitle: tempAddress.addressLine,
       latitude: tempAddress.lat,
@@ -574,13 +597,30 @@ class HomeScreen extends Component {
     Store.setCart([]);
     Store.resetCartCount();
   }
+  onLocationViewCancelPress = () => {
+    this.setState({
+      isModalVisible: false
+    }, () => {
+      this.getRestaurant()
+    });
+
+  }
+
+  onAddAddressPress = () => {
+    this.setState({
+      isModalVisible: true,
+      showLocationAlertModal: false,
+    },() => {
+      this.callLocation(true)
+    });
+  }
 
   render() {
     const { headerTitle, isModalVisible, addressesId, search, categoriesData, restaurantData,
       onEndReachedCalledDuringMomentum, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
       filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
       menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible,
-      storeOpeningHours } = this.state
+      storeOpeningHours, showLocationAlertModal } = this.state
     // restaurantData?.length > 0 && restaurantData.map((i,index)=>{
     //   if(index == 0){
     //     i.storeOpeningHours.map((j,index1)=>{
@@ -603,7 +643,7 @@ class HomeScreen extends Component {
 
             <LocationView
               isModalVisible={isModalVisible}
-              onLocationCancelPress={() => this.setState({ isModalVisible: false })}
+              onLocationCancelPress={() => this.onLocationViewCancelPress()}
               onNewAddressPressHandler={() => this.onNewAddressPressHandler()}
               addressesId={addressesId}
               onCurrentLocationPress={() => this.onCurrentLocationPress()}
@@ -736,6 +776,27 @@ class HomeScreen extends Component {
 
           </View>
         }
+
+        <Modal 
+          transparent={true}
+          animationType={'none'}
+          visible={showLocationAlertModal}
+        >
+          <View style={styles.modelContainer}>
+            <View style={{ backgroundColor: Colors.white, width: wp(70) }}>
+              <Text style={{ ...styles.dialogTitle, marginVertical: hp(1.5), alignSelf: 'center' }}>{'Please select an address before starting order foods.'}</Text>
+              <View style={{ ...styles.modelSeperateLine, marginTop: hp(1.5) }} />
+
+              <View style={styles.modelConfirmContainer}>
+                <TouchableOpacity style={styles.buttonAddress} onPress={() => this.onAddAddressPress()}>
+                  <Text style={styles.buttonAddressText}>{'Create an address'}</Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+          </View>
+
+        </Modal>
       </View>
     )
   }
@@ -857,7 +918,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#00000080',
-  }
+  },
+  modelContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.5)',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden'
+  },
+  modelSeperateLine: {
+    backgroundColor: Colors.border,
+    height: wp(0.2),
+  },
+  modelConfirmContainer: {
+    width: wp(70),
+    flexDirection: 'row',
+    height: hp(20),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  dialogTitle: {
+    fontSize: normalize(14),
+    fontFamily: 'Roboto-Regular',
+    color: Colors.black,
+    fontWeight: '400',
+    alignItems: 'center',
+  },
+  buttonAddress: {
+    height: hp(7),
+    marginHorizontal: wp(5),
+    marginVertical: hp(1.5),
+    justifyContent: 'center',
+    color: '#ffffff',
+    backgroundColor: '#FE595E'
+},
+buttonAddressText: {
+  color: Colors.white,
+  padding: wp(2.5),
+}
 });
 
 export default HomeScreen;

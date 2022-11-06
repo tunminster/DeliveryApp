@@ -98,7 +98,7 @@
 		<string>fb-messenger-api</string>
 		<string>fbapi</string>
 		<string>fbauth2</string>
-    <string>fbshareextension</string>
+		<string>fbshareextension</string>
 	</array>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<false/>
