@@ -203,8 +203,8 @@ export default function App(props) {
         }
     // Load any resources or data that we need prior to rendering the app
     React.useEffect(async () => {
-        //await firebase.perf().setPerformanceCollectionEnabled(true);
-        //await remote();
+        await firebase.perf().setPerformanceCollectionEnabled(true);
+        await remote();
         messaging().onMessage(async (remoteMessage) => {
             console.log("[Notification]", remoteMessage);
             //setTimeout(()=>containerRef?.current?.navigate('PaymentSuccess', { orderId: "rauk-189660406", orderType: 2 }),1000)
@@ -247,6 +247,7 @@ export default function App(props) {
 
         async function loadResourcesAndDataAsync() {
             try {
+                SplashScreen.preventAutoHide();
                 //await SplashScreen.preventAutoHideAsync();
                 // Load our initial navigation state
                 setInitialNavigationState(await getInitialState());

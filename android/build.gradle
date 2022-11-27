@@ -7,13 +7,14 @@ buildscript {
         compileSdkVersion = 30
         targetSdkVersion = 30
         facebookSdkVersion = "13.1.0"
+        kotlin_version = '1.7.20'
     }
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.5.3")
+        classpath('com.android.tools.build:gradle:3.6.4')
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1' //add crashanalytics
         classpath 'com.google.firebase:perf-plugin:1.4.0'
