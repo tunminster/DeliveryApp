@@ -178,11 +178,26 @@ class PaymentType extends Component {
                     orderType: dropdownValue == 'Pick up order at' ? 1 : 2,
                     storeId: storeId
                 }
+                
                 Store.cart.map(product => {
-                    data.orderItems.push({ productId: product.id, count: product.count });
+                    let meatOptions = [];
+                    if(product.productMeatOptions.length>0){
+                        let meatItems = product.productMeatOptions;
+                        meatItems.forEach(element => {
+                            let optionValues = [];
+                            element.productMeatOptionValues.forEach(element2 =>{
+                                if(element2.selected){
+                                    optionValues.push({meatOptionValueId:element2.meatOptionValueId, optionValueText: element2.optionValueText})
+                                }
+                            })
+                            meatOptions.push({meatOptionId: element.meatOptionId, optionText: element.optionText, meatOptionValues:optionValues})
+                        });
+                        
+                    }
+                    data.orderItems.push({ productId: product.id, count: product.count, meatOptions: meatOptions });
                 });
-
                 this.setState({ loading: true })
+                console.log(JSON.stringify(data))
                 post('/Order/Payment/CreatePaymentIntent', data, res => {
                     console.log('CreatePaymentIntent res', res);
 

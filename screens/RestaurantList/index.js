@@ -151,7 +151,6 @@ class RestaurantList extends Component {
     }
 
     onMenuPress = (value) => {
-
         if (Store.cart.length != 0) {
             let existData = Store.cart.find(x => x.storeId === value.storeId);
             if (existData) {

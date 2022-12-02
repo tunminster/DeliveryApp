@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput,
   ImageBackground, ActivityIndicator,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Clipboard from '@react-native-community/clipboard';
@@ -38,7 +39,7 @@ class HomeScreen extends Component {
   constructor(props) {
     super(props)
     
-    var lastUsedAddressId = AuthStore?.user?.addresses?.length > 0 ? AuthStore.user.addresses.at(-1).id : 0;
+    var lastUsedAddressId = AuthStore?.user?.addresses?.length > 0 ? AuthStore?.user?.addresses?.at?.(-1)?.id : 0;
 
     this.state = {
       headerTitle: '',
@@ -444,7 +445,6 @@ class HomeScreen extends Component {
   }
 
   onMenuPress = (value) => {
-
     if (Store.cart.length != 0) {
       let existData = Store.cart.find(x => x.storeId === value.storeId);
       if (existData) {
@@ -460,7 +460,7 @@ class HomeScreen extends Component {
             })
           }
         })
-      } else {
+      } else {  
         if (Store.restaurantData) {
           this.setState({ newOrderModelVisible: true, newStoreName: Store.restaurantData.storeType })
         }
@@ -497,7 +497,34 @@ class HomeScreen extends Component {
       }
     })
   }
-
+  onUpdateMeatOptionPress = (value, meatOptionId, meatOptionValueId) => {
+    let myCart = [...Store.cart];
+    let tempMeatOption = myCart[this.state.menuDetailIndex].productMeatOptions || []
+        let meatOptionIndex = tempMeatOption.findIndex((item)=> item.meatOptionId == meatOptionId)
+        if(meatOptionIndex>=0){
+            console.log("MeatOtionIndex"+ meatOptionIndex);
+            let tempMeatOptionItem = tempMeatOption[meatOptionIndex].productMeatOptionValues;
+            let tempOptionValueIndex = tempMeatOptionItem.findIndex((item2)=> item2.meatOptionValueId == meatOptionValueId)
+            if(tempOptionValueIndex>=0){
+                console.log("TempOptionValueIndex"+ tempOptionValueIndex);
+                tempMeatOptionItem[tempOptionValueIndex]['selected'] = value;
+                tempMeatOption[meatOptionIndex].productMeatOptionValues = tempMeatOptionItem;  
+                Store.updateCartItemMeatOption(this.state.menuDetailIndex, tempMeatOption)
+                console.log(JSON.stringify(tempMeatOptionItem));
+                
+                this.setState({
+                  menuDetaildata: {...this.state.menuDetaildata, productMeatOptions: [...tempMeatOption]}
+                })
+            }
+            
+        }
+    
+    // Store.cart.map((item, i) => {
+    //   if (this.state.menuDetaildata.id == item.id) {
+    //     this.setState({ menuDetailCount: item.count })
+    //   }
+    // })
+  }
   onAddBasketPress = (menuDetaildata) => {
     let restaurantData = this.state.restaurantData.find(x => x.storeId === menuDetaildata.storeId)
     this.setState({ menuModelVisible: true, menuDetailVisible: false })
@@ -768,6 +795,7 @@ class HomeScreen extends Component {
                 onMenuDetailCancelPress={() => this.onMenuDetailCancelPress()}
                 menuDetaildata={menuDetaildata}
                 menuDetailCount={menuDetailCount}
+                onUpdateMeatOptionPress={(value, meatOptionId, meatOptionValueId) => this.onUpdateMeatOptionPress(value, meatOptionId, meatOptionValueId)}
                 onUpdateCountPress={(value) => this.onUpdateCountPress(value)}
                 onAddBasketPress={(data) => this.onAddBasketPress(data)}
               />

@@ -7,9 +7,9 @@ import Colors from '../../constants/Colors'
 class CheckBoxView extends Component {
 
     render() {
-        const { title, active, onPress, image, isCheckBox } = this.props;
+        const { title, active, onPress, image, isCheckBox, container } = this.props;
         return (
-            <TouchableOpacity style={styles.container} onPress={() => onPress()}>
+            <TouchableOpacity style={{...styles.container, ...container}} onPress={() => onPress()}>
                 {image != '' &&
                     <Image source={image} tintColor={Colors.gray} style={styles.icon} />
                 }

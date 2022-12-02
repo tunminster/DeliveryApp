@@ -31,8 +31,8 @@ export const SignIn = ({ navigation }) => {
   const { googleSignIn } = React.useContext(AuthContext);
   const { facebookSignIn } = React.useContext(AuthContext);
   const { appleSignIn } = React.useContext(AuthContext);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState({email:"raj2@thedemoapp.com"});
+  const [password, setPassword] = React.useState({password:"Pass@123"});
   const [confirmPassword, setConfirmPassword] = React.useState("");
 
   React.useEffect(()=>{
