@@ -178,16 +178,16 @@ export default function App(props) {
                             if (fetchedRemotely) {
                                 let config = await remoteConfig().getAll();
                                 console.log('[config]',config)
-                                let config1 = config['us_remote_config']
-                                //let config1 = config['da_remote_config']
+                                //let config1 = config['us_remote_config']
+                                let config1 = config['da_remote_config']
                                 console.log('[config]',config1)
                                 setRemoteConfig(JSON.parse(config1._value));
-                                await AsyncStorage.setItem('us_remote_config',config1._value);
-                                //await AsyncStorage.setItem('da_remote_config',config1._value);
+                                //await AsyncStorage.setItem('us_remote_config',config1._value);
+                                await AsyncStorage.setItem('da_remote_config',config1._value);
                                 Store.setRemoteConfig(config1._value ? JSON.parse(config1._value) : {})
                                 resolve()
                             } else {
-                                AsyncStorage.getItem('us_remote_config').then((conf)=>{
+                                AsyncStorage.getItem('da_remote_config').then((conf)=>{
                                     console.log('[config]',JSON.parse(conf))
                                     if(conf !== null){
                                         setRemoteConfig(JSON.parse(conf));
