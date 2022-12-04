@@ -4,7 +4,8 @@ import { wp, hp, normalize } from '../helper/responsiveScreen'
 import Colors from '../constants/Colors'
 import ProfileItem from '../components/profileItem';
 import AuthStore from '../config/store/auth';
-import { logout } from '../utils/helpers';
+import { logout, post } from '../utils/helpers';
+import Store from '../config/store';
 import { CommonActions } from '@react-navigation/native';
 import LocationView from "../components/locationView"
 import Geolocation from '@react-native-community/geolocation'
@@ -93,6 +94,34 @@ class MoreScreen extends Component {
     })
   }
 
+  onDeleteAccountPress = () =>{
+    post('/v1/my-account/delete', data, res => {
+      this.setState({ loading: false })
+
+      AuthStore.setIsLogin(false);
+      AuthStore.setUser({});
+      messaging().deleteToken().then(r => {
+          console.log(r)
+      });
+      AsyncStorage.removeItem('login credential');
+      AsyncStorage.removeItem('fcmToken');
+      AsyncStorage.removeItem('facebook credential');
+      AsyncStorage.removeItem('google credential');
+      AsyncStorage.removeItem('token');
+      AsyncStorage.removeItem('apple credential');
+      Store.setCart([]);
+      Store.resetCartCount();
+      AsyncStorage.multiRemove(['@cart', '@cartCount']);
+      Store.restaurantData = null
+      Store.deliverAddress = null
+
+      this.props.navigation.navigate('Home');
+  }, err => {
+      console.log('err..', err)
+      this.setState({ loading: false })
+  });
+  }
+
   render() {
     const { username } = AuthStore.user;
     const { navigation } = this.props;
@@ -123,6 +152,23 @@ class MoreScreen extends Component {
             image={require('../assets/images/location.png')}
             onPress={() =>this.setState({ isModalVisible: true })}
           />
+          <View style={styles.seperateLine} />
+          <ProfileItem
+            title={'Delete Account'}
+            onPress={() => {
+              logout();
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [
+                      { name: 'SignIn' }
+                    ],
+                  })
+                );
+            }}
+          />
+          
+
           <View style={styles.seperateLine} />
 
         </View>
