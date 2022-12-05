@@ -15,6 +15,13 @@ class MenuDetailView extends Component {
             productMeatOptions: [],
         }
     }
+    getPrice(price){
+        if(price){
+          return  "$"+(price / 100).toFixed(2);
+        }else{
+            return "$0.00";
+        }   
+    }
     render() {
         const { menuDetailVisible, onMenuDetailCancelPress, menuDetaildata, menuDetailCount,
             onUpdateCountPress, onAddBasketPress, onUpdateMeatOptionPress } = this.props;
@@ -69,9 +76,9 @@ class MenuDetailView extends Component {
                                                 <CheckBoxView
                                                 active={valueItem?.selected}
                                                 image={''}
-                                                title={'$'+valueItem.additionalPrice}
+                                                title={this.getPrice(valueItem.additionalPrice)}
                                                 isCheckBox={item.optionControl==2}
-                                                container={{paddingHorizontal: wp(1), paddingVertical: wp(1.5), flex:0.2}}
+                                                container={{paddingHorizontal: wp(1), paddingVertical: wp(1.5), flex:0.28, justifyContent:'space-between'}}
                                                   onPress={() => onUpdateMeatOptionPress(!valueItem?.selected, item.meatOptionId, valueItem.meatOptionValueId)} 
                                               />
                                               </View>

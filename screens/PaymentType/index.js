@@ -176,9 +176,9 @@ class PaymentType extends Component {
                     shippingAddressId: selectedAddress,
                     discount: 0,
                     orderType: dropdownValue == 'Pick up order at' ? 1 : 2,
-                    storeId: storeId
+                    storeId: storeId,
+                    deliveryTips: Store.applicationFees.deliveryTips || 0 / 100,
                 }
-                
                 Store.cart.map(product => {
                     let meatOptions = [];
                     if(product.productMeatOptions.length>0){
