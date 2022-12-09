@@ -178,6 +178,7 @@ class PaymentType extends Component {
                     orderType: dropdownValue == 'Pick up order at' ? 1 : 2,
                     storeId: storeId,
                     deliveryTips: Store.applicationFees.deliveryTips || 0 / 100,
+                    promoCode : Store.applicationFees.promotionDiscount > 0 ? Store.promotion.promoCode : '',
                 }
                 Store.cart.map(product => {
                     let meatOptions = [];
