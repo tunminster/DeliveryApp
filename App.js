@@ -60,6 +60,7 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import {RequestEmailOTP} from "./components/RequestEmailOTP";
 import {VerifyEmailOTP} from "./components/VerifyEmailOTP";
 import {setRemoteConfig} from "./utils/vars";
+import HomeScreen from './screens/HomeScreen';
 const Stack = createStackNavigator();
 state = {
     email: "",
@@ -73,7 +74,7 @@ export default function App(props) {
     const {getInitialState} = useLinking(containerRef);
 
     const [isLoading, setIsLoading] = React.useState(true);
-    const [userToken, setUserToken] = React.useState(null);
+    const [userToken, setUserToken] = React.useState("FirstTime");
 
     const authContext = React.useMemo(() => {
         return {
@@ -488,6 +489,22 @@ const AuthStackScreen = () => (
     </AuthStack.Navigator>
 );
 
+const WithoutAuthStack = createStackNavigator();
+const WithoutAuthStackScreen = () => (
+    <WithoutAuthStack.Navigator headerMode="none">
+        <WithoutAuthStack.Screen name="Home" component={HomeScreen}/>
+        <WithoutAuthStack.Screen name="SignIn" component={SignIn} options={{title: "Sign In"}}/>
+        <WithoutAuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{title: "Forgot Password"}}/>
+        <WithoutAuthStack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{title: "Forgot Password"}}/>
+        <WithoutAuthStack.Screen name="OtpVerification" component={OtpVerificationScreen}
+                          options={{title: "OTP Verification"}}/>
+        <WithoutAuthStack.Screen name="CreateAccount" component={CreateAccount}
+                          options={{title: "Create Account"}}/>
+        <WithoutAuthStack.Screen name="CreateAddress" component={AddressCreation}
+                          options={{title: "Create Address", header: null}}/>
+    </WithoutAuthStack.Navigator>
+);
+
 const PageStack = createStackNavigator();
 const PageScreen = () => (
     <PageStack.Navigator headerMode="screen"
@@ -566,13 +583,6 @@ const PageScreen = () => (
                           options={({navigation}) => (
                               {
                                   headerShown: false
-                                  // headerMode: 'screen',
-                                  // title: 'Address Creation',
-                                  // headerStyle: {
-                                  //   backgroundColor: '#f4511e'
-                                  // },
-                                  // headerTintColor: '#fff',
-                                  // headerBackTitle: ''
                               }
                           )}
         />
@@ -638,7 +648,11 @@ const RootStack = createStackNavigator();
 const RootStackScreen = ({userToken}) => (
     <RootStack.Navigator>
         {
-            userToken ? (
+            userToken==="FirstTime"?(<RootStack.Screen name="WithoutAuth" component={WithoutAuthStackScreen}
+            options={({navigation}) => (
+                {headerShown: false}
+            )}
+            />):(userToken ? (
                 <RootStack.Screen name="App" component={PageScreen}
                                   options={({navigation}) => (
                                       {headerShown: false}
@@ -649,7 +663,7 @@ const RootStackScreen = ({userToken}) => (
                                   options={({navigation}) => ({headerShown: false}
                                   )}
                 />
-            )
+            ))
         }
 
 

@@ -74,7 +74,8 @@ class HomeScreen extends Component {
       tempAddress: null,
       onEndReachedCalledDuringMomentum: true,
       storeOpeningHours: null,
-      showLocationAlertModal: false
+      showLocationAlertModal: false,
+      retriesCount: 0
     }
   }
 
@@ -83,6 +84,16 @@ class HomeScreen extends Component {
   componentDidMount = async () => {
      this.requestUserPermission();
     this.focusListener = this.props.navigation.addListener("focus", () => {
+      if(this.props?.route?.params?.newAddress?.addressLine){
+        this.setState({
+          latitude: this.props.route.params.newAddress.lat,
+          longitude: this.props.route.params.newAddress.lng,
+          curLatitude: this.props.route.params.newAddress.lat,
+          curLongitude: this.props.route.params.newAddress.lng
+        }, () => {
+          this.fetchAddress(false)
+        })
+      }
       this.forceUpdate()
     })
     this.getCategories()
@@ -192,10 +203,9 @@ class HomeScreen extends Component {
           '&storetypes=' + storeType + '&latitude=' + latitude + '&longitude=' + longitude +
           '&page=' + page + '&pagesize=' + 20
 
-        console.log('value', value)
+        console.log('valuedsso', value)
 
         Api.get('/V1/Store/Stores-Search?' + value, config).then(res => {
-          console.log('restaurant res', res);
           if (res.length != 0) {
             this.setState({
               restaurantData: [...this.state.restaurantData, ...res],
@@ -273,6 +283,13 @@ class HomeScreen extends Component {
       },
       error => {
         console.log('Error...', JSON.stringify(error))
+        if(error.code==1 && this.state.retriesCount<=10){
+          console.log("Retry permission"+this.state.retriesCount)
+          setTimeout(()=>{
+            this.callLocation(false);
+            this.setState({retriesCount: this.state.retriesCount+1})
+          },3000)
+        }
         this.setState({ isLoading: false })
       },
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 5000 },
@@ -283,9 +300,7 @@ class HomeScreen extends Component {
   fetchAddress = (isValue) => {
     GetLocationComponent(null, this.state.latitude, this.state.longitude)
       .then((responseJson) => {
-        console.log('userLocation', responseJson)
-        const userLocation = responseJson.results[0]
-        console.log('userLocation', userLocation.formatted_address, isValue)
+       const userLocation = responseJson.results[0]
         if (isValue) {
           this.setState({
             isLoading: false, tempAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
@@ -319,6 +334,10 @@ class HomeScreen extends Component {
   }
 
   onCategoryItemPressHandler(item) {
+    if(!AuthStore.isLogin){
+      this.props.navigation.navigate('SignIn');
+      return;
+    }
     const { latitude, longitude } = this.state
     this.props.navigation.navigate('RestaurantList', {
       storeType: lowerCase(item.item.storeTypeName),
@@ -381,7 +400,10 @@ class HomeScreen extends Component {
 
   onRestaurantClicked = (storeId, storeOpeningHours) => {
     console.log("onRestaurant clicked " + this.state.addressesId);
-    if(this.state.addressesId === 0){
+    if(!AuthStore.isLogin){
+      this.props.navigation.navigate('SignIn');
+    }
+    else if(this.state.addressesId === 0){
       this.setState({showLocationAlertModal:true});
     }else{
       this.getMenu(storeId);
