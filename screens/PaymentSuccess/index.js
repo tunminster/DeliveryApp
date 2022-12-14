@@ -204,7 +204,7 @@ class PaymentSuccess extends Component {
                                 {orderDetails?.taxFees > 0 && this.renderBillField(vars.tax,orderDetails?.taxFees)}
                                 {this.renderBillField(vars.deliveryFees,orderDetails?.deliveryFees)}
                                 {this.renderBillField(vars.applicationFees,orderDetails?.applicationFees)}
-
+                                {orderDetails?.deliveryTips > 0 && this.renderBillField(vars.deliveryTips,(orderDetails?.deliveryTips || 0))}    
                             </ScrollView>
 
                             <View style={styles.bottomContainer}>
