@@ -44,14 +44,26 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+	<false/>
 	<key>FacebookAppID</key>
 	<string>410282153495193</string>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<false/>
 	<key>FacebookClientToken</key>
 	<string>4b71898a979b7458adf30f6691451160</string>
 	<key>FacebookDisplayName</key>
 	<string>RagiBull</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fb-messenger-share-api</string>
+		<string>fb-messenger-api</string>
+		<string>fbapi</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -68,7 +80,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Accessing user&apos;s location to find nearest restaurants.</string>
+	<string>Accessing user's location to find nearest restaurants.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -89,18 +101,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>FacebookAutoLogAppEventsEnabled</key>
-	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fb-messenger-share-api</string>
-		<string>fb-messenger-api</string>
-		<string>fbapi</string>
-		<string>fbauth2</string>
-		<string>fbshareextension</string>
-	</array>
-	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<false/>
 </dict>
 </plist>
