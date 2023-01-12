@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   FlatList, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput,
   ImageBackground, ActivityIndicator,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Clipboard from '@react-native-community/clipboard';
@@ -37,12 +38,15 @@ class HomeScreen extends Component {
 
   constructor(props) {
     super(props)
+    
+    var lastUsedAddressId = AuthStore?.user?.addresses?.length > 0 ? AuthStore?.user?.addresses?.at?.(-1)?.id : 0;
+
     this.state = {
       headerTitle: '',
       latitude: '',
       longitude: '',
       isModalVisible: false,
-      addressesId: 0,
+      addressesId: lastUsedAddressId,
       curLatitude: '',
       curLongitude: '',
       search: '',
@@ -69,13 +73,27 @@ class HomeScreen extends Component {
       newAddressModelVisible: false,
       tempAddress: null,
       onEndReachedCalledDuringMomentum: true,
-      storeOpeningHours: null
+      storeOpeningHours: null,
+      showLocationAlertModal: false,
+      retriesCount: 0
     }
   }
+
+
 
   componentDidMount = async () => {
      this.requestUserPermission();
     this.focusListener = this.props.navigation.addListener("focus", () => {
+      if(this.props?.route?.params?.newAddress?.addressLine){
+        this.setState({
+          latitude: this.props.route.params.newAddress.lat,
+          longitude: this.props.route.params.newAddress.lng,
+          curLatitude: this.props.route.params.newAddress.lat,
+          curLongitude: this.props.route.params.newAddress.lng
+        }, () => {
+          this.fetchAddress(false)
+        })
+      }
       this.forceUpdate()
     })
     this.getCategories()
@@ -185,10 +203,9 @@ class HomeScreen extends Component {
           '&storetypes=' + storeType + '&latitude=' + latitude + '&longitude=' + longitude +
           '&page=' + page + '&pagesize=' + 20
 
-        console.log('value', value)
+        console.log('valuedsso', value)
 
         Api.get('/V1/Store/Stores-Search?' + value, config).then(res => {
-          console.log('restaurant res', res);
           if (res.length != 0) {
             this.setState({
               restaurantData: [...this.state.restaurantData, ...res],
@@ -266,6 +283,13 @@ class HomeScreen extends Component {
       },
       error => {
         console.log('Error...', JSON.stringify(error))
+        if(error.code==1 && this.state.retriesCount<=10){
+          console.log("Retry permission"+this.state.retriesCount)
+          setTimeout(()=>{
+            this.callLocation(false);
+            this.setState({retriesCount: this.state.retriesCount+1})
+          },3000)
+        }
         this.setState({ isLoading: false })
       },
       { enableHighAccuracy: false, timeout: 30000, maximumAge: 5000 },
@@ -276,9 +300,7 @@ class HomeScreen extends Component {
   fetchAddress = (isValue) => {
     GetLocationComponent(null, this.state.latitude, this.state.longitude)
       .then((responseJson) => {
-        console.log('userLocation', responseJson)
-        const userLocation = responseJson.results[0]
-        console.log('userLocation', userLocation.formatted_address, isValue)
+       const userLocation = responseJson.results[0]
         if (isValue) {
           this.setState({
             isLoading: false, tempAddress: { "addressLine": userLocation.formatted_address, "lat": this.state.latitude, "lng": this.state.longitude, "id": 0 }
@@ -312,6 +334,10 @@ class HomeScreen extends Component {
   }
 
   onCategoryItemPressHandler(item) {
+    if(!AuthStore.isLogin){
+      this.props.navigation.navigate('SignIn');
+      return;
+    }
     const { latitude, longitude } = this.state
     this.props.navigation.navigate('RestaurantList', {
       storeType: lowerCase(item.item.storeTypeName),
@@ -372,6 +398,20 @@ class HomeScreen extends Component {
 
   }
 
+  onRestaurantClicked = (storeId, storeOpeningHours) => {
+    console.log("onRestaurant clicked " + this.state.addressesId);
+    if(!AuthStore.isLogin){
+      this.props.navigation.navigate('SignIn');
+    }
+    else if(this.state.addressesId === 0){
+      this.setState({showLocationAlertModal:true});
+    }else{
+      this.getMenu(storeId);
+      this.setState({storeOpeningHours: storeOpeningHours});
+    }
+
+  }
+
 
   renderRestaurant = (item, index) => {
     let isClosed;
@@ -388,8 +428,9 @@ class HomeScreen extends Component {
         disabled={isClosed}
         onPress={() => {
           isClosed ? null :
-            this.getMenu(item.item.storeId)
-          this.setState({ storeOpeningHours: item.item.storeOpeningHours })
+            this.onRestaurantClicked(item.item.storeId, item.item.storeOpeningHours);
+            //this.getMenu(item.item.storeId)
+            //this.setState({ storeOpeningHours: item.item.storeOpeningHours })
 
         }}>
         <ImageBackground
@@ -426,7 +467,6 @@ class HomeScreen extends Component {
   }
 
   onMenuPress = (value) => {
-
     if (Store.cart.length != 0) {
       let existData = Store.cart.find(x => x.storeId === value.storeId);
       if (existData) {
@@ -442,7 +482,7 @@ class HomeScreen extends Component {
             })
           }
         })
-      } else {
+      } else {  
         if (Store.restaurantData) {
           this.setState({ newOrderModelVisible: true, newStoreName: Store.restaurantData.storeType })
         }
@@ -479,7 +519,34 @@ class HomeScreen extends Component {
       }
     })
   }
-
+  onUpdateMeatOptionPress = (value, meatOptionId, meatOptionValueId) => {
+    let myCart = [...Store.cart];
+    let tempMeatOption = myCart[this.state.menuDetailIndex].productMeatOptions || []
+        let meatOptionIndex = tempMeatOption.findIndex((item)=> item.meatOptionId == meatOptionId)
+        if(meatOptionIndex>=0){
+            console.log("MeatOtionIndex"+ meatOptionIndex);
+            let tempMeatOptionItem = tempMeatOption[meatOptionIndex].productMeatOptionValues;
+            let tempOptionValueIndex = tempMeatOptionItem.findIndex((item2)=> item2.meatOptionValueId == meatOptionValueId)
+            if(tempOptionValueIndex>=0){
+                console.log("TempOptionValueIndex"+ tempOptionValueIndex);
+                tempMeatOptionItem[tempOptionValueIndex]['selected'] = value;
+                tempMeatOption[meatOptionIndex].productMeatOptionValues = tempMeatOptionItem;  
+                Store.updateCartItemMeatOption(this.state.menuDetailIndex, tempMeatOption)
+                console.log(JSON.stringify(tempMeatOptionItem));
+                
+                this.setState({
+                  menuDetaildata: {...this.state.menuDetaildata, productMeatOptions: [...tempMeatOption]}
+                })
+            }
+            
+        }
+    
+    // Store.cart.map((item, i) => {
+    //   if (this.state.menuDetaildata.id == item.id) {
+    //     this.setState({ menuDetailCount: item.count })
+    //   }
+    // })
+  }
   onAddBasketPress = (menuDetaildata) => {
     let restaurantData = this.state.restaurantData.find(x => x.storeId === menuDetaildata.storeId)
     this.setState({ menuModelVisible: true, menuDetailVisible: false })
@@ -557,6 +624,11 @@ class HomeScreen extends Component {
 
   onNewAddressConfirmPress = () => {
     const { tempAddress } = this.state
+
+    if(tempAddress === null){
+      this.callLocation(false);
+    }
+
     this.setState({
       headerTitle: tempAddress.addressLine,
       latitude: tempAddress.lat,
@@ -574,13 +646,30 @@ class HomeScreen extends Component {
     Store.setCart([]);
     Store.resetCartCount();
   }
+  onLocationViewCancelPress = () => {
+    this.setState({
+      isModalVisible: false
+    }, () => {
+      this.getRestaurant()
+    });
+
+  }
+
+  onAddAddressPress = () => {
+    this.setState({
+      isModalVisible: true,
+      showLocationAlertModal: false,
+    },() => {
+      this.callLocation(true)
+    });
+  }
 
   render() {
     const { headerTitle, isModalVisible, addressesId, search, categoriesData, restaurantData,
       onEndReachedCalledDuringMomentum, fottorLoading, isLoading, isRestaurantLoading, filterModalVisible,
       filterValue, isMenuLoading, menuModelVisible, menuData, isCategoryLoading, menuDetaildata, menuDetailVisible,
       menuDetailCount, newOrderModelVisible, newStoreName, page, storeType, newAddressModelVisible,
-      storeOpeningHours } = this.state
+      storeOpeningHours, showLocationAlertModal } = this.state
     // restaurantData?.length > 0 && restaurantData.map((i,index)=>{
     //   if(index == 0){
     //     i.storeOpeningHours.map((j,index1)=>{
@@ -603,7 +692,7 @@ class HomeScreen extends Component {
 
             <LocationView
               isModalVisible={isModalVisible}
-              onLocationCancelPress={() => this.setState({ isModalVisible: false })}
+              onLocationCancelPress={() => this.onLocationViewCancelPress()}
               onNewAddressPressHandler={() => this.onNewAddressPressHandler()}
               addressesId={addressesId}
               onCurrentLocationPress={() => this.onCurrentLocationPress()}
@@ -728,6 +817,7 @@ class HomeScreen extends Component {
                 onMenuDetailCancelPress={() => this.onMenuDetailCancelPress()}
                 menuDetaildata={menuDetaildata}
                 menuDetailCount={menuDetailCount}
+                onUpdateMeatOptionPress={(value, meatOptionId, meatOptionValueId) => this.onUpdateMeatOptionPress(value, meatOptionId, meatOptionValueId)}
                 onUpdateCountPress={(value) => this.onUpdateCountPress(value)}
                 onAddBasketPress={(data) => this.onAddBasketPress(data)}
               />
@@ -736,6 +826,27 @@ class HomeScreen extends Component {
 
           </View>
         }
+
+        <Modal 
+          transparent={true}
+          animationType={'none'}
+          visible={showLocationAlertModal}
+        >
+          <View style={styles.modelContainer}>
+            <View style={{ backgroundColor: Colors.white, width: wp(70) }}>
+              <Text style={{ ...styles.dialogTitle, marginVertical: hp(1.5), alignSelf: 'center' }}>{'Please select an address before starting order foods.'}</Text>
+              <View style={{ ...styles.modelSeperateLine, marginTop: hp(1.5) }} />
+
+              <View style={styles.modelConfirmContainer}>
+                <TouchableOpacity style={styles.buttonAddress} onPress={() => this.onAddAddressPress()}>
+                  <Text style={styles.buttonAddressText}>{'Create an address'}</Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+          </View>
+
+        </Modal>
       </View>
     )
   }
@@ -857,7 +968,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#00000080',
-  }
+  },
+  modelContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.5)',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden'
+  },
+  modelSeperateLine: {
+    backgroundColor: Colors.border,
+    height: wp(0.2),
+  },
+  modelConfirmContainer: {
+    width: wp(70),
+    flexDirection: 'row',
+    height: hp(20),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  dialogTitle: {
+    fontSize: normalize(14),
+    fontFamily: 'Roboto-Regular',
+    color: Colors.black,
+    fontWeight: '400',
+    alignItems: 'center',
+  },
+  buttonAddress: {
+    height: hp(7),
+    marginHorizontal: wp(5),
+    marginVertical: hp(1.5),
+    justifyContent: 'center',
+    color: '#ffffff',
+    backgroundColor: '#FE595E'
+},
+buttonAddressText: {
+  color: Colors.white,
+  padding: wp(2.5),
+}
 });
 
 export default HomeScreen;

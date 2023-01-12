@@ -32,12 +32,45 @@ export default {
     height: Platform.OS == 'ios' ? hp(24) : hp(28),
     borderRadius: wp(2)
   },
+  modalMenuTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: hp(2),
+    marginBottom: hp(1),
+  },
+  optionsView:{
+    marginTop : hp(1),
+    flex: 1,
+    flexDirection: 'column',
+    marginBottom: hp(7)
+  },
   restaurantTitle: {
     fontSize: normalize(18),
     fontFamily: 'Roboto-Regular',
     color: Colors.black,
     fontWeight: '400',
     alignItems: 'center',
+  },
+  mainOptionView:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  mainOptionTitle: {
+    fontSize: normalize(15),
+    fontFamily: 'Roboto-Regular',
+    color: Colors.black,
+    fontWeight: '400',
+    alignItems: 'center',
+    maxWidth: wp(70)
+  },
+  mainOptionRequired: {
+    fontSize: normalize(12),
+    fontFamily: 'Roboto-Regular',
+    color: Colors.tabIconSelected,
+    fontWeight: '400',
+    alignItems: 'center',
+    marginTop: 3
   },
   restaurantSubTitle: {
     fontSize: normalize(15),
@@ -55,11 +88,14 @@ export default {
     borderWidth: 2,
     borderRadius: wp(1),
     borderColor: Colors.gray,
-    marginBottom: hp(1),
     justifyContent: 'center',
     alignItems: 'center',
     padding: wp(2.5),
-    marginHorizontal: wp(1)
+    marginHorizontal: wp(1),
+    position: 'absolute',
+    bottom: hp(9),
+    alignSelf: 'center',
+    width: '90%'
   },
   modelPlusIcon: {
     width: wp(6),

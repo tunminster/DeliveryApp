@@ -83,11 +83,10 @@ export default {
     height: hp(6)
   },
   closeIcon: {
-    width: wp(8),
-    height: wp(8),
+    width: wp(12),
+    height: wp(12),
   },
   closeView: {
-    position: 'absolute',
     left: wp(-4.5),
     top: wp(-4.5),
     padding: wp(2)

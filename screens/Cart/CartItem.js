@@ -6,6 +6,7 @@ import { observer } from 'mobx-react'
 import { wp, hp, normalize } from '../../helper/responsiveScreen';
 import Colors from '../../constants/Colors'
 import vars from '../../utils/vars';
+import { getAdditionalPrice } from '../../utils/helpers';
 
 @observer
 class CartItem extends Component {
@@ -78,7 +79,7 @@ class CartItem extends Component {
                     <Text style={{
                         ...styles.restaurantSubTitle,
                         marginRight: wp(3)
-                    }}>{`${Store?.remoteConfig?.currency} ${((data.unitPrice * menuDetailCount) / 100).toFixed(2)}`}</Text>
+                    }}>{`${Store?.remoteConfig?.currency} ${(((data.unitPrice + getAdditionalPrice(data)) * menuDetailCount) / 100).toFixed(2)}`}</Text>
 
                 </View>
                 <View style={styles.seperateLine} />

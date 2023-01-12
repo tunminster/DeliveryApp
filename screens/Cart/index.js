@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, ScrollView, Image, Text, TouchableOpacity, Modal, KeyboardAvoidingView } from 'react-native';
 import styles from './styles';
 import Button from '../../components/button';
 import Store from '../../config/store/index';
@@ -16,6 +16,7 @@ import Loading from "../../components/loading";
 import { Input } from '../../components';
 import NumericInput from '@wwdrew/react-native-numeric-textinput'
 import { TextInput, Button as PaperButton } from 'react-native-paper';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 @observer
 class Cart extends Component {
@@ -143,7 +144,7 @@ class Cart extends Component {
     )
 
     renderPromoInputField = (title = '', promoCode = '', onChange, onPromoClicked) => (
-        <View style={[styles.bottomChildContainer, { height: hp(5), alignItems: 'flex-start', flexDirection: 'column', marginTop: hp(5) }]}>
+        <View style={[styles.bottomChildContainer, { height: hp(10), alignItems: 'flex-start', flexDirection: 'column', marginTop: hp(5) }]}>
             <Text style={{ ...styles.title, color: Colors.black, fontSize: normalize(16) }}>{title}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: hp(1) }}>
                 <TextInput theme={{ colors: { primary: Colors.tabIconSelected, underlineColor: 'transparent' } }} mode='outlined' outlineColor={Colors.tabIconSelected} autoComplete="off" autoCorrect={false} autoCapitalize={"characters"} onChangeText={onChange} value={promoCode} onEndEditing={onPromoClicked} style={{ ...styles.title, color: Colors.black, fontSize: normalize(16),flex:1, backgroundColor: '#fff', marginRight: 10, height: hp(6)  }}  />
@@ -202,7 +203,7 @@ class Cart extends Component {
                 </View>
                 <View style={{ ...styles.seperateLine, marginTop: hp(3) }} />
 
-                <ScrollView style={{ marginBottom: hp(17) }} contentContainerStyle={{ paddingBottom: 60 }}>
+                <KeyboardAwareScrollView>
                     {Store.cart.map((item, i) =>
                         <CartItem
                             onPress={() => {
@@ -241,7 +242,7 @@ class Cart extends Component {
                         {this.renderPromoInputField(vars.promoCode, couponCode, (couponCode) => { this.setState({ couponCode, couponCodeApplied: false }); }, this.onPromoClicked)}
 
                     </View>
-                </ScrollView>
+                </KeyboardAwareScrollView>
 
                 <View style={styles.bottomContainer}>
                     <View style={{ ...styles.seperateLine, marginTop: 1 }} />

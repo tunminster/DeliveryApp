@@ -60,6 +60,7 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import {RequestEmailOTP} from "./components/RequestEmailOTP";
 import {VerifyEmailOTP} from "./components/VerifyEmailOTP";
 import {setRemoteConfig} from "./utils/vars";
+import HomeScreen from './screens/HomeScreen';
 const Stack = createStackNavigator();
 state = {
     email: "",
@@ -73,7 +74,7 @@ export default function App(props) {
     const {getInitialState} = useLinking(containerRef);
 
     const [isLoading, setIsLoading] = React.useState(true);
-    const [userToken, setUserToken] = React.useState(null);
+    const [userToken, setUserToken] = React.useState("FirstTime");
 
     const authContext = React.useMemo(() => {
         return {
@@ -179,9 +180,11 @@ export default function App(props) {
                                 let config = await remoteConfig().getAll();
                                 console.log('[config]',config)
                                 let config1 = config['us_remote_config']
+                                //let config1 = config['da_remote_config']
                                 console.log('[config]',config1)
                                 setRemoteConfig(JSON.parse(config1._value));
                                 await AsyncStorage.setItem('us_remote_config',config1._value);
+                                //await AsyncStorage.setItem('da_remote_config',config1._value);
                                 Store.setRemoteConfig(config1._value ? JSON.parse(config1._value) : {})
                                 resolve()
                             } else {
@@ -212,17 +215,17 @@ export default function App(props) {
         });
         messaging().setBackgroundMessageHandler(async (remoteMessage) => {
             console.log("[Notification]", remoteMessage);
-            setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                orderId: "rauk-189660406",
-                orderType: 2
-            }), 1000)
-            //store.dispatch(callSetOrderShow(0));
+            // setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
+            //     orderId: "rauk-189660406",
+            //     orderType: 2
+            // }), 1000)
+            store.dispatch(callSetOrderShow(0));
         });
         messaging().onNotificationOpenedApp(remoteMessage => {
-            setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                orderId: "rauk-189660406",
-                orderType: 2
-            }), 3000)
+            // setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
+            //     orderId: "rauk-189660406",
+            //     orderType: 2
+            // }), 3000)
             console.log(
                 'Notification caused app to open from background state:',
                 remoteMessage.notification,
@@ -234,10 +237,10 @@ export default function App(props) {
             .getInitialNotification()
             .then(remoteMessage => {
                 if (remoteMessage) {
-                    setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
-                        orderId: "rauk-189660406",
-                        orderType: 2
-                    }), 3000)
+                    // setTimeout(() => containerRef?.current?.navigate('PaymentSuccess', {
+                    //     orderId: "rauk-189660406",
+                    //     orderType: 2
+                    // }), 3000)
                     console.log(
                         'Notification caused app to open from quit state:',
                         remoteMessage.notification,
@@ -248,6 +251,7 @@ export default function App(props) {
         async function loadResourcesAndDataAsync() {
             try {
                 SplashScreen.preventAutoHide();
+                //await SplashScreen.preventAutoHideAsync();
                 // Load our initial navigation state
                 setInitialNavigationState(await getInitialState());
 
@@ -286,11 +290,11 @@ export default function App(props) {
                 console.warn(e);
             } finally {
                 setLoadingComplete(true);
-                SplashScreen.hide();
+                await SplashScreen.hideAsync();
             }
         }
 
-        loadResourcesAndDataAsync();
+        await loadResourcesAndDataAsync();
         // setTimeout(() => {
         //   setIsLoading(false);
         // }, 1000)
@@ -485,6 +489,22 @@ const AuthStackScreen = () => (
     </AuthStack.Navigator>
 );
 
+const WithoutAuthStack = createStackNavigator();
+const WithoutAuthStackScreen = () => (
+    <WithoutAuthStack.Navigator headerMode="none">
+        <WithoutAuthStack.Screen name="Home" component={HomeScreen}/>
+        <WithoutAuthStack.Screen name="SignIn" component={SignIn} options={{title: "Sign In"}}/>
+        <WithoutAuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{title: "Forgot Password"}}/>
+        <WithoutAuthStack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{title: "Forgot Password"}}/>
+        <WithoutAuthStack.Screen name="OtpVerification" component={OtpVerificationScreen}
+                          options={{title: "OTP Verification"}}/>
+        <WithoutAuthStack.Screen name="CreateAccount" component={CreateAccount}
+                          options={{title: "Create Account"}}/>
+        <WithoutAuthStack.Screen name="CreateAddress" component={AddressCreation}
+                          options={{title: "Create Address", header: null}}/>
+    </WithoutAuthStack.Navigator>
+);
+
 const PageStack = createStackNavigator();
 const PageScreen = () => (
     <PageStack.Navigator headerMode="screen"
@@ -563,13 +583,6 @@ const PageScreen = () => (
                           options={({navigation}) => (
                               {
                                   headerShown: false
-                                  // headerMode: 'screen',
-                                  // title: 'Address Creation',
-                                  // headerStyle: {
-                                  //   backgroundColor: '#f4511e'
-                                  // },
-                                  // headerTintColor: '#fff',
-                                  // headerBackTitle: ''
                               }
                           )}
         />
@@ -635,55 +648,22 @@ const RootStack = createStackNavigator();
 const RootStackScreen = ({userToken}) => (
     <RootStack.Navigator>
         {
-            userToken ? (
+            userToken==="FirstTime"?(<RootStack.Screen name="WithoutAuth" component={WithoutAuthStackScreen}
+            options={({navigation}) => (
+                {headerShown: false}
+            )}
+            />):(userToken ? (
                 <RootStack.Screen name="App" component={PageScreen}
                                   options={({navigation}) => (
                                       {headerShown: false}
                                   )}
-
-                    // options={({navigation, userToken}) => (
-                    //   {
-                    //     title: 'Restaurant Name',
-                    //     headerStyle: {
-                    //     backgroundColor: '#f4511e',
-                    //     },
-                    //     headerTintColor: '#fff',
-                    //     headerTitleStyle: {
-                    //       fontWeight: 'bold',
-                    //     },
-                    //     headerLeft: () => (
-                    //         <Icon style={styles.menuIcon} name='menu' size={42} color='white'
-                    //           onPress={()=> {navigation.dispatch(DrawerActions.openDrawer())}}
-                    //           />
-                    //     ),
-                    //     headerRight: () => (
-                    //       <TouchableOpacity style={{paddingRight: 15, position: 'relative'}} onPress={() => this.props.navigation.navigate('Cart')} >
-                    //         <Image source={require('./assets/images/cart-icon-white.png')} style={{width: 29, height: 32, resizeMode: 'contain'}} />
-                    //         <View style={{width: 20, height: 20, borderRadius: 10, position: 'absolute', backgroundColor: '#fff', bottom: -7, right: 7, justifyContent: 'center'}}>
-                    //             <Text style={{color: '#000', textAlign: 'center', fontSize: 10}}>{Store.cartCount}</Text>
-                    //         </View>
-                    //     </TouchableOpacity>
-                    //     )
-                    //   }
-                    // )}
                 />
             ) : (
                 <RootStack.Screen name="Auth" component={AuthStackScreen}
                                   options={({navigation}) => ({headerShown: false}
-                                      // {
-                                      //   title: 'Restaurant Name',
-                                      //   headerStyle: {
-                                      //   backgroundColor: '#f4511e',
-                                      //   },
-                                      //   headerTintColor: '#fff',
-                                      //   headerTitleStyle: {
-                                      //     fontWeight: 'bold',
-                                      //   },
-
-                                      // }
                                   )}
                 />
-            )
+            ))
         }
 
 
