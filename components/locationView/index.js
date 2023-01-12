@@ -5,12 +5,14 @@ import { wp, hp, normalize } from '../../helper/responsiveScreen'
 import Colors from '../../constants/Colors'
 import CheckBoxView from '../checkBoxView';
 import AuthStore from '../../config/store/auth';
+import { add } from 'react-native-reanimated';
 
 class LocationView extends Component {
 
   render() {
     const { isModalVisible, onLocationCancelPress, onNewAddressPressHandler, addressesId,
       onCurrentLocationPress, onAddressPress, newOrderModelVisible, newStoreName, newOrderCancel, onConfirmPress } = this.props;
+
     return (
       <Modal
         transparent={true}
@@ -87,6 +89,7 @@ class LocationView extends Component {
                 </View>
               </View>
             </Modal>
+
           </View>
         </View>
       </Modal>

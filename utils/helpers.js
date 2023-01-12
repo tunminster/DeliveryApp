@@ -130,7 +130,8 @@ export function getTotalPrice( isSubTotal = false) {
     let applicationFees = Store.applicationFees;
     let isDeliver = Store.isDelivery;
     let subTotal = Store.cart.map(x => {
-        return getDiscountPrice(x) * x.count
+        let additionalPrice = getAdditionalPrice(x);
+        return (getDiscountPrice(x) + additionalPrice) * x.count
     }).reduce((a, b) => a + b, 0);
     totalAmount = isDeliver ? (applicationFees.deliveryFee + subTotal + applicationFees.platformFee + applicationFees.taxFees) : (applicationFees.subTotal + applicationFees.platformFee + applicationFees.taxFees)
    let a = isSubTotal ? subTotal : totalAmount;
@@ -141,7 +142,29 @@ export function getTotalPrice( isSubTotal = false) {
 export function getDiscountPrice(x) {
     return x.discount ? x.unitPrice - x.unitPrice * parseFloat(`0.${x.discount}`) : x.unitPrice;
 }
-
+export function getAdditionalPrice(product){
+    if(product.productMeatOptions.length>0){
+        let meatItems = product.productMeatOptions;
+        let price = 0;
+        meatItems.forEach(element => {
+            
+            element.productMeatOptionValues.forEach(element2 =>{
+                if(element2.selected){
+                    if(element2?.additionalPrice){
+                    price = price + element2?.additionalPrice || 0
+                    }else{
+                        price = price + 0;
+                    }
+                }
+            })
+            console.log(price);
+            
+       });
+       return parseFloat(price);
+    }else{
+        return 0;
+    }
+}
 export function lowerCase(str) {
     var splitStr = str.toLowerCase().split(' ');
     for (var i = 0; i < splitStr.length; i++) {

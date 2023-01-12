@@ -25,20 +25,26 @@ import SmartScrollView from '../components/SmartScrollView'
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import jwt_decode from 'jwt-decode';
 import Store from "../config/store";
+import AuthStore from '../config/store/auth';
+import BackIcon from '../components/backIcon';
 
 export const SignIn = ({ navigation }) => {
   const { signIn } = React.useContext(AuthContext);
   const { googleSignIn } = React.useContext(AuthContext);
   const { facebookSignIn } = React.useContext(AuthContext);
   const { appleSignIn } = React.useContext(AuthContext);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState({email:""});
+  const [password, setPassword] = React.useState({password:""});
   const [confirmPassword, setConfirmPassword] = React.useState("");
-
+  const [backButtonVisible, setBackVisible] = React.useState(false);
   React.useEffect(()=>{
     GoogleSignin.configure({
       webClientId:"516028708004-7n5r6hkq35t3kivi5h8ge6mr8tk34pa9.apps.googleusercontent.com",
     });
+    console.log(navigation.canGoBack());
+    if(navigation.canGoBack()){
+      setBackVisible(true)
+    }
   },[])
 
   const facebookLogIn = async () => {
@@ -152,11 +158,17 @@ export const SignIn = ({ navigation }) => {
       applyKeyboardCheck={Platform.OS === 'ios'}
       disabled={false}
       alwaysBounceVertical={false} >
+        {backButtonVisible&&<View style={{flexDirection:'row', padding: 10}}>
+          <BackIcon
+           onPress={() => 
+            navigation.goBack()} />
+        </View>}
       <View style={{ marginVertical: isiPAD ? hp(3) : hp(4), alignItems: 'center' }}>
+        
         <Image source={require('../assets/images/logo.png')} style={loginstyles.logo} />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-
+      
         <Custominput
           placeholder="Email Address"
           placeholderTextColor="rgba(0,0,0,0.32)"
@@ -165,7 +177,7 @@ export const SignIn = ({ navigation }) => {
           onChangeText={text => setEmail({ email: text })}
           autoCorrect={false}
         />
-
+        
         <Custominput
           password
           placeholder="Password"
@@ -175,7 +187,7 @@ export const SignIn = ({ navigation }) => {
           onChangeText={text => setPassword({ password: text })}
           autoCorrect={false}
         />
-            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => navigation.push("ForgotPassword")}>
+            <TouchableOpacity style={loginstyles.forgotLink} onPress={() => console.log(AuthStore.isLogin)}>
               <Text style={loginstyles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
 

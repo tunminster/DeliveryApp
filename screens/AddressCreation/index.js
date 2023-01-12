@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Modal, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Modal, Dimensions, Alert } from 'react-native';
 import Button from '../../components/button';
 import { post } from '../../utils/helpers';
 import AuthStore from '../../config/store/auth';
@@ -85,12 +85,27 @@ class AddressCreation extends Component {
                 country: country,
                 disabled: disabled
             }
-
+            let newAddress = {
+                customerId: customerId,
+                addressLine: addressLine,
+                description: description,
+                city: city,
+                postCode: postCode,
+                lat: lat,
+                lng: lng,
+                country: country,
+                disabled: disabled
+            }
+            if(!AuthStore.isLogin){
+                this.props.navigation.navigate("Home",{newAddress: newAddress})
+                return;
+            }
             const { addressDto } = this.state;
 
             this.setState({ loading: true })
 
             console.log(addressDto);
+            
             post('/address/create', addressDto, res => {
                 this.setState({ loading: false })
                 console.log(res);

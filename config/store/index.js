@@ -75,6 +75,10 @@ class Store {
         this.cart[i].count += val;
         this.setCartCount(val);
     }
+    @action updateCartItemMeatOption(i, tempMeatOption) {
+        this.cart[i].productMeatOptions = [...tempMeatOption];
+        console.log(JSON.stringify(this.cart[i]))
+    }
 
     @action resetCartCount() {
         this.cartCount = 0;
